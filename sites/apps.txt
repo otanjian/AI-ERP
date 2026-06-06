@@ -1,0 +1,9 @@
+frappe
+telephony
+crm
+hrms
+erpnext
+helpdesk
+wiki
+frappe_assistant_core
+insights

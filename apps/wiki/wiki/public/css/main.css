@@ -1,0 +1,402 @@
+@import "tailwindcss";
+@import "./font.css";
+@import "./theme.css";
+@plugin '@tailwindcss/typography';
+
+@utility no-scrollbar {
+  @apply [scrollbar-width:none] [&::-webkit-scrollbar]:hidden;
+}
+
+/* Prose styling with Frappe theme variables */
+.prose {
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  font-family: var(--font-sans);
+
+  /* Color variables - these ARE CSS variables in typography plugin */
+  --tw-prose-body: var(--ink-gray-8);
+  --tw-prose-headings: var(--ink-gray-9);
+  --tw-prose-lead: var(--ink-gray-6);
+  --tw-prose-links: var(--ink-gray-9);
+  --tw-prose-bold: var(--ink-gray-9);
+  --tw-prose-counters: var(--ink-gray-5);
+  --tw-prose-bullets: var(--ink-gray-4);
+  --tw-prose-hr: var(--outline-gray-2);
+  --tw-prose-quotes: var(--ink-gray-8);
+  --tw-prose-quote-borders: var(--outline-gray-2);
+  --tw-prose-captions: var(--ink-gray-5);
+  --tw-prose-code: var(--ink-gray-9);
+  --tw-prose-pre-code: var(--ink-gray-2);
+  --tw-prose-pre-bg: var(--surface-gray-7);
+  --tw-prose-th-borders: var(--outline-gray-2);
+  --tw-prose-td-borders: var(--outline-gray-1);
+}
+
+/* prose-sm base typography - Frappe UI values */
+.prose-sm {
+  font-size: 14px;
+  line-height: 1.6;
+  font-weight: 420;
+  letter-spacing: 0.02em;
+}
+
+/* Heading sizes for prose-sm - Frappe UI values (using :where for low specificity) */
+.prose-sm :where(h1) {
+  font-size: calc(20 / 14 * 1em);
+  font-weight: 600;
+}
+
+.prose-sm :where(h2) {
+  font-size: calc(18 / 14 * 1em);
+  font-weight: 600;
+}
+
+.prose-sm :where(h3) {
+  font-size: calc(16 / 14 * 1em);
+  font-weight: 600;
+}
+
+.prose-sm :where(h4) {
+  font-size: calc(14 / 14 * 1em);
+  font-weight: 600;
+}
+
+.prose-sm :where(h5) {
+  font-size: calc(13 / 14 * 1em);
+  font-weight: 600;
+}
+
+/* Paragraph margins for prose-sm - tighter than default */
+.prose-sm :where(p) {
+  margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+/* List margins for prose-sm - matching frappe-ui */
+.prose-sm :where(ul > li),
+.prose-sm :where(ol > li) {
+  margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.prose-sm :where(ul > li > p),
+.prose-sm :where(ol > li > p) {
+  margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+/* Link styling - underline to distinguish gray links */
+.prose a {
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  transition: color 0.15s ease;
+  word-break: break-all;
+}
+
+.prose a:hover {
+  color: var(--ink-gray-7);
+}
+
+/* Code block styling - Light theme */
+.prose pre {
+  position: relative;
+  padding: 0;
+  margin: 1.5rem 0;
+  border-radius: 0.5rem;
+  background-color: var(--surface-gray-1) !important;
+  border: 1px solid var(--outline-gray-2);
+}
+
+.prose pre code {
+  display: block;
+  padding: 1rem 1.25rem;
+  overflow-x: auto;
+  border-radius: 0.5rem;
+  background-color: var(--surface-gray-1) !important;
+  color: var(--ink-gray-9);
+  font-size: 0.875rem;
+  line-height: 1.6;
+}
+
+/* Inline code styling */
+.prose :not(pre) > code {
+  background-color: var(--surface-gray-2);
+  color: var(--ink-gray-9);
+  padding: 0.125rem 0.375rem;
+  border-radius: 0.25rem;
+  font-size: 0.875em;
+  font-weight: 500;
+}
+
+.prose :not(pre) > code::before,
+.prose :not(pre) > code::after {
+  content: none;
+}
+
+/* Code block toolbar - positioned inside pre */
+.code-block-toolbar {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  z-index: 10;
+}
+
+/* Language badge - always visible */
+.code-block-lang {
+  font-size: 0.6875rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--ink-gray-5);
+  padding: 0.125rem 0.5rem;
+  border-radius: 0.25rem;
+  background-color: var(--surface-gray-2);
+}
+
+/* Copy button - hidden by default, shown on hover */
+.code-block-copy {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.375rem;
+  color: var(--ink-gray-5);
+  background-color: var(--surface-gray-2);
+  border: none;
+  border-radius: 0.25rem;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  opacity: 0;
+}
+
+.prose pre:hover .code-block-copy {
+  opacity: 1;
+}
+
+.code-block-copy:hover {
+  background-color: var(--surface-gray-3);
+  color: var(--ink-gray-7);
+}
+
+.code-block-copy.copied {
+  opacity: 1;
+  color: var(--ink-green-3);
+}
+
+.code-block-copy svg {
+  width: 14px;
+  height: 14px;
+}
+
+/* Heading anchor links */
+.prose h1,
+.prose h2,
+.prose h3,
+.prose h4,
+.prose h5,
+.prose h6 {
+  position: relative;
+  scroll-margin-top: 5rem;
+}
+
+.prose .heading-anchor {
+  position: absolute;
+  left: -1.5rem;
+  top: 50%;
+  transform: translateY(-50%);
+  opacity: 0;
+  color: var(--ink-gray-4);
+  text-decoration: none;
+  font-weight: normal;
+  transition: opacity 0.15s ease;
+}
+
+.prose h1:hover .heading-anchor,
+.prose h2:hover .heading-anchor,
+.prose h3:hover .heading-anchor,
+.prose h4:hover .heading-anchor,
+.prose h5:hover .heading-anchor,
+.prose h6:hover .heading-anchor,
+.prose .heading-anchor:focus {
+  opacity: 1;
+}
+
+.prose .heading-anchor:hover {
+  color: var(--ink-gray-6);
+}
+
+/* Callout/Aside Styles - Frappe UI Alert-inspired */
+.callout {
+  margin: 1rem 0;
+  padding: 0.875rem 1rem;
+  border-radius: 0.375rem;
+  position: relative;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 0.75rem;
+  align-items: start;
+}
+
+.callout-icon {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  padding-top: 0.125rem;
+}
+
+.callout-icon svg {
+  width: 1rem;
+  height: 1rem;
+}
+
+.callout-body {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.callout-title {
+  font-weight: 500;
+  font-size: 0.875rem;
+  line-height: 1.4;
+  color: var(--ink-gray-9);
+}
+
+.callout-content {
+  font-size: 0.875rem;
+  line-height: 1.5;
+  color: var(--ink-gray-7);
+}
+
+.callout-content > *:first-child {
+  margin-top: 0;
+}
+
+.callout-content > *:last-child {
+  margin-bottom: 0;
+}
+
+/* Code in callouts */
+.callout-content code {
+  background-color: rgba(0, 0, 0, 0.05);
+  padding: 0.125rem 0.375rem;
+  border-radius: 0.25rem;
+  font-size: 0.875em;
+}
+
+/* Code blocks in callouts */
+.callout-content pre {
+  margin: 0.75rem 0;
+  border-radius: 0.375rem;
+  overflow-x: auto;
+}
+
+.callout-content pre code {
+  background-color: transparent;
+  padding: 0;
+}
+
+/* Lists in callouts */
+.callout-content ul,
+.callout-content ol {
+  margin: 0.5rem 0;
+  padding-left: 1.25rem;
+}
+
+.callout-content li {
+  margin: 0.25rem 0;
+}
+
+/* Note callout - Blue (info style) */
+.callout-note {
+  background-color: var(--surface-blue-2);
+}
+
+.callout-note .callout-icon {
+  color: var(--ink-blue-3);
+}
+
+/* Tip callout - Green (success style) */
+.callout-tip {
+  background-color: var(--surface-green-2);
+}
+
+.callout-tip .callout-icon {
+  color: var(--ink-green-3);
+}
+
+/* Caution callout - Amber/Yellow (warning style) */
+.callout-caution {
+  background-color: var(--surface-amber-2);
+}
+
+.callout-caution .callout-icon {
+  color: var(--ink-amber-3);
+}
+
+/* Danger callout - Red (error style) */
+.callout-danger {
+  background-color: var(--surface-red-2);
+}
+
+.callout-danger .callout-icon {
+  color: var(--ink-red-3);
+}
+
+/* Image lightbox active state */
+#image-viewer.active {
+  opacity: 1;
+  visibility: visible;
+}
+
+body.image-viewer-open {
+  overflow: hidden;
+}
+
+/* Ensure images don't overflow container */
+.prose img {
+  max-width: 100%;
+  height: auto;
+  border: 1px solid var(--ink-gray-3);
+  border-radius: 0.375rem;
+  cursor: zoom-in;
+}
+
+/* Image caption styling using img + em pattern
+   Usage in markdown:
+   ![alt text](image.jpg)
+   *caption text*
+   (no blank line between image and caption)
+*/
+.prose img:has(+ em) {
+  margin-bottom: 0;
+}
+
+.prose img + em {
+  display: block;
+  margin-top: 0.25rem;
+  font-size: 0.875rem;
+  color: var(--ink-gray-6);
+  text-align: center;
+}
+
+/* Table styling - matching Frappe UI prose tables */
+.prose table {
+  table-layout: fixed;
+  width: 100%;
+}
+
+.prose th,
+.prose td {
+  padding: 0.5rem;
+  border: 1px solid var(--outline-gray-2);
+  position: relative;
+}
+
+.prose th {
+  background-color: var(--surface-gray-2);
+  font-weight: 600;
+}
+

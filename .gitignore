@@ -1,0 +1,38 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.eggs/
+dist/
+build/
+*.so
+
+# Virtual environment
+env/
+
+# Node
+node_modules/
+.yarn/
+*.log
+
+# Bench runtime
+logs/
+sites/assets/
+sites/*/private/
+sites/*/logs/
+sites/*/locks/
+sites/*/indexes/
+sites/*/site_config.json
+
+# IDE / OS
+.idea/
+.vscode/
+*.swp
+.DS_Store
+
+# Cache
+.cache/
+*.pyc
+
+# SSL private keys and certs
+config/ssl/

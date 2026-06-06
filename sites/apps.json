@@ -1,0 +1,90 @@
+{
+    "frappe": {
+        "resolution": {
+            "commit_hash": null,
+            "branch": null
+        },
+        "required": [],
+        "idx": 1,
+        "version": "16.16.0"
+    },
+    "erpnext": {
+        "resolution": {
+            "commit_hash": null,
+            "branch": null
+        },
+        "required": [],
+        "idx": 2,
+        "version": "16.15.1"
+    },
+    "crm": {
+        "is_repo": true,
+        "resolution": {
+            "commit_hash": "42c7d608be12adab5c8f40def3ca55e18e748108",
+            "branch": "master"
+        },
+        "required": [],
+        "idx": 3,
+        "version": "2.0.0-dev"
+    },
+    "hrms": {
+        "is_repo": true,
+        "resolution": {
+            "commit_hash": "7f86117802b0277c6250cb19b370678f67aa7679",
+            "branch": "master"
+        },
+        "required": [],
+        "idx": 4,
+        "version": "16.5.1"
+    },
+    "helpdesk": {
+        "is_repo": true,
+        "resolution": {
+            "commit_hash": "0e4df1183f00cee7ebcad0362d49202f37bccd48",
+            "branch": "master"
+        },
+        "required": [],
+        "idx": 5,
+        "version": "1.22.2"
+    },
+    "wiki": {
+        "is_repo": true,
+        "resolution": {
+            "commit_hash": "cebcd97b323f13566bb332497f4f25fcb5cd3e3d",
+            "branch": "master"
+        },
+        "required": [],
+        "idx": 6,
+        "version": "3.0.0"
+    },
+    "frappe_assistant_core": {
+        "is_repo": true,
+        "resolution": {
+            "commit_hash": "1d497fceb0291cebc309cb20c0e525d0a42bf3ff",
+            "branch": "main"
+        },
+        "required": [],
+        "idx": 7,
+        "version": "2.4.1"
+    },
+    "insights": {
+        "is_repo": true,
+        "resolution": {
+            "commit_hash": "2bc69b935eb70f114b0d357035fc0385a42f92f3",
+            "branch": "master"
+        },
+        "required": [],
+        "idx": 8,
+        "version": "3.3.1"
+    },
+    "telephony": {
+        "is_repo": true,
+        "resolution": {
+            "commit_hash": "1b430c86d399748ff34b9cb25ad0164f71adab28",
+            "branch": "master"
+        },
+        "required": [],
+        "idx": 9,
+        "version": "0.0.1"
+    }
+}

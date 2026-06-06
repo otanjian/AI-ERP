@@ -1,0 +1,474 @@
+"""
+Custom Markdown Renderer with Callout/Aside Support
+
+This module provides a custom markdown-to-HTML renderer using Mistune,
+with support for Astro Starlight-style callouts/asides.
+
+Syntax:
+    :::note
+    Content here
+    :::
+
+    :::tip[Custom Title]
+    Content with custom title
+    :::
+
+Supported types: note, tip, caution, danger, warning (alias for caution)
+"""
+
+import re
+from html import unescape
+from urllib.parse import quote
+
+import mistune
+
+
+def slugify(text: str) -> str:
+	"""
+	Convert text to a URL-friendly slug for heading IDs.
+
+	Args:
+	    text: The heading text to slugify
+
+	Returns:
+	    A lowercase, hyphenated slug suitable for use as an HTML id
+	"""
+	# Remove HTML tags if any
+	text = re.sub(r"<[^>]+>", "", text)
+	# Convert to lowercase
+	text = text.lower()
+	# Replace spaces with hyphens (preserve underscores for code-like headings)
+	text = re.sub(r"\s+", "-", text)
+	# Remove characters that aren't alphanumerics, hyphens, underscores, or unicode letters
+	text = re.sub(r"[^\w\-]", "", text, flags=re.UNICODE)
+	# Remove leading/trailing hyphens
+	text = text.strip("-")
+	# Collapse multiple hyphens
+	text = re.sub(r"-+", "-", text)
+	return text
+
+
+# Default titles for each callout type
+DEFAULT_TITLES = {
+	"note": "Note",
+	"tip": "Tip",
+	"caution": "Caution",
+	"danger": "Danger",
+	"warning": "Caution",  # warning is alias for caution
+}
+
+# SVG icons for each callout type
+CALLOUT_ICONS = {
+	"note": '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>',
+	"tip": '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5"/><path d="M9 18h6"/><path d="M10 22h4"/></svg>',
+	"caution": '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg>',
+	"danger": '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10"/><path d="M12 8v4"/><path d="M12 16h.01"/></svg>',
+}
+
+# Pattern to match callout blocks
+# Matches: :::type or :::type[title] or :::type\[title] (escaped bracket from editor)
+# Content continues until closing :::
+CALLOUT_PATTERN = re.compile(
+	r"^[ \t]*:::(?P<type>note|tip|caution|danger|warning)(?:\\?\[(?P<title>[^\]]*)\])?\s*\n(?P<content>[\s\S]*?)\n[ \t]*:::[ \t]*$",
+	re.MULTILINE,
+)
+
+
+def _generate_callout_html(callout_type, title, inner_html):
+	"""Generate HTML for a callout block."""
+	# Normalize warning to caution for consistency
+	if callout_type == "warning":
+		callout_type = "caution"
+
+	# Use default title if none provided or empty
+	if not title:
+		title = DEFAULT_TITLES.get(callout_type, callout_type.capitalize())
+
+	icon = CALLOUT_ICONS.get(callout_type, CALLOUT_ICONS["note"])
+
+	return (
+		f'<aside class="callout callout-{callout_type}">\n'
+		f'<span class="callout-icon">{icon}</span>\n'
+		f'<div class="callout-body">\n'
+		f'<span class="callout-title">{title}</span>\n'
+		f'<div class="callout-content">{inner_html}</div>\n'
+		f"</div>\n"
+		f"</aside>"
+	)
+
+
+def _process_callouts_with_placeholders(content):
+	"""
+	Replace callout blocks with placeholders, returning the modified content
+	and a list of callout data to be processed later.
+	"""
+	callouts = []
+	# Use HTML comment-like placeholder that won't be parsed as markdown
+	placeholder_prefix = "WIKICALLOUTPLACEHOLDER"
+
+	def replacer(match):
+		callout_type = match.group("type")
+		title = match.group("title") or ""
+		inner_content = match.group("content")
+
+		# Remove escape backslashes from title (editor escapes special chars like !)
+		if title:
+			title = title.replace("\\", "")
+
+		idx = len(callouts)
+		callouts.append(
+			{
+				"type": callout_type,
+				"title": title,
+				"content": inner_content.strip(),
+			}
+		)
+		# Return placeholder - use format that won't be parsed as markdown
+		return f"\n\n{placeholder_prefix}{idx}END\n\n"
+
+	# Process callouts (may be nested, so we process iteratively)
+	prev_content = None
+	while prev_content != content:
+		prev_content = content
+		content = CALLOUT_PATTERN.sub(replacer, content)
+
+	return content, callouts, placeholder_prefix
+
+
+def _replace_callout_placeholders(html, callouts, placeholder_prefix, md_instance):
+	"""Replace callout placeholders with actual HTML after markdown rendering."""
+	for idx, callout in enumerate(callouts):
+		placeholder = f"{placeholder_prefix}{idx}END"
+		# The placeholder might be wrapped in <p> tags, so handle both cases
+		inner_html = md_instance(callout["content"]) if callout["content"] else ""
+		callout_html = _generate_callout_html(callout["type"], callout["title"], inner_html)
+
+		# Replace placeholder (may be wrapped in <p> tags)
+		html = html.replace(f"<p>{placeholder}</p>", callout_html)
+		html = html.replace(placeholder, callout_html)
+
+	return html
+
+
+# Pattern to match markdown image syntax: ![alt](url) or ![alt](url "title")
+# Captures: alt text, URL, and optional title
+IMAGE_PATTERN = re.compile(
+	r'!\[([^\]]*)\]\(([^)"\s]+(?:\s[^)]*)?)\)',
+)
+
+VIDEO_EXTENSIONS = (
+	".mp4",
+	".webm",
+	".ogg",
+	".mov",
+	".avi",
+	".mkv",
+	".m4v",
+)
+
+
+def _is_video_url(url: str) -> bool:
+	"""Return True when URL points to a known video file extension."""
+	if not url:
+		return False
+
+	clean_url = str(url).split("?", 1)[0].split("#", 1)[0].lower()
+	return clean_url.endswith(VIDEO_EXTENSIONS)
+
+
+SCRIPT_TAG_PATTERN = re.compile(r"(?is)<script\b[^>]*>.*?</script>|</?script\b[^>]*>")
+
+
+def _remove_script_tags(value: str | None) -> str:
+	"""Remove only <script> tags/content; keep all other HTML unchanged."""
+	if not value:
+		return ""
+	return SCRIPT_TAG_PATTERN.sub("", str(value))
+
+
+# Match full-line markdown image syntax with optional title:
+# ![alt](url) or ![alt](url "title")
+VIDEO_MARKDOWN_PATTERN = re.compile(
+	r'^!\[(?P<alt>[^\]]*)\]\((?P<url>[^)"\s]+)(?:\s+"(?P<title>[^"]*)")?\)[ \t]*$',
+	re.MULTILINE,
+)
+
+
+def _generate_video_html(url: str, alt: str = "", title: str = "") -> str:
+	"""Generate HTML for a video block."""
+	safe_alt = _remove_script_tags(alt)
+	safe_title = _remove_script_tags(title)
+	title_attr = f' title="{safe_title}"' if safe_title else ""
+	data_alt_attr = f' data-alt="{safe_alt}"' if safe_alt else ""
+	return (
+		f'<div data-type="video-block" data-src="{url}"{data_alt_attr}>'
+		f'<video src="{url}" controls preload="metadata"{title_attr}>'
+		f'<source src="{url}" />'
+		"</video></div>"
+	)
+
+
+def _process_videos_with_placeholders(content: str) -> tuple[str, list[dict], str]:
+	"""
+	Replace full-line video markdown with placeholders so videos render as block HTML.
+	"""
+	videos = []
+	placeholder_prefix = "WIKIVIDEOPLACEHOLDER"
+
+	def replacer(match):
+		url = match.group("url") or ""
+		if not _is_video_url(url):
+			return match.group(0)
+
+		idx = len(videos)
+		videos.append(
+			{
+				"url": url,
+				"alt": match.group("alt") or "",
+				"title": match.group("title") or "",
+			}
+		)
+		# Force paragraph break around video block
+		return f"\n\n{placeholder_prefix}{idx}END\n\n"
+
+	return VIDEO_MARKDOWN_PATTERN.sub(replacer, content), videos, placeholder_prefix
+
+
+def _replace_video_placeholders(html: str, videos: list[dict], placeholder_prefix: str) -> str:
+	"""Replace video placeholders with block video HTML."""
+	for idx, video in enumerate(videos):
+		placeholder = f"{placeholder_prefix}{idx}END"
+		video_html = _generate_video_html(video["url"], video["alt"], video["title"])
+		html = html.replace(f"<p>{placeholder}</p>", video_html)
+		html = html.replace(placeholder, video_html)
+	return html
+
+
+# Private-use Unicode sentinel — stands in for `|` inside inline-code on table
+# rows during Mistune parsing, then gets swapped back after rendering. Chosen
+# from the PUA block so it cannot collide with authored markdown content.
+_TABLE_CODE_PIPE_SENTINEL = ""
+
+
+def _escape_table_inline_code_pipes(content: str) -> str:
+	"""
+	Swap `|` characters inside inline-code spans on table-row lines for a
+	sentinel, which is restored after Mistune renders.
+
+	GFM-compliant parsers (marked, markdown-it) treat a backtick-delimited span
+	like `` `dict | list` `` as a single code token, so its `|` is not a column
+	separator. Mistune's table plugin instead counts raw pipes per row and,
+	finding a mismatch, rejects the entire block — the table collapses to a
+	paragraph. Hiding those pipes behind a sentinel makes the column count
+	match, and a post-render replace restores the `|` inside `<code>`.
+	"""
+	lines = content.split("\n")
+	in_fence = False
+	fence_marker: str | None = None
+
+	def replace_span(match: re.Match) -> str:
+		return match.group(0).replace("|", _TABLE_CODE_PIPE_SENTINEL)
+
+	for i, line in enumerate(lines):
+		stripped = line.lstrip()
+		if not in_fence and (stripped.startswith("```") or stripped.startswith("~~~")):
+			in_fence = True
+			fence_marker = stripped[:3]
+			continue
+		if in_fence:
+			if fence_marker and stripped.startswith(fence_marker):
+				in_fence = False
+				fence_marker = None
+			continue
+		if "|" not in line or not stripped.startswith("|"):
+			continue
+		lines[i] = re.sub(r"`[^`\n]+`", replace_span, line)
+
+	return "\n".join(lines)
+
+
+def _encode_image_url_spaces(content: str) -> str:
+	"""
+	Pre-process markdown to URL-encode spaces in image URLs.
+
+	Mistune (unlike markdown2) doesn't handle spaces in URLs, so we need to
+	encode them before parsing. This function finds all image syntax and
+	encodes spaces in the URL portion.
+
+	Args:
+	    content: Markdown string
+
+	Returns:
+	    Markdown string with spaces in image URLs encoded as %20
+	"""
+
+	def encode_url(match):
+		alt_text = match.group(1)
+		url_part = match.group(2)
+
+		# Split URL and optional title (title is in quotes after a space)
+		# e.g., '/path/to/image.png "Image Title"'
+		title_match = re.match(r'^([^"]+?)(?:\s+"([^"]*)")?$', url_part)
+		if title_match:
+			url = title_match.group(1).strip()
+			title = title_match.group(2)
+		else:
+			url = url_part
+			title = None
+
+		# Only encode spaces, preserve other characters
+		# quote() with safe='' would encode everything, but we only want spaces
+		encoded_url = url.replace(" ", "%20")
+
+		# Reconstruct the image syntax
+		if title:
+			return f'![{alt_text}]({encoded_url} "{title}")'
+		return f"![{alt_text}]({encoded_url})"
+
+	return IMAGE_PATTERN.sub(encode_url, content)
+
+
+class WikiRenderer(mistune.HTMLRenderer):
+	"""Custom HTML renderer.
+
+	Image captions use the Stack Overflow pattern:
+	    ![alt text](image.jpg)
+	    *caption text*
+
+	This renders as <p><img ...><em>caption</em></p> (no blank line between).
+	Style with CSS: img + em { ... }
+	Alt text remains for accessibility, caption is separate.
+	"""
+
+	def __init__(self, **kwargs):
+		super().__init__(**kwargs)
+		self._heading_slugs = {}  # Track used slugs to avoid duplicates
+		self._headings = []  # Track headings for TOC
+
+	def block_code(self, code: str, info: str | None = None) -> str:
+		# Trim trailing whitespace the author left inside the fence — spaces,
+		# tabs, and blank lines all render as phantom empty rows in <pre>.
+		return super().block_code(code.rstrip() + "\n", info)
+
+	def heading(self, text: str, level: int, **attrs) -> str:
+		"""Render heading with slugified ID for anchor links."""
+		# Generate base slug from heading text
+		slug = slugify(text)
+
+		# Handle empty slugs
+		if not slug:
+			slug = "heading"
+
+		# Ensure unique slugs by appending numbers for duplicates
+		original_slug = slug
+		counter = 1
+		while slug in self._heading_slugs:
+			slug = f"{original_slug}-{counter}"
+			counter += 1
+
+		self._heading_slugs[slug] = True
+
+		# Track h2 and h3 headings for TOC
+		if level in (2, 3):
+			self._headings.append(
+				{"id": slug, "text": unescape(re.sub(r"<[^>]+>", "", text)), "level": level}
+			)
+
+		return f'<h{level} id="{slug}">{text}</h{level}>\n'
+
+	def image(self, text: str, url: str, title: str | None = None) -> str:
+		"""Render video URLs as HTML5 video blocks; others as normal images."""
+		src = self.safe_url(url)
+		alt = _remove_script_tags(text)
+		safe_title = _remove_script_tags(title)
+
+		if _is_video_url(url):
+			title_attr = f' title="{safe_title}"' if safe_title else ""
+			data_alt_attr = f' data-alt="{alt}"' if alt else ""
+			return (
+				f'<div data-type="video-block" data-src="{src}"{data_alt_attr}>'
+				f'<video src="{src}" controls preload="metadata"{title_attr}>'
+				f'<source src="{src}" />'
+				"</video></div>"
+			)
+
+		s = f'<img src="{src}" alt="{alt}"'
+		if safe_title:
+			s += f' title="{safe_title}"'
+		return s + " />"
+
+	def get_headings(self) -> list:
+		"""Return the list of h2/h3 headings extracted during rendering."""
+		return self._headings
+
+
+def render_markdown_with_toc(content: str) -> tuple[str, list]:
+	"""
+	Convert markdown content to HTML with callout support, and extract TOC headings.
+
+	Args:
+	    content: Markdown string to convert
+
+	Returns:
+	    Tuple of (HTML string, list of heading dicts with id, text, level)
+	"""
+	if not content:
+		return "", []
+
+	# Create a base Mistune markdown instance with custom renderer
+	# Note: escape=False must be passed to the renderer, not create_markdown
+	renderer = WikiRenderer(escape=False)
+	md = mistune.create_markdown(
+		renderer=renderer,
+		plugins=[
+			"strikethrough",
+			"footnotes",
+			"table",
+			"task_lists",
+		],
+	)
+
+	# Step 1: URL-encode spaces in image URLs (mistune doesn't handle them)
+	processed_content = _encode_image_url_spaces(content)
+
+	# Step 1b: Escape `|` inside inline-code spans on table rows so Mistune's
+	# table plugin doesn't miscount columns and drop the table.
+	processed_content = _escape_table_inline_code_pipes(processed_content)
+
+	# Step 2: Extract callouts and replace with placeholders
+	processed_content, callouts, placeholder_prefix = _process_callouts_with_placeholders(processed_content)
+
+	# Step 3: Extract video blocks and replace with placeholders
+	processed_content, videos, video_placeholder_prefix = _process_videos_with_placeholders(processed_content)
+
+	# Step 4: Render markdown (placeholders may be wrapped in <p> tags)
+	html = md(processed_content)
+
+	# Step 5: Replace callout placeholders with actual callout HTML
+	html = _replace_callout_placeholders(html, callouts, placeholder_prefix, md)
+
+	# Step 6: Replace video placeholders with block video HTML
+	html = _replace_video_placeholders(html, videos, video_placeholder_prefix)
+
+	# Step 7: Restore pipes that were hidden from the table parser.
+	if _TABLE_CODE_PIPE_SENTINEL in html:
+		html = html.replace(_TABLE_CODE_PIPE_SENTINEL, "|")
+
+	# Get the headings extracted during rendering
+	headings = renderer.get_headings()
+
+	return html, headings
+
+
+def render_markdown(content: str) -> str:
+	"""
+	Convert markdown content to HTML with callout support.
+
+	Args:
+	    content: Markdown string to convert
+
+	Returns:
+	    HTML string
+	"""
+	html, _ = render_markdown_with_toc(content)
+	return html

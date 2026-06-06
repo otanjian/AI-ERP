@@ -1,0 +1,2696 @@
+<style>
+  /* ============================================
+     bosofts博软 · BOWIAI 首页样式
+     版本: 2026.04.26-VisualUX
+     特性: 极简商务工业风 · B 端官网 · 交互反馈
+     ============================================ */
+
+  /* ---------- CSS变量系统 ---------- */
+  :root {
+    /* 品牌色彩 */
+    --ae-brand: #6366f1;
+    --ae-brand-hover: #4f46e5;
+    --ae-brand-light: rgba(99, 102, 241, 0.08);
+    --ae-brand-soft: rgba(99, 102, 241, 0.06);
+
+    /* 中性色阶 */
+    --ae-ink: #0a0a0a;
+    --ae-ink-2: #171717;
+    --ae-ink-3: #262626;
+    --ae-muted: #525252;
+    --ae-muted-2: #737373;
+    --ae-line: #e5e5e5;
+    --ae-line-2: #d4d4d4;
+    --ae-surface: #ffffff;
+    --ae-bg: #f6f8ff;
+    --ae-bg-2: #eef2ff;
+
+    /* 语义色彩 */
+    --ae-success: #10b981;
+    --ae-success-bg: #ecfdf5;
+    --ae-warning: #f59e0b;
+    --ae-warning-bg: #fffbeb;
+
+    /* 阴影层级 */
+    --ae-shadow-1: 0 1px 2px rgba(0, 0, 0, 0.04);
+    --ae-shadow-2: 0 1px 3px rgba(0, 0, 0, 0.08), 0 2px 6px rgba(0, 0, 0, 0.04);
+    --ae-shadow-3: 0 4px 12px rgba(0, 0, 0, 0.1);
+    --ae-shadow-hover: 0 8px 24px rgba(0, 0, 0, 0.12);
+
+    /* 形状与动画（内容卡片统一 8px 圆角） */
+    --ae-radius: 8px;
+    --ae-card-radius: 8px;
+    --ae-radius-sm: 8px;
+    --ae-radius-lg: 12px;
+    --ae-transition: 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    --ae-transition-slow: 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+    --ae-shadow-card: 0 6px 20px rgba(15, 23, 42, 0.06), 0 1px 2px rgba(15, 23, 42, 0.06);
+    --ae-shadow-card-hover: 0 14px 34px rgba(79, 70, 229, 0.16);
+    --ae-border-hover: rgba(99, 102, 241, 0.55);
+
+    /* 布局尺寸 */
+    --container-max: 1200px;
+    --container-padding: 20px;
+    --section-padding: 72px;
+
+    /* 响应式断点参考 */
+    --bp-desktop-xl: 1920px;
+    --bp-desktop: 1440px;
+    --bp-tablet: 1024px;
+    --bp-mobile: 768px;
+    --bp-mobile-sm: 480px;
+  }
+
+  /* ---------- 基础重置与性能优化 ---------- */
+  .ae-home {
+    background: var(--ae-bg);
+    color: var(--ae-ink);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+    contain: layout style;
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+  }
+
+  .ae-home::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: -2;
+    background:
+      radial-gradient(circle at 12% 8%, rgba(59, 130, 246, 0.14), transparent 40%),
+      radial-gradient(circle at 88% 20%, rgba(99, 102, 241, 0.14), transparent 44%),
+      radial-gradient(circle at 50% 100%, rgba(14, 165, 233, 0.1), transparent 46%);
+  }
+
+  .ae-home::after {
+    content: "";
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: -1;
+    background-image:
+      linear-gradient(rgba(99, 102, 241, 0.06) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(99, 102, 241, 0.06) 1px, transparent 1px);
+    background-size: 32px 32px;
+    mask-image: radial-gradient(circle at center, rgba(0, 0, 0, 0.5), transparent 78%);
+  }
+
+  /* ---------- 顶部导航（参考红框样式） ---------- */
+  .ae-topbar {
+    position: sticky;
+    top: 0;
+    z-index: 9996;
+    background: rgba(255, 255, 255, 0.86);
+    border-bottom: 1px solid rgba(129, 140, 248, 0.24);
+    box-shadow: 0 4px 18px rgba(30, 41, 59, 0.06);
+    backdrop-filter: saturate(140%) blur(10px);
+    -webkit-backdrop-filter: saturate(140%) blur(10px);
+  }
+
+  .ae-topbar__inner {
+    min-height: 64px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px;
+  }
+
+  .ae-topbar__brand {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    text-decoration: none;
+    white-space: nowrap;
+  }
+
+  .ae-topbar__brand img {
+    display: block;
+    height: 42px;
+    width: auto;
+    max-width: min(340px, 55vw);
+    object-fit: contain;
+  }
+
+  .ae-topbar__nav {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    flex-wrap: wrap;
+  }
+
+  .ae-topbar__link {
+    color: #111827;
+    text-decoration: none;
+    font-size: 15px;
+    font-weight: 600;
+    line-height: 1;
+    padding-bottom: 3px;
+    border-bottom: 2px solid transparent;
+    transition: color var(--ae-transition), border-color var(--ae-transition);
+  }
+
+  .ae-topbar__link:hover {
+    color: var(--ae-brand);
+    border-bottom-color: var(--ae-brand);
+  }
+
+  /* 隐藏 Frappe 默认站点底栏（由ERPNext驱动区域） */
+  .web-footer {
+    display: none !important;
+  }
+
+  /* 隐藏系统默认顶部导航（主页/登录那一行） */
+  .navbar.navbar-light.navbar-expand-lg {
+    display: none !important;
+  }
+
+  /* 容器系统 - 自适应最大宽度 */
+  .ae-container {
+    width: 100%;
+    max-width: var(--container-max);
+    margin: 0 auto;
+    padding: 0 var(--container-padding);
+    box-sizing: border-box;
+  }
+
+  /* ---------- 大屏桌面优化 (1440px+) ---------- */
+  @media (min-width: 1440px) {
+    :root {
+      --container-padding: 24px;
+      --section-padding: 88px;
+    }
+    .ae-container {
+      max-width: 1320px;
+    }
+  }
+
+  /* 超宽屏优化 (1920px+) */
+  @media (min-width: 1920px) {
+    :root {
+      --container-padding: 32px;
+    }
+    .ae-container {
+      max-width: 1400px;
+    }
+    .ae-title {
+      font-size: 56px;
+    }
+  }
+
+  /* ---------- 平板适配 (768px - 1024px) ---------- */
+  @media (max-width: 1024px) {
+    :root {
+      --container-padding: 18px;
+      --section-padding: 56px;
+    }
+    .ae-h2 {
+      font-size: 26px;
+    }
+    .ae-card {
+      padding: 18px;
+    }
+    .ae-kpi .num {
+      font-size: 36px;
+    }
+  }
+
+  /* ---------- 移动端适配 (< 768px) ---------- */
+  @media (max-width: 767px) {
+    :root {
+      --container-padding: 16px;
+      --section-padding: 48px;
+    }
+
+    .ae-container {
+      padding-left: var(--container-padding);
+      padding-right: var(--container-padding);
+    }
+
+    /* 标题字号适配 */
+    .ae-title {
+      font-size: clamp(28px, 7vw, 36px);
+      line-height: 1.15;
+      letter-spacing: -0.02em;
+    }
+
+    .ae-h2 {
+      font-size: 22px;
+      line-height: 1.3;
+    }
+
+    .ae-h3 {
+      font-size: 16px;
+    }
+
+    .ae-subtitle {
+      font-size: 15px;
+      line-height: 1.7;
+    }
+
+    /* 区块间距调整 */
+    .ae-section {
+      padding: var(--section-padding) 0;
+    }
+
+    /* 卡片内边距调整 */
+    .ae-card {
+      padding: 16px;
+      min-height: auto;
+    }
+
+    .ae-card--media {
+      padding: 12px;
+    }
+
+    /* KPI数字缩小 */
+    .ae-kpi .num {
+      font-size: 32px;
+    }
+
+    .ae-topbar__inner {
+      min-height: 54px;
+    }
+
+    .ae-topbar__brand {
+      font-size: 24px;
+    }
+
+    .ae-topbar__nav {
+      gap: 12px;
+    }
+
+    .ae-topbar__link {
+      font-size: 13px;
+    }
+
+    .ae-module--hero {
+      padding-top: 28px !important;
+    }
+  }
+
+  @media (max-width: 479px) {
+    .ae-topbar__brand img {
+      height: 34px;
+      max-width: 58vw;
+    }
+  }
+
+  /* ---------- 小屏手机适配 (< 480px) ---------- */
+  @media (max-width: 479px) {
+    :root {
+      --container-padding: 14px;
+      --section-padding: 40px;
+    }
+
+    .ae-title {
+      font-size: 26px;
+    }
+
+    .ae-h2 {
+      font-size: 20px;
+    }
+
+    .ae-kicker {
+      font-size: 11px;
+    }
+
+    .ae-subtitle {
+      font-size: 14px;
+    }
+
+    .ae-btn-primary,
+    .ae-btn-secondary {
+      width: 100%;
+      justify-content: center;
+      padding: 14px 20px;
+      font-size: 15px;
+    }
+
+    /* 表单项全宽 */
+    .ae-form-grid > div {
+      grid-column: 1 / -1;
+    }
+
+    .ae-form {
+      padding: 18px;
+    }
+
+    .ae-card {
+      padding: 14px;
+    }
+  }
+
+  /* ---------- 区块基础样式 ---------- */
+  .ae-section {
+    padding: var(--section-padding) 0;
+    contain: layout;
+  }
+
+  .ae-section--alt {
+    background: var(--ae-surface);
+  }
+
+  .ae-section--cta {
+    padding: 80px 0;
+  }
+
+  /* ---------- 11 模块黄金路径：分隔与呼吸感 ---------- */
+  .ae-home .ae-module {
+    border-bottom: 1px solid rgba(148, 163, 184, 0.24);
+    scroll-margin-top: 72px;
+  }
+
+  .ae-home .ae-module:last-of-type {
+    border-bottom: none;
+  }
+
+  .ae-module--muted {
+    background:
+      linear-gradient(180deg, rgba(255, 255, 255, 0.72), rgba(255, 255, 255, 0.56)),
+      var(--ae-bg);
+  }
+
+  .ae-module--surface {
+    background: rgba(255, 255, 255, 0.74);
+    backdrop-filter: blur(1.5px);
+    -webkit-backdrop-filter: blur(1.5px);
+  }
+
+  .ae-module--hero {
+    padding-top: 46px !important;
+    padding-bottom: 20px !important;
+  }
+
+  .ae-lead {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--ae-ink-2);
+    line-height: 1.55;
+    margin: 0 0 18px;
+    max-width: 760px;
+  }
+
+  .ae-module-h2 {
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--ae-muted);
+    margin: 0 0 14px;
+    line-height: 1.35;
+  }
+
+  .ae-module-h2--hero {
+    margin: -4px 0 12px;
+  }
+
+  .ae-footer__h2 {
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #71717a;
+    margin: 0 0 14px;
+  }
+
+  /* ---------- 排版样式 ---------- */
+  .ae-h2 {
+    font-size: 28px;
+    letter-spacing: -0.02em;
+    margin: 0 0 12px;
+    font-weight: 700;
+    color: var(--ae-ink);
+    line-height: 1.3;
+  }
+
+  .ae-h3 {
+    font-size: 17px;
+    font-weight: 600;
+    margin: 0 0 8px;
+    color: var(--ae-ink);
+    line-height: 1.4;
+  }
+
+  .ae-kicker {
+    font-size: 12px;
+    color: var(--ae-muted);
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin: 0 0 10px;
+  }
+
+  .ae-title {
+    font-size: clamp(32px, 5.5vw, 56px);
+    line-height: 1.08;
+    letter-spacing: -0.035em;
+    margin: 0 0 16px;
+    font-weight: 800;
+    color: var(--ae-brand);
+    will-change: transform;
+  }
+
+  .ae-hero__copy .ae-title {
+    margin-bottom: 32px;
+  }
+
+  .ae-subtitle {
+    font-size: 16px;
+    color: var(--ae-muted);
+    line-height: 1.75;
+    margin: 0;
+  }
+
+  /* Hero 文案层级：副标题深灰、主说明略浅 */
+  .ae-hero-tagline {
+    font-size: clamp(22px, 3vw, 30px);
+    font-weight: 700;
+    color: #2a2a2a;
+    line-height: 1.42;
+    letter-spacing: -0.02em;
+    margin: 0 0 48px;
+    max-width: 36em;
+  }
+
+  /* 等高铁网：卡片拉伸同高 */
+  .ae-grid-stretch {
+    align-items: stretch;
+  }
+
+  .ae-grid-stretch > .ae-card {
+    height: 100%;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box;
+  }
+
+  .ae-grid-stretch > .ae-card > p:last-of-type {
+    flex: 1 1 auto;
+  }
+
+  .ae-grid-stretch > .ae-card--media .ae-ai-slot {
+    flex: 1 1 auto;
+    min-height: 220px;
+  }
+
+  /* 正文区链接 hover */
+  .ae-home .ae-container a:not(.ae-btn-primary):not(.ae-btn-secondary):not(.ae-float-register):not(.ae-float-chat) {
+    color: var(--ae-brand);
+    text-underline-offset: 3px;
+    transition: color var(--ae-transition), opacity var(--ae-transition);
+  }
+
+  .ae-home .ae-container a:not(.ae-btn-primary):not(.ae-btn-secondary):not(.ae-float-register):not(.ae-float-chat):hover {
+    color: var(--ae-brand-hover);
+    text-decoration: underline;
+  }
+
+  /* ---------- 按钮样式 - 移动端通栏优化 ---------- */
+  .ae-btn-primary,
+  .ae-btn-secondary {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 48px;
+    min-width: 120px;
+    padding: 12px 28px;
+    border-radius: var(--ae-card-radius);
+    text-decoration: none;
+    font-weight: 700;
+    font-size: 15px;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+    transition: all var(--ae-transition);
+    will-change: transform;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .ae-btn-primary {
+    background: linear-gradient(135deg, #6366f1, #2563eb);
+    border: 2px solid rgba(99, 102, 241, 0.72);
+    color: #fff !important;
+    box-shadow: 0 10px 26px rgba(79, 70, 229, 0.32);
+  }
+
+  .ae-btn-primary:hover {
+    background: linear-gradient(135deg, #4f46e5, #1d4ed8);
+    border-color: rgba(79, 70, 229, 0.92);
+    transform: translateY(-2px);
+    box-shadow: 0 14px 30px rgba(37, 99, 235, 0.34);
+  }
+
+  .ae-btn-primary:active {
+    transform: translateY(0);
+    box-shadow: var(--ae-shadow-1);
+  }
+
+  .ae-btn-secondary {
+    background: rgba(255, 255, 255, 0.9);
+    border: 2px solid rgba(99, 102, 241, 0.6);
+    color: var(--ae-brand) !important;
+    box-shadow: inset 0 0 0 1px rgba(148, 163, 184, 0.18);
+  }
+
+  .ae-btn-secondary:hover {
+    background: rgba(238, 242, 255, 0.95);
+    transform: translateY(-2px);
+    box-shadow: 0 10px 24px rgba(99, 102, 241, 0.18);
+  }
+
+  .ae-btn-secondary:active {
+    transform: translateY(0);
+  }
+
+  .ae-btn-primary:focus-visible,
+  .ae-btn-secondary:focus-visible {
+    outline: 2px solid var(--ae-brand);
+    outline-offset: 3px;
+  }
+
+  /* ---------- 卡片系统（白底 · 轻阴影 · 8px 圆角 · hover 上浮 + 品牌描边） ---------- */
+  .ae-card {
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.94), rgba(255, 255, 255, 0.86));
+    border: 1px solid rgba(148, 163, 184, 0.22);
+    border-radius: var(--ae-card-radius);
+    padding: 20px;
+    box-shadow: var(--ae-shadow-card);
+    transition: transform var(--ae-transition), box-shadow var(--ae-transition), border-color var(--ae-transition);
+    will-change: transform;
+    contain: layout;
+    backdrop-filter: blur(2px);
+    -webkit-backdrop-filter: blur(2px);
+  }
+
+  .ae-card:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--ae-shadow-card-hover);
+    border-color: rgba(99, 102, 241, 0.58);
+  }
+
+  .ae-card--compact {
+    padding: 16px;
+  }
+
+  .ae-card--media {
+    padding: 12px;
+  }
+
+  .ae-card p,
+  .ae-card li {
+    color: var(--ae-muted);
+    line-height: 1.7;
+    font-size: 14px;
+    margin: 0;
+  }
+
+  /* ---------- 网格系统 - 响应式 ---------- */
+  .ae-grid-3 {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+  }
+
+  .ae-grid-4 {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+  }
+
+  /* 平板：3列变2列，4列变2列 */
+  @media (max-width: 1024px) {
+    .ae-grid-3 {
+      grid-template-columns: repeat(2, 1fr);
+    }
+    .ae-grid-4 {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  /* 移动端：全部单列 */
+  @media (max-width: 767px) {
+    .ae-grid-3,
+    .ae-grid-4 {
+      grid-template-columns: 1fr;
+      gap: 14px;
+    }
+  }
+
+  /* ---------- Pill标签 ---------- */
+  .ae-pill {
+    display: inline-block;
+    padding: 5px 12px;
+    border-radius: 9999px;
+    font-size: 12px;
+    font-weight: 600;
+    margin: 6px 8px 0 0;
+    border: 1px solid var(--ae-line);
+    color: var(--ae-muted);
+    background: var(--ae-bg);
+    transition: all var(--ae-transition);
+  }
+
+  .ae-pill-info {
+    border-color: rgba(99, 102, 241, 0.3);
+    color: var(--ae-brand);
+    background: var(--ae-brand-soft);
+  }
+
+  .ae-pill-warn {
+    border-color: #d4d4d4;
+    color: #404040;
+    background: #f4f4f5;
+  }
+
+  .ae-pill-ok {
+    border-color: #d4d4d4;
+    color: #404040;
+    background: #f4f4f5;
+  }
+
+  .ae-pill:hover {
+    border-color: #a3a3a3;
+    color: var(--ae-ink-2);
+  }
+
+  .ae-pill-info:hover {
+    border-color: rgba(99, 102, 241, 0.45);
+    color: var(--ae-brand-hover);
+  }
+
+  /* ---------- Hero：PC 左 60% / 右 40%，移动端上下 ---------- */
+  .ae-hero__grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 28px;
+    align-items: start;
+  }
+
+  @media (min-width: 1025px) {
+    .ae-hero__grid {
+      grid-template-columns: 1fr;
+      gap: 28px;
+      align-items: start;
+    }
+  }
+
+  .ae-hero__cta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 24px;
+  }
+
+  /* 移动端按钮通栏 */
+  @media (max-width: 479px) {
+    .ae-hero__cta {
+      flex-direction: column;
+    }
+    .ae-hero__cta .ae-btn-primary,
+    .ae-hero__cta .ae-btn-secondary {
+      width: 100%;
+    }
+  }
+
+  .ae-hero__visual {
+    border-radius: var(--ae-card-radius);
+    overflow: hidden;
+    border: 1px solid #e8e8ec;
+    box-shadow: var(--ae-shadow-card);
+    background: var(--ae-surface);
+    transition: transform var(--ae-transition), box-shadow var(--ae-transition), border-color var(--ae-transition);
+    will-change: transform;
+  }
+
+  .ae-hero__visual:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--ae-shadow-card-hover);
+    border-color: var(--ae-border-hover);
+  }
+
+  .ae-hero__visual img {
+    display: block;
+    width: 100%;
+    height: auto;
+    cursor: zoom-in;
+  }
+
+  .ae-hero__visual img[data-ae-zoom=""] {
+    cursor: default;
+  }
+
+  /* AI + ERPnext demo video (full-width section below hero) */
+  .ae-demo-video-wrap {
+    max-width: 100%;
+    margin: 24px auto 0;
+    border-radius: var(--ae-card-radius);
+    overflow: hidden;
+    border: 1px solid #e8e8ec;
+    box-shadow: var(--ae-shadow-card);
+    background: #0f172a;
+    line-height: 0;
+  }
+
+  .ae-demo-video {
+    display: block;
+    width: 100%;
+    height: auto;
+    object-fit: fill;
+    cursor: zoom-in;
+    background: transparent;
+  }
+
+  .ae-scene-gallery {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 16px;
+    margin-top: 20px;
+  }
+
+  .ae-scene-card {
+    margin: 0;
+    border: 1px solid #e8e8ec;
+    border-radius: var(--ae-card-radius);
+    overflow: hidden;
+    background: #fff;
+    box-shadow: var(--ae-shadow-card);
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+  }
+
+  .ae-scene-card img {
+    display: block;
+    width: 100%;
+    aspect-ratio: 16 / 10;
+    object-fit: cover;
+    cursor: zoom-in;
+  }
+
+  .ae-scene-card figcaption {
+    padding: 10px 12px;
+    font-size: 13px;
+    line-height: 1.55;
+    color: var(--ae-muted);
+    margin-top: auto;
+    min-height: 120px;
+  }
+
+  .ae-scene-card figcaption b {
+    display: block;
+    margin-bottom: 4px;
+    color: var(--ae-ink);
+    font-size: 14px;
+  }
+
+  @media (max-width: 991px) {
+    .ae-scene-gallery {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media (max-width: 640px) {
+    .ae-scene-gallery {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  /* AI / Hero image slots */
+  .ae-ai-slot {
+    border: 1px dashed #d4d4d4;
+    border-radius: var(--ae-card-radius);
+    background: #fafafa;
+    min-height: 200px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 22px 18px;
+    box-sizing: border-box;
+  }
+
+  .ae-ai-slot--hero {
+    min-height: min(360px, 52vw);
+    aspect-ratio: 16 / 10;
+  }
+
+  .ae-ai-slot__label {
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ae-brand);
+    margin: 0 0 8px;
+  }
+
+  .ae-ai-slot__size {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--ae-ink-2);
+    margin: 0 0 6px;
+  }
+
+  .ae-ai-slot__use {
+    font-size: 13px;
+    color: var(--ae-muted);
+    margin: 0;
+    line-height: 1.55;
+    max-width: 300px;
+  }
+
+  .ae-subhead {
+    font-size: 22px;
+    font-weight: 700;
+    margin: 36px 0 14px;
+    color: var(--ae-ink);
+    line-height: 1.3;
+  }
+
+  .ae-step-title {
+    font-size: 17px;
+    font-weight: 600;
+    margin: 8px 0 6px;
+    color: var(--ae-ink);
+    line-height: 1.4;
+  }
+
+  .ae-hero__caption {
+    margin-top: 16px;
+    padding: 16px 18px;
+    background: var(--ae-surface);
+    border: 1px solid #e8e8ec;
+    border-radius: var(--ae-card-radius);
+    box-shadow: var(--ae-shadow-card);
+    transition: border-color var(--ae-transition), box-shadow var(--ae-transition);
+  }
+
+  .ae-hero__caption:hover {
+    border-color: #d4d4d4;
+    box-shadow: var(--ae-shadow-card-hover);
+  }
+
+  /* ---------- 痛点卡片 ---------- */
+  .ae-pain-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+  }
+
+  @media (max-width: 767px) {
+    .ae-pain-grid {
+      grid-template-columns: 1fr;
+      gap: 12px;
+    }
+  }
+
+  .ae-pain-item {
+    background: var(--ae-surface);
+    border: 1px solid #e8e8ec;
+    border-radius: var(--ae-card-radius);
+    padding: 16px 18px;
+    box-shadow: var(--ae-shadow-card);
+    transition: transform var(--ae-transition), box-shadow var(--ae-transition), border-color var(--ae-transition);
+    will-change: transform;
+  }
+
+  .ae-pain-item:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--ae-shadow-card-hover);
+    border-color: var(--ae-border-hover);
+  }
+
+  .ae-pain-item b {
+    color: var(--ae-ink);
+    display: block;
+    margin-bottom: 6px;
+    font-size: 15px;
+  }
+
+  /* 痛点图标 */
+  .ae-pain-icon {
+    width: 48px;
+    height: 48px;
+    margin-bottom: 12px;
+    background: var(--ae-brand-light);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--ae-brand);
+    transition: all 0.3s ease;
+  }
+
+  .ae-pain-item:hover .ae-pain-icon {
+    transform: scale(1.1) rotate(5deg);
+    background: var(--ae-brand);
+    color: white;
+    box-shadow: 0 8px 20px rgba(99, 102, 241, 0.3);
+  }
+
+  .ae-pain-icon svg {
+    width: 28px;
+    height: 28px;
+    stroke-width: 2;
+  }
+
+  /* 痛点内容 */
+  .ae-pain-content {
+    line-height: 1.6;
+    color: var(--ae-muted);
+  }
+
+  .ae-pain-content p {
+    margin: 0 0 10px 0;
+    font-size: 14px;
+    line-height: 1.7;
+  }
+
+  .ae-pain-tag {
+    display: inline-block;
+    padding: 4px 10px;
+    background: var(--ae-brand-light);
+    color: var(--ae-brand);
+    font-size: 12px;
+    border-radius: 20px;
+    font-weight: 500;
+  }
+
+  /* ---------- 对比表格 ---------- */
+  .ae-compare-wrap {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    border-radius: var(--ae-card-radius);
+    border: 1px solid #e8e8ec;
+    box-shadow: var(--ae-shadow-card);
+    scrollbar-width: thin;
+    scrollbar-color: var(--ae-line) transparent;
+  }
+
+  .ae-compare-wrap::-webkit-scrollbar {
+    height: 8px;
+  }
+
+  .ae-compare-wrap::-webkit-scrollbar-thumb {
+    background: var(--ae-line-2);
+    border-radius: 4px;
+  }
+
+  .ae-compare-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+    background: var(--ae-surface);
+    min-width: 320px;
+  }
+
+  .ae-compare-table th,
+  .ae-compare-table td {
+    padding: 14px 16px;
+    text-align: left;
+    vertical-align: top;
+    border: 1px solid #e8e8ec;
+  }
+
+  .ae-compare-table thead th {
+    background: var(--ae-brand);
+    color: #fff;
+    font-weight: 700;
+    border-color: var(--ae-brand);
+    letter-spacing: 0.02em;
+  }
+
+  .ae-compare-table tbody tr:nth-child(even) {
+    background: #fafafa;
+  }
+
+  .ae-compare-table tbody td:first-child {
+    font-weight: 600;
+    color: var(--ae-ink);
+    width: 22%;
+    background: #fff;
+  }
+
+  .ae-compare-table tbody td:nth-child(2) {
+    color: #525252;
+  }
+
+  .ae-compare-table tbody td:last-child {
+    font-weight: 600;
+    color: #363636;
+    background: #fafbff;
+  }
+
+  .ae-compare-em {
+    color: var(--ae-brand);
+    font-weight: 800;
+  }
+
+  /* ---------- KPI看板 ---------- */
+  .ae-kpi-row {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    margin-top: 24px;
+    align-items: stretch;
+  }
+
+  .ae-kpi-row > .ae-card {
+    height: 100%;
+  }
+
+  @media (max-width: 1024px) {
+    .ae-kpi-row {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  @media (max-width: 479px) {
+    .ae-kpi-row {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .ae-kpi {
+    text-align: center;
+    padding: 28px 16px;
+    contain: layout;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 140px;
+  }
+
+  .ae-kpi .num {
+    font-size: clamp(40px, 5.5vw, 64px);
+    font-weight: 800;
+    letter-spacing: -0.04em;
+    color: var(--ae-brand);
+    line-height: 1;
+  }
+
+  .ae-kpi .lbl {
+    color: #737373;
+    font-size: 12px;
+    margin-top: 12px;
+    line-height: 1.45;
+    max-width: 200px;
+  }
+
+  /* ---------- 免费政策区域 ---------- */
+  .ae-free-box {
+    background: #fafafa;
+    border: 1px solid #e8e8ec;
+    border-radius: var(--ae-card-radius);
+    padding: 22px 24px;
+    box-shadow: var(--ae-shadow-card);
+  }
+
+  .ae-free-box p {
+    margin: 0 0 10px;
+    font-size: 15px;
+    line-height: 1.7;
+    color: var(--ae-muted);
+  }
+
+  .ae-free-box p:last-child {
+    margin-bottom: 0;
+  }
+
+  .ae-path {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    margin-top: 20px;
+    align-items: stretch;
+  }
+
+  .ae-path > .ae-card {
+    height: 100%;
+  }
+
+  @media (max-width: 767px) {
+    .ae-path {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  /* ---------- 表单区域 ---------- */
+  .ae-form {
+    background: var(--ae-surface);
+    border: 1px solid #e8e8ec;
+    border-radius: var(--ae-card-radius);
+    padding: 24px;
+    box-shadow: var(--ae-shadow-card);
+    transition: border-color var(--ae-transition), box-shadow var(--ae-transition);
+  }
+
+  .ae-form:hover {
+    border-color: #dcdcdc;
+    box-shadow: var(--ae-shadow-card-hover);
+  }
+
+  .ae-form-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 14px;
+    align-items: end;
+  }
+
+  /* 平板：2列布局 */
+  @media (max-width: 1024px) {
+    .ae-form-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  /* 移动端：单列布局 */
+  @media (max-width: 767px) {
+    .ae-form-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .ae-label {
+    font-size: 13px;
+    color: var(--ae-muted);
+    margin-bottom: 6px;
+    display: block;
+    font-weight: 500;
+  }
+
+  .ae-input,
+  .ae-select {
+    width: 100%;
+    border: 1px solid var(--ae-line);
+    border-radius: var(--ae-radius-sm);
+    height: 46px;
+    padding: 10px 14px;
+    font-size: 15px;
+    background: var(--ae-surface);
+    color: var(--ae-ink);
+    transition: border-color var(--ae-transition), box-shadow var(--ae-transition);
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+  }
+
+  .ae-input:hover,
+  .ae-select:hover {
+    border-color: var(--ae-line-2);
+  }
+
+  .ae-input:focus,
+  .ae-select:focus {
+    outline: none;
+    border-color: var(--ae-brand);
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.12);
+  }
+
+  /* ---------- FAQ手风琴 ---------- */
+  .ae-accordion {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 8px;
+  }
+
+  .ae-accordion__item {
+    border: 1px solid #e8e8ec;
+    border-radius: var(--ae-card-radius);
+    background: var(--ae-surface);
+    box-shadow: var(--ae-shadow-card);
+    overflow: hidden;
+    transition: box-shadow var(--ae-transition), border-color var(--ae-transition);
+    will-change: transform;
+  }
+
+  .ae-accordion__item:hover {
+    box-shadow: var(--ae-shadow-card-hover);
+    border-color: #dcdcdc;
+  }
+
+  .ae-accordion__item.is-open {
+    box-shadow: var(--ae-shadow-card-hover);
+    border-color: var(--ae-border-hover);
+  }
+
+  .ae-accordion__head {
+    width: 100%;
+    text-align: left;
+    padding: 16px 18px;
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--ae-ink);
+    background: var(--ae-surface);
+    border: 0;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+    transition: background var(--ae-transition), color var(--ae-transition);
+  }
+
+  .ae-accordion__head:hover {
+    background: var(--ae-bg);
+    color: var(--ae-brand);
+  }
+
+  .ae-accordion__head:focus-visible {
+    outline: 2px solid var(--ae-brand);
+    outline-offset: 2px;
+    z-index: 1;
+  }
+
+  .ae-accordion__icon {
+    flex-shrink: 0;
+    width: 26px;
+    height: 26px;
+    border-radius: var(--ae-card-radius);
+    border: 1px solid var(--ae-line);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    color: var(--ae-muted);
+    transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1),
+                border-color var(--ae-transition),
+                color var(--ae-transition),
+                background var(--ae-transition);
+    will-change: transform;
+  }
+
+  .ae-accordion__item.is-open .ae-accordion__icon {
+    transform: rotate(45deg);
+    border-color: var(--ae-brand);
+    color: var(--ae-brand);
+    background: var(--ae-brand-light);
+  }
+
+  .ae-accordion__panel {
+    display: grid;
+    grid-template-rows: 0fr;
+    transition: grid-template-rows var(--ae-transition-slow);
+    will-change: grid-template-rows;
+  }
+
+  .ae-accordion__item.is-open .ae-accordion__panel {
+    grid-template-rows: 1fr;
+  }
+
+  .ae-accordion__inner {
+    overflow: hidden;
+    min-height: 0;
+  }
+
+  .ae-accordion__body {
+    padding: 0 18px 16px;
+    color: var(--ae-muted);
+    font-size: 14px;
+    line-height: 1.75;
+    border-top: 1px solid transparent;
+    transition: border-top-color var(--ae-transition);
+  }
+
+  .ae-accordion__item.is-open .ae-accordion__body {
+    border-top-color: var(--ae-line);
+    padding-top: 12px;
+  }
+
+  /* ---------- 图片展示 ---------- */
+  .ae-sample-thumb {
+    width: 100%;
+    height: auto;
+    border-radius: var(--ae-radius-sm);
+    border: 1px solid var(--ae-line);
+    cursor: zoom-in;
+    transition: transform var(--ae-transition), box-shadow var(--ae-transition);
+    will-change: transform;
+    /* 懒加载占位 */
+    background: var(--ae-bg);
+  }
+
+  .ae-sample-thumb:hover {
+    transform: scale(1.02);
+    box-shadow: var(--ae-shadow-3);
+  }
+
+  .ae-sample-thumb[loading="lazy"] {
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+
+  .ae-sample-thumb.loaded {
+    opacity: 1;
+  }
+
+  .ae-scenario-fig {
+    font-size: 13px;
+    color: var(--ae-muted);
+    margin-top: 10px;
+    line-height: 1.5;
+  }
+
+  /* ---------- 灯箱 ---------- */
+  .ae-lightbox {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 100000;
+    background: rgba(10, 10, 10, 0.9);
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+  }
+
+  .ae-lightbox.ae-open {
+    display: flex;
+  }
+
+  .ae-lightbox-inner {
+    position: relative;
+    max-width: min(1200px, 96vw);
+    max-height: 92vh;
+    animation: ae-fade-in 0.25s ease;
+  }
+
+  @keyframes ae-fade-in {
+    from { opacity: 0; transform: scale(0.96); }
+    to { opacity: 1; transform: scale(1); }
+  }
+
+  .ae-lightbox-img {
+    max-width: 100%;
+    max-height: 92vh;
+    border-radius: var(--ae-radius);
+    background: var(--ae-surface);
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+  }
+
+  .ae-lightbox-video {
+    display: none;
+    width: min(1200px, 96vw);
+    max-height: 85vh;
+    border-radius: var(--ae-radius);
+    background: #000;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+  }
+
+  .ae-lightbox.ae-lightbox--video .ae-lightbox-img {
+    display: none;
+  }
+
+  .ae-lightbox.ae-lightbox--video .ae-lightbox-video {
+    display: block;
+  }
+
+  .ae-lightbox-close {
+    position: absolute;
+    top: -12px;
+    right: -12px;
+    width: 40px;
+    height: 40px;
+    border: 0;
+    border-radius: 50%;
+    background: var(--ae-surface);
+    font-size: 22px;
+    cursor: pointer;
+    line-height: 1;
+    color: var(--ae-ink);
+    transition: all var(--ae-transition);
+    box-shadow: var(--ae-shadow-3);
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .ae-lightbox-close:hover {
+    background: var(--ae-bg-2);
+    transform: scale(1.1);
+    color: var(--ae-brand);
+  }
+
+  @media (max-width: 767px) {
+    .ae-lightbox-close {
+      top: -8px;
+      right: -8px;
+      width: 36px;
+      height: 36px;
+    }
+  }
+
+  /* ---------- 悬浮「免费注册」：PC 右侧竖条 · 移动右下角 ---------- */
+  .ae-float-register {
+    position: fixed;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 9998;
+    writing-mode: vertical-rl;
+    text-orientation: mixed;
+    letter-spacing: 0.12em;
+    padding: 20px 11px;
+    background: var(--ae-brand);
+    color: #fff !important;
+    font-weight: 700;
+    font-size: 13px;
+    text-decoration: none;
+    border-radius: var(--ae-card-radius) 0 0 var(--ae-card-radius);
+    box-shadow: 0 4px 20px rgba(99, 102, 241, 0.35);
+    transition: background var(--ae-transition), box-shadow var(--ae-transition), transform var(--ae-transition), padding var(--ae-transition);
+    -webkit-tap-highlight-color: transparent;
+    will-change: transform;
+  }
+
+  .ae-float-register:hover {
+    background: var(--ae-brand-hover);
+    padding-right: 14px;
+    box-shadow: 0 6px 28px rgba(99, 102, 241, 0.45);
+  }
+
+  .ae-float-register:active {
+    transform: translateY(-50%) scale(0.98);
+  }
+
+  @media (max-width: 767px) {
+    .ae-float-register {
+      writing-mode: horizontal-tb;
+      text-orientation: mixed;
+      top: auto;
+      bottom: 96px;
+      right: 12px;
+      left: auto;
+      transform: none;
+      letter-spacing: 0.06em;
+      padding: 11px 16px;
+      font-size: 13px;
+      border-radius: var(--ae-card-radius);
+      box-shadow: 0 4px 18px rgba(0, 0, 0, 0.18);
+    }
+
+    .ae-float-register:hover {
+      padding-right: 16px;
+      transform: translateY(-2px);
+    }
+
+    .ae-float-register:active {
+      transform: scale(0.98);
+    }
+  }
+
+  .ae-float-chat {
+    position: fixed;
+    left: 50%;
+    bottom: 20px;
+    transform: translateX(-50%);
+    z-index: 9997;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 28px;
+    background: var(--ae-ink);
+    color: #fff !important;
+    font-weight: 700;
+    font-size: 14px;
+    text-decoration: none;
+    border-radius: 9999px;
+    box-shadow: 0 8px 28px rgba(0, 0, 0, 0.25);
+    border: 1px solid #27272a;
+    transition: all var(--ae-transition);
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+    will-change: transform;
+    white-space: nowrap;
+  }
+
+  .ae-float-chat:hover {
+    background: var(--ae-ink-2);
+    transform: translateX(-50%) translateY(-3px);
+    box-shadow: 0 12px 36px rgba(0, 0, 0, 0.3);
+  }
+
+  .ae-float-chat:active {
+    transform: translateX(-50%) translateY(0);
+  }
+
+  @media (max-width: 479px) {
+    .ae-float-chat {
+      width: calc(100% - 32px);
+      max-width: 280px;
+      justify-content: center;
+      bottom: 16px;
+    }
+  }
+
+  /* ---------- 页脚（对齐 bosofts.com/erp 结构） ---------- */
+  .ae-footer {
+    background-color: #11152a;
+    background-image:
+      linear-gradient(rgba(99, 102, 241, 0.06) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(99, 102, 241, 0.06) 1px, transparent 1px);
+    background-size: 68px 68px, 68px 68px;
+    color: #d1d5db;
+    padding: 56px 0 20px;
+    margin-top: 0;
+    border-top: 1px solid #2a2f45;
+  }
+
+  .ae-footer__h2 {
+    display: none;
+  }
+
+  .ae-footer-main {
+    display: grid;
+    grid-template-columns: 1.2fr 1fr 1.2fr;
+    gap: 24px;
+    align-items: start;
+  }
+
+  .ae-footer-title {
+    color: #7dd3fc;
+    font-size: 14px;
+    font-weight: 700;
+    margin: 0 0 22px;
+    letter-spacing: 0.02em;
+  }
+
+  .ae-footer-hotline {
+    font-size: clamp(34px, 4vw, 42px);
+    line-height: 1;
+    margin: 0 0 20px;
+    color: #ffffff;
+    font-weight: 800;
+    letter-spacing: 0.03em;
+  }
+
+  .ae-footer-meta {
+    margin: 0;
+    color: #9ca3af;
+    font-size: 14px;
+    line-height: 1.7;
+  }
+
+  .ae-footer-wechat {
+    justify-self: center;
+    text-align: center;
+  }
+
+  .ae-footer-qr {
+    width: 176px;
+    height: 176px;
+    margin: 0 auto;
+    border: 2px solid #646b82;
+    border-radius: var(--ae-card-radius);
+    background: #ffffff;
+    display: grid;
+    place-items: center;
+    overflow: hidden;
+  }
+
+  .ae-footer-qr__link {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    text-decoration: none;
+    line-height: 0;
+    transition: transform var(--ae-transition), opacity var(--ae-transition);
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .ae-footer-qr__link:hover {
+    transform: scale(1.03);
+    opacity: 0.96;
+  }
+
+  .ae-footer-qr__link:focus-visible {
+    outline: 2px solid #93c5fd;
+    outline-offset: 3px;
+    border-radius: 6px;
+  }
+
+  .ae-footer-qr__img {
+    width: 148px;
+    height: 148px;
+    border-radius: 6px;
+    object-fit: cover;
+    display: block;
+  }
+
+  .ae-footer-contact {
+    justify-self: end;
+    text-align: left;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  .ae-footer-contact p {
+    margin: 0;
+    color: #d1d5db;
+    font-size: 14px;
+    line-height: 1.5;
+  }
+
+  .ae-footer-divider {
+    border-top: 1px solid #2a2f45;
+    margin: 34px 0 14px;
+  }
+
+  .ae-footer-bottom {
+    text-align: center;
+  }
+
+  .ae-footer-bottom p {
+    margin: 0;
+    color: #9ca3af;
+    font-size: 13px;
+    line-height: 1.8;
+  }
+
+  .ae-footer-bottom p + p {
+    color: #cbd5e1;
+  }
+
+  .ae-footer-links {
+    margin-top: 10px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 14px;
+  }
+
+  .ae-footer-links a {
+    color: #93c5fd;
+    font-size: 13px;
+    text-decoration: none;
+    transition: color var(--ae-transition);
+  }
+
+  .ae-footer-links a:hover {
+    color: #bfdbfe;
+    text-decoration: underline;
+  }
+
+  .ae-footer-note {
+    margin-top: 10px !important;
+    color: #94a3b8 !important;
+  }
+
+  .ae-module-cta {
+    margin-top: 26px;
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  @media (max-width: 1024px) {
+    .ae-footer-main {
+      grid-template-columns: 1fr 1fr;
+    }
+    .ae-footer-contact {
+      justify-self: start;
+    }
+    .ae-footer-wechat {
+      justify-self: start;
+      text-align: left;
+    }
+    .ae-footer-qr {
+      margin: 0;
+    }
+  }
+
+  @media (max-width: 767px) {
+    .ae-footer {
+      padding: 40px 0 16px;
+      background-size: 44px 44px, 44px 44px;
+    }
+    .ae-footer-main {
+      grid-template-columns: 1fr;
+      gap: 26px;
+    }
+    .ae-footer-hotline {
+      font-size: 34px;
+      margin-bottom: 12px;
+    }
+    .ae-footer-wechat,
+    .ae-footer-contact {
+      justify-self: start;
+      text-align: left;
+    }
+    .ae-module-cta {
+      justify-content: stretch;
+    }
+    .ae-module-cta .ae-btn-primary,
+    .ae-module-cta .ae-btn-secondary {
+      width: 100%;
+    }
+  }
+
+  /* ---------- 工具类 ---------- */
+  .ae-list {
+    margin: 0;
+    padding-left: 20px;
+  }
+
+  .ae-list li {
+    margin-bottom: 6px;
+  }
+
+  .ae-list li:last-child {
+    margin-bottom: 0;
+  }
+
+  .ae-muted {
+    color: var(--ae-muted);
+  }
+
+  /* ---------- 减少动画偏好 ---------- */
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+    .ae-accordion__panel {
+      transition: none;
+    }
+    .ae-accordion__item.is-open .ae-accordion__panel {
+      grid-template-rows: 1fr;
+    }
+    .ae-accordion__item:not(.is-open) .ae-accordion__panel {
+      grid-template-rows: 0fr;
+    }
+  }
+
+  /* ---------- Safari 100vh 修复 ---------- */
+  @supports (-webkit-touch-callout: none) {
+    .ae-lightbox {
+      height: -webkit-fill-available;
+    }
+  }
+
+  /* ---------- 打印样式 ---------- */
+  @media print {
+    .ae-float-register,
+    .ae-float-chat,
+    .ae-lightbox,
+    .ae-accordion__icon {
+      display: none !important;
+    }
+    .ae-home {
+      background: #fff;
+    }
+    .ae-card {
+      box-shadow: none;
+      border: 1px solid #ddd;
+    }
+  }
+</style>
+
+<!-- no-header: single H1 is defined in Hero; suppress duplicate document header from Web Page title -->
+<!-- no-breadcrumbs -->
+
+<div class="ae-home" id="ae-top">
+  <header class="ae-topbar" data-track-module="topbar">
+    <div class="ae-container ae-topbar__inner">
+      <a class="ae-topbar__brand" href="#ae-top" data-track-cta="top_nav" data-track-position="topbar" aria-label="博软科技首页">
+        <img src="/files/bosofts-logo.png" alt="博软科技 Bosofts Technology" loading="eager" decoding="async" />
+      </a>
+      <nav class="ae-topbar__nav" aria-label="主导航">
+        <a class="ae-topbar__link" href="#ae-hero" data-track-cta="top_nav" data-track-position="topbar">首页</a>
+        <a class="ae-topbar__link" href="#ae-ai" data-track-cta="top_nav" data-track-position="topbar">核心价值</a>
+        <a class="ae-topbar__link" href="#ae-footer" data-track-cta="top_nav" data-track-position="topbar">联系我们</a>
+        <a class="ae-topbar__link" href="https://west.bosofts.com/desk" data-track-cta="top_nav" data-track-position="topbar">免费体验</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- ========== 1 首屏Hero区 ========== -->
+  <section class="ae-section ae-module ae-module--muted ae-module--hero" id="ae-hero" data-track-module="hero">
+    <div class="ae-container">
+      <div class="ae-hero__grid">
+        <!-- 左侧文案区 -->
+        <div class="ae-hero__copy">
+          <p class="ae-kicker"> </p>
+          <p class="ae-kicker"> </p>
+          <p class="ae-kicker">BOWIAI · ERPnext</p>
+          <h1 class="ae-title">让 AI 帮您管企业的智能ERP系统</h1>
+          <p class="ae-hero-tagline">基于ERPNext成熟业务底座，叠加BOWIAI Agent框架、支持私有化部署。</p>
+
+          <!-- 三大卖点卡片 -->
+          <div class="ae-grid-3 ae-grid-stretch" style="margin-top: 0;">
+            <div class="ae-card ae-card--compact">
+              <h3 class="ae-h3" style="color: var(--ae-brand);">ERP开源永久免费</h3>
+              <p>ERPNext开源免费，长期可用，不限核心功能。</p>
+            </div>
+            <div class="ae-card ae-card--compact">
+              <h3 class="ae-h3" style="color: var(--ae-brand);">全功能无阉割</h3>
+              <p>不靠删功能逼付费</p>
+            </div>
+            <div class="ae-card ae-card--compact">
+              <h3 class="ae-h3" style="color: var(--ae-brand);">AI智能数据分析</h3>
+              <p>自动看数据、找问题、给建议</p>
+            </div>
+          </div>
+
+          <!-- CTA按钮组 -->
+          <div class="ae-hero__cta">
+            <a class="ae-btn-primary" href="/experience/new" data-track-cta="register" data-track-position="hero">立即申请体验</a>
+            <a class="ae-btn-secondary" href="#ae-ai" data-track-cta="demo" data-track-position="hero">先看演示</a>
+          </div>
+
+          <!-- 标签组 -->
+          <div style="margin-top: 18px;">
+            <span class="ae-pill ae-pill-info">ERPNext 业务底座</span>
+            <span class="ae-pill ae-pill-ok">数据安全可控</span>
+            <span class="ae-pill ae-pill-warn">永久免费SaaS 核心定位</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== 2 核心痛点 ========== -->
+  <section class="ae-section ae-module ae-module--surface" id="ae-pain" data-track-module="pain-point" style="padding-top: 40px;">
+    <div class="ae-container"> </p>
+      <h2 class="ae-h2">你是不是每天都在被这些问题困住？</h2>
+      <div class="ae-pain-grid" style="margin-top: 28px;">
+        <!-- 招人难 -->
+        <div class="ae-pain-item">
+          <div class="ae-pain-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+              <circle cx="9" cy="7" r="4"></circle>
+              <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+              <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+            </svg>
+          </div>
+          <b>招人难</b>
+          <div class="ae-pain-content">
+            <p>懂业务又懂系统的人才稀缺，招聘成本高，培训周期长。好不容易招到的人，上手慢，离职率高。</p>
+            <span class="ae-pain-tag">人力成本高</span>
+          </div>
+        </div>
+        <!-- 报表难 -->
+        <div class="ae-pain-item">
+          <div class="ae-pain-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="18" y1="20" x2="18" y2="10"></line>
+              <line x1="12" y1="20" x2="12" y2="4"></line>
+              <line x1="6" y1="20" x2="6" y2="14"></line>
+              <path d="M3 20h18"></path>
+            </svg>
+          </div>
+          <b>报表难</b>
+          <div class="ae-pain-content">
+            <p>报表堆积如山，数据分散各处。关键问题没人第一时间发现，决策靠经验拍脑袋，错失市场良机。</p>
+            <span class="ae-pain-tag">决策滞后</span>
+          </div>
+        </div>
+        <!-- 库存乱 -->
+        <div class="ae-pain-item">
+          <div class="ae-pain-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
+              <polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
+              <line x1="12" y1="22.08" x2="12" y2="12"></line>
+            </svg>
+          </div>
+          <b>库存乱</b>
+          <div class="ae-pain-content">
+            <p>热销品缺货断货，滞销品积压如山。现金被库存死死卡住，周转困难，企业运营举步维艰。</p>
+            <span class="ae-pain-tag">资金占用大</span>
+          </div>
+        </div>
+        <!-- 回款弱 -->
+        <div class="ae-pain-item">
+          <div class="ae-pain-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10"></circle>
+              <line x1="12" y1="6" x2="12" y2="12"></line>
+              <line x1="12" y1="12" x2="16" y2="10"></line>
+              <path d="M8 14h.01"></path>
+              <path d="M12 14h.01"></path>
+              <path d="M16 10h.01"></path>
+              <path d="M16 14h.01"></path>
+            </svg>
+          </div>
+          <b>回款弱</b>
+          <div class="ae-pain-content">
+            <p>应收账款跟进全靠人工，客户付款周期长。逾期风险难提前预警，坏账率高，现金流紧张。</p>
+            <span class="ae-pain-tag">坏账风险高</span>
+          </div>
+        </div>
+        <!-- 数据看不懂 -->
+        <div class="ae-pain-item" style="grid-column: 1 / -1;">
+          <div class="ae-pain-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="3"></circle>
+              <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+            </svg>
+          </div>
+          <b>数据看不懂</b>
+          <div class="ae-pain-content">
+            <p>销售、采购、库存、财务数据分散各处，老板无法看清真实利润。业务与财务数据脱节，决策全凭感觉。</p>
+            <span class="ae-pain-tag">决策盲区</span>
+          </div>
+        </div>
+      </div>
+
+      <p class="ae-subtitle" style="margin-top: 28px; font-size: 17px; color: var(--ae-ink);">
+        <strong>bosofts 博软</strong> 用一套 <strong>永久免费SaaS</strong> 上的免费 AI + ERP，把数据、流程与执行连成闭环。 用人管、用表堆，不如用一套能落地的 <strong>永久免费SaaS</strong> + AI + ERP。
+      </p>
+      <div class="ae-module-cta">
+        <a class="ae-btn-primary" href="/experience/new" data-track-cta="register" data-track-position="pain-point">立即免费注册</a>
+        <a class="ae-btn-secondary" href="#ae-ai" data-track-cta="demo" data-track-position="pain-point">查看演示方案</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== 4 AI核心能力场景化展示 ========== -->
+  <section class="ae-section ae-module ae-module--muted" id="ae-ai" data-track-module="ai-capability">
+    <div class="ae-container">
+      <h2 class="ae-h2">传统 ERP 只是记录，BOWIAI + ERP 会思考、会预判、会自动干。</h2>
+      <div class="ae-grid-4 ae-grid-stretch" style="margin-top: 28px;">
+        <div class="ae-card">
+          <h3 class="ae-h3">会思考</h3>
+          <p>自动计算产能、排产、交期与成本，不再靠人工熬夜调计划。</p>
+        </div>
+        <div class="ae-card">
+          <h3 class="ae-h3">会预判</h3>
+          <p>提前预警缺料、延期、异常与亏损，让团队从“救火”转向“防火”。</p>
+        </div>
+        <div class="ae-card">
+          <h3 class="ae-h3">会自动</h3>
+          <p>自动对账、自动报表、自动提醒与自动分析，把人从重复劳动中解放出来。</p>
+        </div>
+        <div class="ae-card">
+          <h3 class="ae-h3">会闭环</h3>
+          <p>建议可落到具体动作与责任人，执行结果可追溯、可复盘。</p>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ========== 5 全模块能力矩阵 ========== -->
+  <section class="ae-section ae-module ae-module--surface" id="ae-modules" data-track-module="module-matrix">
+    <div class="ae-container">
+      <h2 class="ae-h2">全模块能力矩阵</h2>
+      <p class="ae-lead">一套系统，管透整个企业。</p>
+      <p class="ae-subtitle" style="max-width: 640px; margin-top: 10px;">
+        销售、生产、采购、库存、财务与老板驾驶舱一体化协同，<strong>永久免费SaaS</strong> 基础能力不阉割，按需逐步启用。
+      </p>
+
+      <div class="ae-grid-4 ae-grid-stretch" style="margin-top: 28px;">
+        <div class="ae-card">
+          <h3 class="ae-h3">财务会计</h3>
+          <ul class="ae-list">
+            <li>总账/应收应付</li>
+            <li>现金流与利润分析</li>
+            <li>合规报表输出</li>
+          </ul>
+        </div>
+        <div class="ae-card">
+          <h3 class="ae-h3">采购管理</h3>
+          <ul class="ae-list">
+            <li>请购到付款</li>
+            <li>供应商评分</li>
+            <li>到货延迟预警</li>
+          </ul>
+        </div>
+        <div class="ae-card">
+          <h3 class="ae-h3">销售与 CRM</h3>
+          <ul class="ae-list">
+            <li>线索到回款</li>
+            <li>报价到发票</li>
+            <li>客户贡献分析</li>
+          </ul>
+        </div>
+        <div class="ae-card">
+          <h3 class="ae-h3">库存与仓储</h3>
+          <ul class="ae-list">
+            <li>批次/序列号追踪</li>
+            <li>库龄与周转</li>
+            <li>缺货与积压识别</li>
+          </ul>
+        </div>
+        <div class="ae-card">
+          <h3 class="ae-h3">制造管理</h3>
+          <ul class="ae-list">
+            <li>BOM 与工单</li>
+            <li>产能与排产</li>
+            <li>质量过程控制</li>
+          </ul>
+        </div>
+        <div class="ae-card">
+          <h3 class="ae-h3">项目管理</h3>
+          <ul class="ae-list">
+            <li>任务与工时</li>
+            <li>项目成本收益</li>
+            <li>交付风险跟踪</li>
+          </ul>
+        </div>
+        <div class="ae-card">
+          <h3 class="ae-h3">人力与协同</h3>
+          <ul class="ae-list">
+            <li>组织与权限</li>
+            <li>考勤与流程</li>
+            <li>角色化看板</li>
+          </ul>
+        </div>
+        <div class="ae-card">
+          <h3 class="ae-h3">网站与门户</h3>
+          <ul class="ae-list">
+            <li>官网与表单</li>
+            <li>客户服务入口</li>
+            <li>线索自动沉淀</li>
+          </ul>
+        </div>
+      </div>
+      <div class="ae-module-cta">
+        <a class="ae-btn-primary" href="/experience/new" data-track-cta="register" data-track-position="module-matrix">免费开通全模块</a>
+        <a class="ae-btn-secondary" href="/experience/new" data-track-cta="demo" data-track-position="module-matrix">获取模块演示清单</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== 6 行业专属解决方案 ========== -->
+  <section class="ae-section ae-module ae-module--muted" id="ae-industry" data-track-module="industry-solution">
+    <div class="ae-container">
+      <h2 class="ae-h2">行业专属解决方案</h2>
+      <p class="ae-lead">专为中小工厂与企业量身打造，覆盖制造、贸易分销、零售服务常见场景。</p>
+      <p class="ae-subtitle" style="margin-top: 10px;">
+        与 <strong>永久免费SaaS</strong> 同一路径，先跑通一个核心链路，再滚动扩展全流程。
+      </p>
+
+      <div class="ae-grid-3 ae-grid-stretch" style="margin-top: 28px;">
+        <div class="ae-card">
+          <h3 class="ae-h3">制造业</h3>
+          <p>围绕产销协同、在制控制、成本核算与交付稳定性，构建从计划到执行的智能预警与建议体系。</p>
+        </div>
+        <div class="ae-card">
+          <h3 class="ae-h3">贸易与分销</h3>
+          <p>面向采购补货、库存周转、渠道毛利与应收风险，形成"预测-决策-执行"闭环。</p>
+        </div>
+        <div class="ae-card">
+          <h3 class="ae-h3">零售与服务</h3>
+          <p>支持多门店/多团队场景，统一客户、订单、库存与财务视图，提升经营透明度。</p>
+        </div>
+      </div>
+      <div class="ae-module-cta">
+        <a class="ae-btn-primary" href="/experience/new" data-track-cta="register" data-track-position="industry-solution">匹配我的行业方案</a>
+        <a class="ae-btn-secondary" href="/experience/new" data-track-cta="demo" data-track-position="industry-solution">预约行业演示</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== 7 传统ERP vs AI+ERP 差异化对比 ========== -->
+  <section class="ae-section ae-module ae-module--surface" id="ae-compare" data-track-module="erp-compare">
+    <div class="ae-container">
+      <h2 class="ae-h2">传统ERP vs AI+ERP 差异化对比</h2>
+      <p class="ae-lead">传统 ERP vs AI + ERP</p>
+      <p class="ae-subtitle" style="margin: 0 0 20px;">
+        传统软件堆功能；在 <strong>ERPNext 业务底座</strong> 上叠加自研 <strong>BOWIAI</strong>，把「看、判、动」连起来，<strong>永久免费SaaS</strong> 降低启动门槛。
+      </p>
+
+      <div class="ae-compare-wrap">
+        <table class="ae-compare-table">
+          <thead>
+            <tr>
+              <th>对比维度</th>
+              <th>传统 ERP</th>
+              <th>BOWIAI + ERP</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>数据阅读</td>
+              <td>报表很多，但管理层解读成本高</td>
+              <td><strong class="ae-compare-em">自然语言问数</strong>，自动生成经营洞察</td>
+            </tr>
+            <tr>
+              <td>跨模块分析</td>
+              <td>跨模块分析依赖人工汇总</td>
+              <td><strong class="ae-compare-em">跨财务/采购/库存/销售</strong>联动分析</td>
+            </tr>
+            <tr>
+              <td>风险与执行</td>
+              <td>风险识别滞后，执行建议不闭环</td>
+              <td><strong class="ae-compare-em">预警、建议、动作</strong>可追溯可审计</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="ae-module-cta">
+        <a class="ae-btn-primary" href="/experience/new" data-track-cta="register" data-track-position="erp-compare">切换到AI+ERP</a>
+        <a class="ae-btn-secondary" href="/experience/new" data-track-cta="demo" data-track-position="erp-compare">查看差异化演示</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== 8 信任背书与落地保障 ========== -->
+  <section class="ae-section ae-module ae-module--muted" id="ae-trust" data-track-module="trust-proof">
+    <div class="ae-container">
+      <h2 class="ae-h2">他们用 AI ERP 已经跑起来了：排产从 4 小时到 10 分钟，库存准确率从 60% 到 98%</h2>
+      <p class="ae-subtitle" style="margin: 10px 0 0; max-width: 720px;">
+        BOWIAI 与开放生态协同，<strong>永久免费SaaS</strong> 可持续迭代，可验证、可落地。
+      </p>
+
+      <div class="ae-kpi-row">
+        <div class="ae-card ae-kpi">
+          <div class="num">30,000+</div>
+          <div class="lbl">生态企业实践样本</div>
+        </div>
+        <div class="ae-card ae-kpi">
+          <div class="num">1,000+</div>
+          <div class="lbl">业务对象能力</div>
+        </div>
+        <div class="ae-card ae-kpi">
+          <div class="num">200+</div>
+          <div class="lbl">行业伙伴与实施网络</div>
+        </div>
+        <div class="ae-card ae-kpi">
+          <div class="num">2-6 周</div>
+          <div class="lbl">典型场景验证周期</div>
+        </div>
+      </div>
+
+      <div class="ae-card" style="margin-top: 24px;">
+        <h3 class="ae-h3">落地保障</h3>
+        <ul class="ae-list" style="margin: 0;">
+          <li>可先从一条核心链路上线，再扩展全模块，避免"一次性大换血"。</li>
+          <li>支持权限隔离、操作留痕，满足老板看结果、IT 要可控。</li>
+          <li>需要演示与辅导时，可通过表单预约顾问，沟通行业与流程。</li>
+        </ul>
+      </div>
+      <div class="ae-module-cta">
+        <a class="ae-btn-primary" href="/experience/new" data-track-cta="register" data-track-position="trust-proof">立即开始验证</a>
+        <a class="ae-btn-secondary" href="/experience/new" data-track-cta="demo" data-track-position="trust-proof">预约顾问演示</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== 9 免费政策与零门槛开通 ========== -->
+  <section class="ae-section ae-module ae-module--surface" id="ae-free" data-track-module="free-policy">
+    <div class="ae-container">
+      <h2 class="ae-h2">免费政策与零门槛开通</h2>
+      <p class="ae-lead">简单、好用、不贵、能落地。</p>
+
+      <div class="ae-free-box" style="margin-top: 20px;">
+        <p><strong>基础系统永久免费</strong>：核心 <strong style="color: var(--ae-brand);">永久免费SaaS</strong> 能力可长期使用，不让「免费」变「阉割体验」。</p>
+        <p><strong>全功能无阉割</strong>：不靠删模块逼付费，按业务需要启用，边用边扩展。</p>
+        <p><strong>上线门槛低</strong>：注册即可开通，按业务逐步配置。</p>
+        <p><strong>可持续可控</strong>：<strong>ERPNext 业务底座</strong> + 自研 BOWIAI 能力，企业数据边界清晰、长期可控。</p>
+      </div>
+
+      <p class="ae-subtitle" style="margin: 20px 0 10px;">
+        <strong>免费开通提示：</strong>现在注册即可开启免费演示、免费方案规划与免费数据迁移指导，30 分钟内开始配置业务流程。
+      </p>
+
+      <p class="ae-subhead" id="ae-onboarding-path">开通路径</p>
+      <div class="ae-path" aria-labelledby="ae-onboarding-path">
+        <div class="ae-card ae-card--compact">
+          <strong style="color: var(--ae-brand);">01</strong>
+          <h3 class="ae-step-title">注册</h3>
+          <p>提交企业与联系人信息，获得开通指引。</p>
+        </div>
+        <div class="ae-card ae-card--compact">
+          <strong style="color: var(--ae-brand);">02</strong>
+          <h3 class="ae-step-title">配置</h3>
+          <p>按产线或部门选择优先启用的流程。</p>
+        </div>
+        <div class="ae-card ae-card--compact">
+          <strong style="color: var(--ae-brand);">03</strong>
+          <h3 class="ae-step-title">使用</h3>
+          <p>在 <strong style="color: var(--ae-brand);">永久免费SaaS</strong> 上跑通真实单据与报表。</p>
+        </div>
+      </div>
+
+      <h3 class="ae-subhead" style="margin-top: 40px;">申请体验 / 免费开通</h3>
+      <p class="ae-subtitle" style="margin-bottom: 18px;">
+        请留下手机号，我们将基于你的行业与核心流程，准备专属演示与开通支持。
+      </p>
+
+      <div class="ae-form">
+        <form action="/experience/new" method="get" class="ae-form-grid">
+          <div>
+            <label class="ae-label">姓名</label>
+            <input class="ae-input" name="lead_name" required />
+          </div>
+          <div>
+            <label class="ae-label">手机号</label>
+            <input class="ae-input" name="mobile_no" required />
+          </div>
+          <div>
+            <label class="ae-label">公司名称</label>
+            <input class="ae-input" name="company_name" required />
+          </div>
+          <div>
+            <label class="ae-label">邮箱（可选）</label>
+            <input class="ae-input" name="email_id" />
+          </div>
+          <div>
+            <label class="ae-label">您的角色</label>
+            <select class="ae-select" name="qualification_status">
+              <option value="">请选择</option>
+              <option value="管理层">老板/管理层</option>
+              <option value="IT">IT 负责人</option>
+              <option value="财务">财务负责人</option>
+              <option value="供应链">供应链负责人</option>
+            </select>
+          </div>
+          <div style="grid-column: span 2;">
+            <label class="ae-label">关注模块</label>
+            <input class="ae-input" name="notes" placeholder="如：采购、库存、财务、生产、销售" />
+          </div>
+          <div style="display: flex; align-items: end;">
+            <button type="submit" class="ae-btn-primary" style="width: 100%;">提交并免费开通</button>
+          </div>
+        </form>
+        <p style="font-size: 12px; color: var(--ae-muted); margin-top: 14px;">
+          提交即表示您同意我们联系您进行产品演示、免费开通与方案沟通。
+        </p>
+      </div>
+      <div class="ae-module-cta">
+        <a class="ae-btn-primary" href="/experience/new" data-track-cta="register" data-track-position="free-policy">零门槛立即注册</a>
+        <a class="ae-btn-secondary" href="#ae-ai" data-track-cta="demo" data-track-position="free-policy">先看免费演示</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== 10 FAQ答疑 ========== -->
+  <section class="ae-section ae-module ae-module--muted ae-faq" id="ae-faq" data-track-module="faq">
+    <div class="ae-container">
+      <h2 class="ae-h2">FAQ答疑</h2>
+      <p class="ae-subtitle" style="margin: 10px 0 20px;">
+        关于 <strong>永久免费SaaS</strong>、部署与安全，先看这里。
+      </p>
+
+      <div class="ae-accordion" id="ae-faq-accordion">
+        <div class="ae-accordion__item">
+          <button type="button" class="ae-accordion__head" aria-expanded="false">
+            <span>真的免费吗？</span>
+            <span class="ae-accordion__icon">+</span>
+          </button>
+          <div class="ae-accordion__panel">
+            <div class="ae-accordion__inner">
+              <div class="ae-accordion__body">
+                是。<strong>基础系统永久免费</strong>，可直接注册开通使用。
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="ae-accordion__item">
+          <button type="button" class="ae-accordion__head" aria-expanded="false">
+            <span>是 ERP SaaS 还是本地部署？</span>
+            <span class="ae-accordion__icon">+</span>
+          </button>
+          <div class="ae-accordion__panel">
+            <div class="ae-accordion__inner">
+              <div class="ae-accordion__body">
+                默认 <strong style="color: var(--ae-brand);">永久免费SaaS</strong> 云端模式；如有更高可控需求，可再谈部署节奏与边界方案。
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="ae-accordion__item">
+          <button type="button" class="ae-accordion__head" aria-expanded="false">
+            <span>需要替换现有 ERP 系统吗？</span>
+            <span class="ae-accordion__icon">+</span>
+          </button>
+          <div class="ae-accordion__panel">
+            <div class="ae-accordion__inner">
+              <div class="ae-accordion__body">
+                不一定。可基于业务底座分阶段落地，也可以逐步对接现有系统，按阶段迁移。
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="ae-accordion__item">
+          <button type="button" class="ae-accordion__head" aria-expanded="false">
+            <span>多久可以看到效果？</span>
+            <span class="ae-accordion__icon">+</span>
+          </button>
+          <div class="ae-accordion__panel">
+            <div class="ae-accordion__inner">
+              <div class="ae-accordion__body">
+                通常 2-6 周可以完成一个核心业务场景验证并看到效率提升。
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="ae-accordion__item">
+          <button type="button" class="ae-accordion__head" aria-expanded="false">
+            <span>数据安全如何保障？</span>
+            <span class="ae-accordion__icon">+</span>
+          </button>
+          <div class="ae-accordion__panel">
+            <div class="ae-accordion__inner">
+              <div class="ae-accordion__body">
+                支持权限隔离、审计追踪、私有化部署与数据边界控制。
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="ae-accordion__item">
+          <button type="button" class="ae-accordion__head" aria-expanded="false">
+            <span>AI 建议是否可追溯？</span>
+            <span class="ae-accordion__icon">+</span>
+          </button>
+          <div class="ae-accordion__panel">
+            <div class="ae-accordion__inner">
+              <div class="ae-accordion__body">
+                可追溯到来源单据、报表口径与执行动作，方便复盘与审计。
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div style="margin-top: 28px; text-align: center; display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;">
+        <a class="ae-btn-primary" href="/experience/new" data-track-cta="register" data-track-position="faq">立即免费注册</a>
+        <a class="ae-btn-secondary" href="#ae-ai" data-track-cta="demo" data-track-position="faq">还有疑问，先看演示</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== 11 底部强转化CTA ========== -->
+  <section class="ae-section ae-module ae-module--surface ae-section--cta" id="ae-cta" data-track-module="bottom-cta">
+    <div class="ae-container" style="text-align: center; max-width: 800px;">
+      <h2 class="ae-h2">现在开始，让 AI 帮你管企业。</h2>
+      <p class="ae-lead" style="margin-left: auto; margin-right: auto; text-align: center; font-size: clamp(18px, 3vw, 24px);">
+        告别手工记账、人工排产、库存不准、交期延误， 用 AI 把生产、库存、财务、销售连成一个大脑
+      </p>
+      <p class="ae-subtitle" style="margin: 18px 0 8px; font-size: 17px;">
+        先从一个场景开始：采购预警、库存健康、回款预测或经营日报自动化。
+      </p>
+      <p class="ae-subtitle" style="margin-bottom: 26px;">
+        <strong style="color: var(--ae-brand);">永久免费SaaS</strong> 开通后，再滚动扩展全链路。
+      </p>
+
+      <div style="display: flex; gap: 14px; justify-content: center; flex-wrap: wrap;">
+        <a class="ae-btn-primary" href="/experience/new" data-track-cta="register" data-track-position="bottom-cta">立即申请体验</a>
+        <a class="ae-btn-secondary" href="/experience/new" data-track-cta="demo" data-track-position="bottom-cta">联系顾问演示</a>
+      </div>
+
+      <p class="ae-muted" style="margin-top: 18px; font-size: 14px;">
+        免费开通，无需信用卡，支持快速上手。
+      </p>
+    </div>
+  </section>
+
+  <!-- ========== 12 合规页脚========== -->
+  <footer class="ae-footer" id="ae-footer">
+    <div class="ae-container">
+      <h2 class="ae-footer__h2"></h2>
+      <div class="ae-footer-main">
+        <div>
+          <h3 class="ae-footer-title">博软科技</h3>
+          <p class="ae-footer-meta" style="margin-bottom: 16px;">BOWIAI · ERPnext</p>
+          <h3 class="ae-footer-title">服务热线</h3>
+          <p class="ae-footer-hotline">0571-85383032</p>
+          <p class="ae-footer-meta">售前咨询（09:00-17:00）</p>
+        </div>
+
+        <div class="ae-footer-wechat">
+          <h3 class="ae-footer-title">售前咨询（微信咨询）</h3>
+          <div class="ae-footer-qr">
+            <a
+              class="ae-footer-qr__link"
+              href="https://work.weixin.qq.com/kfid/kfc5b8447f93f2d244d"
+              target="_blank"
+              rel="noopener noreferrer"
+              data-track-cta="wechat_kf"
+              data-track-position="footer"
+              aria-label="打开企业微信售前咨询"
+            >
+              <img src="/files/wechat-qr-west.png" alt="博软售前咨询微信二维码" class="ae-footer-qr__img" loading="lazy" decoding="async" />
+            </a>
+          </div>
+        </div>
+
+        <div class="ae-footer-contact">
+          <p>企业QQ：1958097959</p>
+          <p>企业邮箱：book@bosofts.com</p>
+          <p>杭州市文一路中小企业大厦2808</p>
+        </div>
+      </div>
+
+      <div class="ae-footer-divider"></div>
+
+      <div class="ae-footer-bottom">
+        <div class="ae-footer-links">
+          <a href="#ae-top" data-track-cta="footer_nav" data-track-position="footer">返回顶部</a>
+          <a href="/contact" data-track-cta="footer_nav" data-track-position="footer">联系我们</a>
+          <a href="/experience/new" data-track-cta="footer_nav" data-track-position="footer">免费注册</a>
+          <a href="#ae-privacy-policy" data-track-cta="privacy" data-track-position="footer">隐私政策</a>
+        </div>
+        <p>Copyright@2008-2026 博软(杭州)科技有限公司 AI ERP · 新一代智能 ERP 系统 版权所有 <a href="https://beian.miit.gov.cn/" target="_blank" rel="noopener noreferrer" data-track-cta="footer_nav" data-track-position="footer">浙ICP备18055996号</a></p>
+        <p>让管理更简单，让企业更赚钱</p>
+        <p id="ae-privacy-policy" class="ae-footer-note">隐私政策说明：我们仅在您主动提交信息时收集必要联系资料，用于演示沟通与实施服务，不会将数据用于与业务无关用途。</p>
+        <p class="ae-footer-note">合规说明：页面内容为产品能力展示，不构成收益承诺、效果保证或绝对化宣传，具体服务以双方签署协议为准。</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- 灯箱 -->
+  <div id="ae-lightbox" class="ae-lightbox" aria-hidden="true">
+    <div class="ae-lightbox-inner">
+      <button type="button" class="ae-lightbox-close" aria-label="关闭">×</button>
+      <img src="" alt="BOWIAI 免费 AI ERP SaaS 场景大图预览" class="ae-lightbox-img" />
+      <video class="ae-lightbox-video" playsinline controls loop preload="metadata" aria-label="BOWIAI AI ERP product overview video (enlarged)"></video>
+    </div>
+  </div>
+
+  <!-- 精简JS：灯箱 + 手风琴 -->
+  <script>
+    // 灯箱功能
+    (function(){
+      if(window.__aeLightboxBound) return;
+      window.__aeLightboxBound = true;
+
+      const box = document.getElementById('ae-lightbox');
+      if(!box) return;
+
+      const img = box.querySelector('.ae-lightbox-img');
+      const lbVideo = box.querySelector('.ae-lightbox-video');
+      const closeBtn = box.querySelector('.ae-lightbox-close');
+      let lastExpandSourceVideo = null;
+
+      function close() {
+        box.classList.remove('ae-open', 'ae-lightbox--video');
+        box.setAttribute('aria-hidden', 'true');
+        document.body.style.overflow = '';
+        if(img) img.src = '';
+        if(lbVideo) {
+          lbVideo.pause();
+          lbVideo.removeAttribute('src');
+          lbVideo.load();
+        }
+        if(lastExpandSourceVideo && lastExpandSourceVideo.paused) {
+          lastExpandSourceVideo.play().catch(function() {});
+        }
+        lastExpandSourceVideo = null;
+      }
+
+      function open(src) {
+        if(!src || !String(src).trim()) return;
+        box.classList.remove('ae-lightbox--video');
+        if(lbVideo) {
+          lbVideo.pause();
+          lbVideo.removeAttribute('src');
+          lbVideo.load();
+        }
+        if(img) {
+          img.removeAttribute('src');
+          img.onerror = function() {
+            close();
+          };
+          img.src = src;
+        }
+        box.classList.add('ae-open');
+        box.setAttribute('aria-hidden', 'false');
+        document.body.style.overflow = 'hidden';
+      }
+
+      function openVideo(src, sourceVideo) {
+        if(!src || !String(src).trim() || !lbVideo) return;
+        if(img) img.src = '';
+        lastExpandSourceVideo = sourceVideo && sourceVideo.tagName === 'VIDEO' ? sourceVideo : null;
+        box.classList.add('ae-lightbox--video');
+        lbVideo.src = src;
+        // Keep muted for reliable autoplay in overlay; user can unmute via controls.
+        lbVideo.muted = true;
+        lbVideo.setAttribute('muted', '');
+        lbVideo.currentTime = 0;
+        box.classList.add('ae-open');
+        box.setAttribute('aria-hidden', 'false');
+        document.body.style.overflow = 'hidden';
+        if(lastExpandSourceVideo) lastExpandSourceVideo.pause();
+        lbVideo.play().catch(function() {
+          // If autoplay is still blocked, keep controls available for manual play.
+        });
+      }
+
+      // 事件委托
+      document.addEventListener('click', function(e) {
+        const v = e.target.closest ? e.target.closest('[data-ae-video-expand]') : null;
+        if(v && v.tagName === 'VIDEO') {
+          const href = (v.getAttribute('data-ae-video-expand') || v.currentSrc || v.src || '').trim();
+          if(!href) return;
+          e.preventDefault();
+          // Fallback mode: open source video directly in a new tab.
+          window.open(href, '_blank', 'noopener');
+          return;
+        }
+        const t = e.target.closest ? e.target.closest('[data-ae-zoom]') : null;
+        if(t) {
+          const href = (t.getAttribute('data-ae-zoom') || '').trim();
+          if(!href) return;
+          e.preventDefault();
+          // Fallback mode: scene gallery opens original image in a new tab directly.
+          if (t.closest && t.closest('.ae-scene-gallery')) {
+            window.open(href, '_blank', 'noopener');
+            return;
+          }
+          open(href);
+          return;
+        }
+        if(e.target === box || e.target === closeBtn) {
+          close();
+        }
+      });
+
+      // 键盘支持
+      document.addEventListener('keydown', function(e) {
+        if(e.key === 'Escape' && box.classList.contains('ae-open')) {
+          close();
+        }
+      });
+
+      // 点击背景关闭
+      box.addEventListener('click', function(e) {
+        if(e.target === box) close();
+      });
+    })();
+
+    // FAQ手风琴
+    (function(){
+      if(window.__aeAccordionBound) return;
+      window.__aeAccordionBound = true;
+
+      const root = document.getElementById('ae-faq-accordion');
+      if(!root) return;
+
+      root.addEventListener('click', function(e) {
+        const btn = e.target.closest('.ae-accordion__head');
+        if(!btn) return;
+
+        const item = btn.closest('.ae-accordion__item');
+        if(!item) return;
+
+        const isOpen = item.classList.contains('is-open');
+        const allItems = root.querySelectorAll('.ae-accordion__item');
+
+        // 关闭其他项
+        allItems.forEach(function(n) {
+          if(n !== item) {
+            n.classList.remove('is-open');
+            const b = n.querySelector('.ae-accordion__head');
+            if(b) b.setAttribute('aria-expanded', 'false');
+          }
+        });
+
+        // 切换当前项
+        if(isOpen) {
+          item.classList.remove('is-open');
+          btn.setAttribute('aria-expanded', 'false');
+        } else {
+          item.classList.add('is-open');
+          btn.setAttribute('aria-expanded', 'true');
+        }
+      });
+
+      // 键盘支持
+      root.addEventListener('keydown', function(e) {
+        if(e.key === 'Enter' || e.key === ' ') {
+          const btn = e.target.closest('.ae-accordion__head');
+          if(btn) {
+            e.preventDefault();
+            btn.click();
+          }
+        }
+      });
+    })();
+
+    // 基础埋点：CTA 点击 + 核心模块曝光
+    (function(){
+      if(window.__aeTrackBound) return;
+      window.__aeTrackBound = true;
+      window.__bowiaiEvents = window.__bowiaiEvents || [];
+
+      function emit(eventName, payload) {
+        const data = Object.assign({
+          event: eventName,
+          page: 'ai-erp-home',
+          ts: Date.now()
+        }, payload || {});
+        window.__bowiaiEvents.push(data);
+        if(Array.isArray(window.dataLayer)) {
+          window.dataLayer.push(data);
+        }
+      }
+
+      document.addEventListener('click', function(e) {
+        const el = e.target.closest && e.target.closest('[data-track-cta]');
+        if(!el) return;
+        emit('cta_click', {
+          cta_type: el.getAttribute('data-track-cta') || 'unknown',
+          position: el.getAttribute('data-track-position') || 'unknown',
+          target: el.getAttribute('href') || ''
+        });
+      });
+
+      const modules = document.querySelectorAll('[data-track-module]');
+      if(!modules.length || !('IntersectionObserver' in window)) return;
+      const seen = new Set();
+      const io = new IntersectionObserver(function(entries){
+        entries.forEach(function(entry){
+          if(!entry.isIntersecting) return;
+          const name = entry.target.getAttribute('data-track-module');
+          if(!name || seen.has(name)) return;
+          seen.add(name);
+          emit('module_view', { module_name: name });
+        });
+      }, { threshold: 0.35 });
+      modules.forEach(function(node){ io.observe(node); });
+    })();
+
+  </script>
+</div>

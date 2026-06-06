@@ -1,0 +1,75 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+*.pyc
+*.py~
+
+# Distribution / packaging
+.Python
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+tags
+MANIFEST
+
+# Environments
+.env
+.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# Dependency directories
+node_modules/
+jspm_packages/
+
+# Frappe build artifacts — bench build auto-creates these inside apps even
+# when the app has no bundled assets. public/node_modules is a symlink that
+# `node_modules/` doesn't match.
+frappe_assistant_core/public/node_modules
+frappe_assistant_core/public/dist/
+
+# IDEs and editors
+.vscode/
+.vs/
+.idea/
+.kdev4/
+*.kdev4
+*.DS_Store
+*.swp
+*.comp.js
+.wnf-lang-status
+*debug.log
+
+# Helix Editor
+.helix/
+
+# Aider AI Chat
+.aider*
+
+# claude
+.claude/
+CLAUDE.md
+
+# Logs and temporary files
+*.log
+logs/
+debug_*.py
+
+# Build artifacts
+build/
+client_packages/*/build/
+

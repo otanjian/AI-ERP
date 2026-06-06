@@ -1,0 +1,19 @@
+repos:
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.8.1
+    hooks:
+      - id: ruff
+        name: "Run ruff import sorter"
+        args: ["--select=I", "--fix"]
+
+      - id: ruff
+        name: "Run ruff linter"
+
+      - id: ruff-format
+        name: "Run ruff formatter"
+
+  -   repo: https://github.com/biomejs/pre-commit
+      rev: "v0.1.0"  # Use the sha / tag you want to point at
+      hooks:
+      -   id: biome-check
+          additional_dependencies: ["@biomejs/biome@1.4.1"]

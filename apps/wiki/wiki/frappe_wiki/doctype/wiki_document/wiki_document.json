@@ -1,0 +1,198 @@
+{
+	"actions": [],
+	"allow_rename": 1,
+	"creation": "2025-08-30 16:32:29.700227",
+	"default_view": "Tree",
+	"doctype": "DocType",
+	"engine": "InnoDB",
+	"field_order": [
+		"title",
+		"route",
+		"slug",
+		"doc_key",
+		"column_break_sfff",
+		"is_published",
+		"is_private",
+		"is_external_link",
+		"external_url",
+		"section_break_eooe",
+		"content",
+		"section_break_j5x7",
+		"lft",
+		"rgt",
+		"is_group",
+		"old_parent",
+		"parent_wiki_document",
+		"sort_order"
+	],
+	"fields": [
+		{
+			"fieldname": "section_break_j5x7",
+			"fieldtype": "Section Break",
+			"label": "Tree Related Fields"
+		},
+		{
+			"fieldname": "lft",
+			"fieldtype": "Int",
+			"hidden": 1,
+			"label": "Left",
+			"no_copy": 1,
+			"read_only": 1
+		},
+		{
+			"fieldname": "rgt",
+			"fieldtype": "Int",
+			"hidden": 1,
+			"label": "Right",
+			"no_copy": 1,
+			"read_only": 1
+		},
+		{
+			"default": "0",
+			"fieldname": "is_group",
+			"fieldtype": "Check",
+			"label": "Is Group"
+		},
+		{
+			"fieldname": "old_parent",
+			"fieldtype": "Link",
+			"label": "Old Parent",
+			"options": "Wiki Document"
+		},
+		{
+			"fieldname": "parent_wiki_document",
+			"fieldtype": "Link",
+			"ignore_user_permissions": 1,
+			"label": "Parent Wiki Document",
+			"options": "Wiki Document"
+		},
+		{
+			"default": "0",
+			"fieldname": "sort_order",
+			"fieldtype": "Int",
+			"hidden": 1,
+			"label": "Sort Order",
+			"no_copy": 1
+		},
+		{
+			"fieldname": "route",
+			"fieldtype": "Data",
+			"in_list_view": 1,
+			"in_standard_filter": 1,
+			"label": "Route"
+		},
+		{
+			"fieldname": "slug",
+			"fieldtype": "Data",
+			"label": "Slug"
+		},
+		{
+			"fieldname": "doc_key",
+			"fieldtype": "Data",
+			"label": "Doc Key",
+			"hidden": 1,
+			"read_only": 1,
+			"unique": 1,
+			"no_copy": 1
+		},
+		{
+			"fieldname": "content",
+			"fieldtype": "Code",
+			"label": "Content",
+			"options": "Markdown"
+		},
+		{
+			"default": "0",
+			"fieldname": "is_published",
+			"fieldtype": "Check",
+			"label": "Is Published?"
+		},
+		{
+			"fieldname": "title",
+			"fieldtype": "Data",
+			"in_list_view": 1,
+			"label": "Title",
+			"reqd": 1
+		},
+		{
+			"fieldname": "column_break_sfff",
+			"fieldtype": "Column Break"
+		},
+		{
+			"fieldname": "section_break_eooe",
+			"fieldtype": "Section Break"
+		},
+		{
+			"default": "0",
+			"fieldname": "is_private",
+			"fieldtype": "Check",
+			"label": "Is Private?"
+		},
+		{
+			"default": "0",
+			"fieldname": "is_external_link",
+			"fieldtype": "Check",
+			"label": "External Link"
+		},
+		{
+			"depends_on": "is_external_link",
+			"fieldname": "external_url",
+			"fieldtype": "Data",
+			"label": "External URL",
+			"options": "URL"
+		}
+	],
+	"grid_page_length": 50,
+	"index_web_pages_for_search": 1,
+	"is_tree": 1,
+	"links": [],
+	"make_attachments_public": 1,
+	"modified": "2026-02-03 17:21:03.384026",
+	"modified_by": "Administrator",
+	"module": "Frappe Wiki",
+	"name": "Wiki Document",
+	"nsm_parent_field": "parent_wiki_document",
+	"owner": "Administrator",
+	"permissions": [
+		{
+			"create": 1,
+			"delete": 1,
+			"email": 1,
+			"export": 1,
+			"print": 1,
+			"read": 1,
+			"report": 1,
+			"role": "System Manager",
+			"share": 1,
+			"write": 1
+		},
+		{
+			"create": 1,
+			"delete": 1,
+			"email": 1,
+			"export": 1,
+			"print": 1,
+			"read": 1,
+			"report": 1,
+			"role": "Wiki Manager",
+			"select": 1,
+			"share": 1,
+			"write": 1
+		},
+		{
+			"email": 1,
+			"export": 1,
+			"print": 1,
+			"read": 1,
+			"report": 1,
+			"role": "Wiki User",
+			"share": 1
+		}
+	],
+	"row_format": "Dynamic",
+	"show_title_field_in_link": 1,
+	"sort_field": "creation",
+	"sort_order": "DESC",
+	"states": [],
+	"title_field": "title"
+}

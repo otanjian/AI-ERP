@@ -1,0 +1,955 @@
+@import url("https://api.fontshare.com/v2/css?f[]=general-sans@500,700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500&family=JetBrains+Mono:wght@400&display=swap");
+
+:root {
+	--fac-primary: #6366f1;
+	--fac-primary-hover: #4f46e5;
+	--fac-bg: #fafafa;
+	--fac-surface: #ffffff;
+	--fac-text-primary: #0a0a0a;
+	--fac-text-secondary: #6b6b6b;
+	--fac-border: #e8e8ec;
+	--fac-focus-ring: 0 0 0 3px rgba(99, 102, 241, 0.12);
+	--fac-success: #10b981;
+	--fac-warning: #f59e0b;
+	--fac-error: #ef4444;
+	--fac-font-display: "General Sans", "DM Sans", -apple-system, BlinkMacSystemFont, "Segoe UI",
+		sans-serif;
+	--fac-font-body: "DM Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+	--fac-font-code: "JetBrains Mono", "SFMono-Regular", Menlo, Monaco, Consolas, "Liberation Mono",
+		"Courier New", monospace;
+}
+
+/* Top navigation: 56px, blur, subtle divider */
+body[data-route^="desk"] .navbar {
+	height: 56px;
+	min-height: 56px;
+	background: rgba(255, 255, 255, 0.88);
+	backdrop-filter: blur(10px);
+	-webkit-backdrop-filter: blur(10px);
+	border-bottom: 1px solid var(--fac-border);
+}
+
+body[data-route^="desk"] .navbar .container {
+	height: 100%;
+}
+
+body[data-route^="desk"] .navbar .navbar-nav a,
+body[data-route^="desk"] .navbar .dropdown-toggle {
+	font-family: var(--fac-font-body);
+	font-size: 14px;
+	font-weight: 500;
+	color: var(--fac-text-primary);
+	border-radius: 6px;
+}
+
+body[data-route^="desk"] .navbar .navbar-nav a:hover,
+body[data-route^="desk"] .navbar .dropdown-toggle:hover {
+	background: #f3f4f6;
+	color: var(--fac-text-primary);
+}
+
+/* Search bar */
+body[data-route^="desk"] .search-bar .awesomplete input,
+body[data-route^="desk"] #navbar-search {
+	height: 40px;
+	border-radius: 12px;
+	border: 1px solid var(--fac-border);
+	background: var(--fac-surface);
+	padding: 10px 14px;
+	font-family: var(--fac-font-body);
+	font-size: 14px;
+}
+
+body[data-route^="desk"] .search-bar .awesomplete input:focus,
+body[data-route^="desk"] #navbar-search:focus {
+	border-color: var(--fac-primary);
+	box-shadow: var(--fac-focus-ring);
+}
+
+body[data-route^="Workspaces"],
+body[data-route^="workspace"],
+body[data-route^="desk"] .layout-main-section {
+	background: var(--fac-bg);
+	font-family: var(--fac-font-body);
+	color: var(--fac-text-primary);
+}
+
+body[data-route^="Workspaces"] h1,
+body[data-route^="Workspaces"] h2,
+body[data-route^="Workspaces"] h3,
+body[data-route^="workspace"] h1,
+body[data-route^="workspace"] h2,
+body[data-route^="workspace"] h3,
+body[data-route^="desk"] .layout-main-section h1,
+body[data-route^="desk"] .layout-main-section h2,
+body[data-route^="desk"] .layout-main-section h3,
+body[data-route^="desk"] .desk-page .widget-title,
+body[data-route^="desk"] .desktop-icon .icon-title {
+	font-family: var(--fac-font-display);
+	font-weight: 700;
+	letter-spacing: -0.03em;
+	color: var(--fac-text-primary);
+}
+
+body[data-route^="Workspaces"] .text-muted,
+body[data-route^="workspace"] .text-muted,
+body[data-route^="desk"] .layout-main-section .text-muted,
+body[data-route^="desk"] .desk-page .widget-subtitle {
+	color: var(--fac-text-secondary) !important;
+}
+
+body[data-route^="Workspaces"] code,
+body[data-route^="Workspaces"] pre,
+body[data-route^="workspace"] code,
+body[data-route^="workspace"] pre,
+body[data-route^="desk"] .layout-main-section code,
+body[data-route^="desk"] .layout-main-section pre {
+	font-family: var(--fac-font-code);
+	font-weight: 400;
+}
+
+/* Workspace cards and dashboard widgets */
+.desk-page .widget,
+.desk-page .shortcut-widget-box,
+.desk-page .links-widget-box,
+.desk-page .number-widget-box,
+.desk-page .quick-list-widget-box,
+.desk-page .chart-widget-box {
+	background: var(--fac-surface);
+	border: 1px solid var(--fac-border);
+	border-radius: 12px;
+	box-shadow: none;
+	transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+.desk-page .widget:hover,
+.desk-page .shortcut-widget-box:hover,
+.desk-page .links-widget-box:hover,
+.desk-page .number-widget-box:hover,
+.desk-page .quick-list-widget-box:hover,
+.desk-page .chart-widget-box:hover {
+	transform: translateY(-2px);
+	box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+	border-color: var(--fac-border);
+}
+
+.desk-page .widget .widget-title,
+.desk-page .widget-head .widget-title,
+.desk-page .shortcut-widget-box .widget-label .widget-title {
+	color: var(--fac-text-primary);
+	font-weight: 700;
+	letter-spacing: -0.02em;
+	font-size: 24px;
+	line-height: 1.2;
+}
+
+.desk-page .widget .widget-body,
+.desk-page .widget .widget-subtitle,
+.desk-page .widget .ellipsis {
+	color: var(--fac-text-secondary);
+	font-size: 15px;
+	line-height: 1.45;
+}
+
+/* Primary actions */
+.page-actions .btn-primary,
+.page-form .btn-primary,
+.modal .btn-primary {
+	background: var(--fac-primary);
+	border-color: var(--fac-primary);
+	border-radius: 6px;
+	box-shadow: none;
+	transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+}
+
+.page-actions .btn-primary:hover,
+.page-form .btn-primary:hover,
+.modal .btn-primary:hover {
+	background: var(--fac-primary-hover);
+	border-color: var(--fac-primary-hover);
+	transform: translateY(-1px);
+	box-shadow: 0 4px 12px rgba(99, 102, 241, 0.35);
+}
+
+/* Inputs */
+.form-control,
+.search-input,
+.awesomplete input {
+	border: 1px solid var(--fac-border);
+	border-radius: 6px;
+}
+
+.form-control:focus,
+.search-input:focus,
+.awesomplete input:focus {
+	border-color: var(--fac-primary);
+	box-shadow: var(--fac-focus-ring);
+}
+
+/* Module/workspace icon grid on desk */
+.desktop-icon {
+	border-radius: 12px;
+	padding: 12px 8px;
+	transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
+}
+
+.desktop-icon:hover {
+	transform: translateY(-2px);
+	background: var(--fac-surface);
+	box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+}
+
+.desktop-icon .icon-title {
+	color: var(--fac-text-primary);
+	font-weight: 700;
+	font-size: 15px;
+	line-height: 1.35;
+}
+
+/* Modal and dialog polish */
+body[data-route^="desk"] .modal-content {
+	background: var(--fac-surface);
+	border: 1px solid var(--fac-border);
+	border-radius: 12px;
+	box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+}
+
+body[data-route^="desk"] .modal-header,
+body[data-route^="desk"] .modal-footer {
+	border-color: var(--fac-border);
+	padding: 12px 16px;
+}
+
+body[data-route^="desk"] .modal-body {
+	padding: 16px;
+}
+
+body[data-route^="desk"] .modal-title {
+	font-family: var(--fac-font-display);
+	font-weight: 700;
+	letter-spacing: -0.03em;
+	color: var(--fac-text-primary);
+}
+
+/* Form spacing + control consistency in desk pages */
+body[data-route^="desk"] .form-group {
+	margin-bottom: 16px;
+}
+
+body[data-route^="desk"] .control-label {
+	font-family: var(--fac-font-body);
+	font-size: 13px;
+	font-weight: 500;
+	color: var(--fac-text-secondary);
+}
+
+/* Sidebar list system (12x16 rows + subtle dividers) */
+body[data-route^="desk"] .standard-sidebar {
+	background: var(--fac-surface);
+	border-right: 1px solid var(--fac-border);
+}
+
+body[data-route^="desk"] .standard-sidebar .standard-sidebar-label {
+	font-family: var(--fac-font-body);
+	font-size: 11px;
+	font-weight: 500;
+	letter-spacing: 0.06em;
+	text-transform: uppercase;
+	color: var(--fac-text-secondary);
+	padding: 12px 16px 8px;
+}
+
+body[data-route^="desk"] .standard-sidebar .standard-sidebar-item {
+	margin: 0;
+	border-radius: 0;
+	border-bottom: 1px solid var(--fac-border);
+}
+
+body[data-route^="desk"] .standard-sidebar .standard-sidebar-item .item-anchor {
+	padding: 12px 16px;
+	font-family: var(--fac-font-body);
+	font-size: 14px;
+	font-weight: 500;
+	color: var(--fac-text-primary);
+}
+
+body[data-route^="desk"] .standard-sidebar .standard-sidebar-item:hover .item-anchor {
+	background: #f5f6f8;
+}
+
+body[data-route^="desk"] .standard-sidebar .standard-sidebar-item.selected .item-anchor,
+body[data-route^="desk"] .standard-sidebar .standard-sidebar-item.active .item-anchor {
+	background: rgba(99, 102, 241, 0.08);
+	color: var(--fac-primary);
+}
+
+/* Data/list rows */
+body[data-route^="desk"] .list-row,
+body[data-route^="desk"] .result,
+body[data-route^="desk"] .report-row,
+body[data-route^="desk"] .grid-row {
+	border-bottom: 1px solid var(--fac-border);
+}
+
+body[data-route^="desk"] .list-row .list-row-container,
+body[data-route^="desk"] .list-row .level-left,
+body[data-route^="desk"] .list-row .level-right {
+	padding-top: 12px;
+	padding-bottom: 12px;
+}
+
+body[data-route^="desk"] .list-row:hover,
+body[data-route^="desk"] .report-row:hover,
+body[data-route^="desk"] .result:hover {
+	background: #f8f9fb;
+}
+
+body[data-route^="desk"] .list-subject a,
+body[data-route^="desk"] .list-row a {
+	font-family: var(--fac-font-body);
+	font-size: 14px;
+	font-weight: 500;
+	color: var(--fac-text-primary);
+}
+
+body[data-route^="desk"] .list-row-col,
+body[data-route^="desk"] .list-count,
+body[data-route^="desk"] .list-row .text-muted {
+	color: var(--fac-text-secondary) !important;
+	font-size: 13px;
+}
+
+/* Step 5: button hierarchy system */
+body[data-route^="desk"] .btn {
+	border-radius: 6px;
+	font-family: var(--fac-font-body);
+	font-weight: 500;
+	transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease,
+		border-color 0.2s ease, color 0.2s ease;
+}
+
+/* Primary */
+body[data-route^="desk"] .btn.btn-primary,
+body[data-route^="desk"] .page-actions .btn-primary,
+body[data-route^="desk"] .list-view-actions .btn-primary,
+body[data-route^="desk"] .modal-footer .btn-primary {
+	background: var(--fac-primary);
+	border: 1px solid var(--fac-primary);
+	color: #fff;
+	box-shadow: none;
+}
+
+body[data-route^="desk"] .btn.btn-primary:hover,
+body[data-route^="desk"] .page-actions .btn-primary:hover,
+body[data-route^="desk"] .list-view-actions .btn-primary:hover,
+body[data-route^="desk"] .modal-footer .btn-primary:hover {
+	background: var(--fac-primary-hover);
+	border-color: var(--fac-primary-hover);
+	transform: translateY(-1px);
+	box-shadow: 0 4px 12px rgba(99, 102, 241, 0.35);
+}
+
+/* Secondary */
+body[data-route^="desk"] .btn.btn-default,
+body[data-route^="desk"] .btn.btn-secondary {
+	background: var(--fac-surface);
+	border: 1px solid var(--fac-border);
+	color: var(--fac-text-primary);
+}
+
+body[data-route^="desk"] .btn.btn-default:hover,
+body[data-route^="desk"] .btn.btn-secondary:hover {
+	background: #f8f9fb;
+	border-color: #d8dbe2;
+	transform: translateY(-1px);
+}
+
+/* Ghost */
+body[data-route^="desk"] .btn.btn-link,
+body[data-route^="desk"] .btn.btn-ghost {
+	background: transparent;
+	border: 1px solid transparent;
+	color: var(--fac-text-secondary);
+	box-shadow: none;
+}
+
+body[data-route^="desk"] .btn.btn-link:hover,
+body[data-route^="desk"] .btn.btn-ghost:hover {
+	color: var(--fac-text-primary);
+	background: #f5f6f8;
+}
+
+/* Destructive */
+body[data-route^="desk"] .btn.btn-danger,
+body[data-route^="desk"] .btn-danger {
+	background: #fff;
+	border: 1px solid #ef4444;
+	color: #ef4444;
+}
+
+body[data-route^="desk"] .btn.btn-danger:hover,
+body[data-route^="desk"] .btn-danger:hover {
+	background: rgba(239, 68, 68, 0.06);
+	border-color: #ef4444;
+	color: #ef4444;
+	transform: translateY(-1px);
+}
+
+/* Focus ring */
+body[data-route^="desk"] .btn:focus-visible {
+	outline: none;
+	box-shadow: var(--fac-focus-ring);
+}
+
+/* Size rhythm (small / medium / large) */
+body[data-route^="desk"] .btn.btn-xs,
+body[data-route^="desk"] .btn.btn-sm {
+	min-height: 32px;
+	padding: 6px 12px;
+	font-size: 13px;
+}
+
+body[data-route^="desk"] .btn {
+	min-height: 38px;
+	padding: 9px 16px;
+	font-size: 14px;
+}
+
+body[data-route^="desk"] .btn.btn-lg {
+	min-height: 44px;
+	padding: 11px 24px;
+	font-size: 15px;
+}
+
+/* Toolbar grouping: keep only one visually dominant primary */
+body[data-route^="desk"] .page-actions .btn-primary ~ .btn-primary,
+body[data-route^="desk"] .list-view-actions .btn-primary ~ .btn-primary {
+	background: var(--fac-surface);
+	border-color: var(--fac-border);
+	color: var(--fac-text-primary);
+	box-shadow: none;
+}
+
+body[data-route^="desk"] .page-actions .btn-primary ~ .btn-primary:hover,
+body[data-route^="desk"] .list-view-actions .btn-primary ~ .btn-primary:hover {
+	background: #f8f9fb;
+	border-color: #d8dbe2;
+	transform: translateY(-1px);
+}
+
+/* Step 6: semantic status system */
+body[data-route^="desk"] .indicator-pill,
+body[data-route^="desk"] .status-pill,
+body[data-route^="desk"] .badge {
+	border-radius: 9999px;
+	padding: 4px 12px;
+	font-size: 12px;
+	font-weight: 500;
+	line-height: 1.2;
+	border: 1px solid transparent;
+}
+
+/* Success semantic */
+body[data-route^="desk"] .indicator-pill.green,
+body[data-route^="desk"] .indicator-pill[data-filter*="Completed"],
+body[data-route^="desk"] .indicator-pill[data-filter*="Approved"],
+body[data-route^="desk"] .badge.badge-success {
+	background: rgba(16, 185, 129, 0.12);
+	color: var(--fac-success);
+	border-color: rgba(16, 185, 129, 0.28);
+}
+
+/* Warning semantic */
+body[data-route^="desk"] .indicator-pill.orange,
+body[data-route^="desk"] .indicator-pill.yellow,
+body[data-route^="desk"] .indicator-pill[data-filter*="Pending"],
+body[data-route^="desk"] .indicator-pill[data-filter*="Open"],
+body[data-route^="desk"] .badge.badge-warning {
+	background: rgba(245, 158, 11, 0.12);
+	color: var(--fac-warning);
+	border-color: rgba(245, 158, 11, 0.28);
+}
+
+/* Error semantic */
+body[data-route^="desk"] .indicator-pill.red,
+body[data-route^="desk"] .indicator-pill[data-filter*="Overdue"],
+body[data-route^="desk"] .indicator-pill[data-filter*="Rejected"],
+body[data-route^="desk"] .indicator-pill[data-filter*="Cancelled"],
+body[data-route^="desk"] .badge.badge-danger,
+body[data-route^="desk"] .badge.badge-error {
+	background: rgba(239, 68, 68, 0.12);
+	color: var(--fac-error);
+	border-color: rgba(239, 68, 68, 0.28);
+}
+
+/* Neutral chips */
+body[data-route^="desk"] .indicator-pill.gray,
+body[data-route^="desk"] .indicator-pill.grey,
+body[data-route^="desk"] .badge.badge-secondary {
+	background: #f3f4f6;
+	color: var(--fac-text-secondary);
+	border-color: var(--fac-border);
+}
+
+/* Alert banners / messages */
+body[data-route^="desk"] .alert {
+	border-radius: 8px;
+	border: 1px solid var(--fac-border);
+	font-family: var(--fac-font-body);
+	font-size: 14px;
+}
+
+body[data-route^="desk"] .alert-success {
+	background: rgba(16, 185, 129, 0.1);
+	border-color: rgba(16, 185, 129, 0.28);
+	color: #0f766e;
+}
+
+body[data-route^="desk"] .alert-warning {
+	background: rgba(245, 158, 11, 0.1);
+	border-color: rgba(245, 158, 11, 0.28);
+	color: #92400e;
+}
+
+body[data-route^="desk"] .alert-danger,
+body[data-route^="desk"] .alert-error {
+	background: rgba(239, 68, 68, 0.1);
+	border-color: rgba(239, 68, 68, 0.28);
+	color: #991b1b;
+}
+
+/* Tiny semantic dots often used in list/status headers */
+body[data-route^="desk"] .indicator.green,
+body[data-route^="desk"] .status-dot.green {
+	background: var(--fac-success) !important;
+}
+
+body[data-route^="desk"] .indicator.orange,
+body[data-route^="desk"] .indicator.yellow,
+body[data-route^="desk"] .status-dot.orange,
+body[data-route^="desk"] .status-dot.yellow {
+	background: var(--fac-warning) !important;
+}
+
+body[data-route^="desk"] .indicator.red,
+body[data-route^="desk"] .status-dot.red {
+	background: var(--fac-error) !important;
+}
+
+/* Step 7: dark mode parity */
+[data-theme="dark"] {
+	--fac-bg: #111318;
+	--fac-surface: #181b22;
+	--fac-text-primary: #e7e9ee;
+	--fac-text-secondary: #a1a7b3;
+	--fac-border: #2a2f3a;
+	--fac-focus-ring: 0 0 0 3px rgba(99, 102, 241, 0.28);
+}
+
+[data-theme="dark"] body[data-route^="Workspaces"],
+[data-theme="dark"] body[data-route^="workspace"],
+[data-theme="dark"] body[data-route^="desk"] .layout-main-section {
+	background: var(--fac-bg);
+	color: var(--fac-text-primary);
+}
+
+[data-theme="dark"] body[data-route^="desk"] .navbar {
+	background: rgba(24, 27, 34, 0.88);
+	border-bottom-color: var(--fac-border);
+}
+
+[data-theme="dark"] body[data-route^="desk"] .navbar .navbar-nav a,
+[data-theme="dark"] body[data-route^="desk"] .navbar .dropdown-toggle {
+	color: var(--fac-text-primary);
+}
+
+[data-theme="dark"] body[data-route^="desk"] .navbar .navbar-nav a:hover,
+[data-theme="dark"] body[data-route^="desk"] .navbar .dropdown-toggle:hover {
+	background: #232835;
+}
+
+[data-theme="dark"] .desk-page .widget,
+[data-theme="dark"] .desk-page .shortcut-widget-box,
+[data-theme="dark"] .desk-page .links-widget-box,
+[data-theme="dark"] .desk-page .number-widget-box,
+[data-theme="dark"] .desk-page .quick-list-widget-box,
+[data-theme="dark"] .desk-page .chart-widget-box,
+[data-theme="dark"] body[data-route^="desk"] .modal-content {
+	background: var(--fac-surface);
+	border-color: var(--fac-border);
+}
+
+[data-theme="dark"] .desk-page .widget:hover,
+[data-theme="dark"] .desk-page .shortcut-widget-box:hover,
+[data-theme="dark"] .desk-page .links-widget-box:hover,
+[data-theme="dark"] .desk-page .number-widget-box:hover,
+[data-theme="dark"] .desk-page .quick-list-widget-box:hover,
+[data-theme="dark"] .desk-page .chart-widget-box:hover {
+	box-shadow: 0 8px 30px rgba(0, 0, 0, 0.35);
+}
+
+[data-theme="dark"] body[data-route^="desk"] .form-control,
+[data-theme="dark"] body[data-route^="desk"] .search-input,
+[data-theme="dark"] body[data-route^="desk"] .awesomplete input,
+[data-theme="dark"] body[data-route^="desk"] #navbar-search {
+	background: #161a24;
+	border-color: var(--fac-border);
+	color: var(--fac-text-primary);
+}
+
+[data-theme="dark"] body[data-route^="desk"] .form-control:focus,
+[data-theme="dark"] body[data-route^="desk"] .search-input:focus,
+[data-theme="dark"] body[data-route^="desk"] .awesomplete input:focus,
+[data-theme="dark"] body[data-route^="desk"] #navbar-search:focus {
+	border-color: var(--fac-primary);
+	box-shadow: var(--fac-focus-ring);
+}
+
+[data-theme="dark"] body[data-route^="desk"] .btn.btn-default,
+[data-theme="dark"] body[data-route^="desk"] .btn.btn-secondary {
+	background: #1a1f2b;
+	border-color: var(--fac-border);
+	color: var(--fac-text-primary);
+}
+
+[data-theme="dark"] body[data-route^="desk"] .btn.btn-default:hover,
+[data-theme="dark"] body[data-route^="desk"] .btn.btn-secondary:hover {
+	background: #232835;
+	border-color: #353c4a;
+}
+
+[data-theme="dark"] body[data-route^="desk"] .standard-sidebar {
+	background: var(--fac-surface);
+	border-right-color: var(--fac-border);
+}
+
+[data-theme="dark"] body[data-route^="desk"] .standard-sidebar .standard-sidebar-item {
+	border-bottom-color: var(--fac-border);
+}
+
+[data-theme="dark"] body[data-route^="desk"] .standard-sidebar .standard-sidebar-item:hover .item-anchor,
+[data-theme="dark"] body[data-route^="desk"] .list-row:hover,
+[data-theme="dark"] body[data-route^="desk"] .report-row:hover,
+[data-theme="dark"] body[data-route^="desk"] .result:hover {
+	background: #202635;
+}
+
+[data-theme="dark"] body[data-route^="desk"] .list-row,
+[data-theme="dark"] body[data-route^="desk"] .result,
+[data-theme="dark"] body[data-route^="desk"] .report-row,
+[data-theme="dark"] body[data-route^="desk"] .grid-row {
+	border-bottom-color: var(--fac-border);
+}
+
+[data-theme="dark"] body[data-route^="desk"] .alert-success {
+	background: rgba(16, 185, 129, 0.18);
+	color: #8ef3cd;
+}
+
+[data-theme="dark"] body[data-route^="desk"] .alert-warning {
+	background: rgba(245, 158, 11, 0.2);
+	color: #ffd38a;
+}
+
+[data-theme="dark"] body[data-route^="desk"] .alert-danger,
+[data-theme="dark"] body[data-route^="desk"] .alert-error {
+	background: rgba(239, 68, 68, 0.2);
+	color: #ffb0b0;
+}
+
+/* Step 8: polish (empty states, skeletons, tooltip, dropdown/popover) */
+body[data-route^="desk"] .list-empty,
+body[data-route^="desk"] .empty-state,
+body[data-route^="desk"] .result-empty,
+body[data-route^="desk"] .no-result,
+body[data-route^="desk"] .list-no-data-state {
+	border: 1px dashed var(--fac-border);
+	border-radius: 12px;
+	background: var(--fac-surface);
+	padding: 24px;
+	color: var(--fac-text-secondary);
+	font-family: var(--fac-font-body);
+	font-size: 14px;
+	text-align: center;
+}
+
+body[data-route^="desk"] .skeleton,
+body[data-route^="desk"] .skeleton-card,
+body[data-route^="desk"] .workspace-skeleton .widget {
+	border-radius: 12px;
+	background: linear-gradient(90deg, #f2f3f6 25%, #eceef2 37%, #f2f3f6 63%);
+	background-size: 400% 100%;
+	animation: facSkeletonPulse 1.4s ease infinite;
+}
+
+@keyframes facSkeletonPulse {
+	0% {
+		background-position: 100% 50%;
+	}
+	100% {
+		background-position: 0 50%;
+	}
+}
+
+/* Native title-based tooltip containers in frappe */
+body[data-route^="desk"] .tooltip .tooltip-inner,
+body[data-route^="desk"] [role="tooltip"] .tooltip-inner {
+	border-radius: 8px;
+	border: 1px solid var(--fac-border);
+	background: var(--fac-surface);
+	color: var(--fac-text-primary);
+	font-family: var(--fac-font-body);
+	font-size: 12px;
+	padding: 6px 10px;
+	box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+}
+
+/* Dropdown and popover */
+body[data-route^="desk"] .dropdown-menu,
+body[data-route^="desk"] .popover,
+body[data-route^="desk"] .ui-autocomplete,
+body[data-route^="desk"] .awesomplete > ul {
+	border: 1px solid var(--fac-border);
+	border-radius: 8px;
+	background: var(--fac-surface);
+	box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+}
+
+body[data-route^="desk"] .dropdown-menu .dropdown-item,
+body[data-route^="desk"] .awesomplete > ul > li,
+body[data-route^="desk"] .ui-menu-item-wrapper {
+	font-family: var(--fac-font-body);
+	font-size: 14px;
+	color: var(--fac-text-primary);
+	padding: 8px 12px;
+}
+
+body[data-route^="desk"] .dropdown-menu .dropdown-item:hover,
+body[data-route^="desk"] .awesomplete > ul > li:hover,
+body[data-route^="desk"] .awesomplete > ul > li[aria-selected="true"],
+body[data-route^="desk"] .ui-menu-item-wrapper:hover {
+	background: #f5f6f8;
+	color: var(--fac-text-primary);
+}
+
+[data-theme="dark"] body[data-route^="desk"] .list-empty,
+[data-theme="dark"] body[data-route^="desk"] .empty-state,
+[data-theme="dark"] body[data-route^="desk"] .result-empty,
+[data-theme="dark"] body[data-route^="desk"] .no-result,
+[data-theme="dark"] body[data-route^="desk"] .list-no-data-state {
+	background: var(--fac-surface);
+	border-color: var(--fac-border);
+	color: var(--fac-text-secondary);
+}
+
+[data-theme="dark"] body[data-route^="desk"] .skeleton,
+[data-theme="dark"] body[data-route^="desk"] .skeleton-card,
+[data-theme="dark"] body[data-route^="desk"] .workspace-skeleton .widget {
+	background: linear-gradient(90deg, #1d2230 25%, #252b3a 37%, #1d2230 63%);
+	background-size: 400% 100%;
+}
+
+[data-theme="dark"] body[data-route^="desk"] .tooltip .tooltip-inner,
+[data-theme="dark"] body[data-route^="desk"] [role="tooltip"] .tooltip-inner,
+[data-theme="dark"] body[data-route^="desk"] .dropdown-menu,
+[data-theme="dark"] body[data-route^="desk"] .popover,
+[data-theme="dark"] body[data-route^="desk"] .ui-autocomplete,
+[data-theme="dark"] body[data-route^="desk"] .awesomplete > ul {
+	background: var(--fac-surface);
+	border-color: var(--fac-border);
+	color: var(--fac-text-primary);
+	box-shadow: 0 10px 24px rgba(0, 0, 0, 0.35);
+}
+
+[data-theme="dark"] body[data-route^="desk"] .dropdown-menu .dropdown-item:hover,
+[data-theme="dark"] body[data-route^="desk"] .awesomplete > ul > li:hover,
+[data-theme="dark"] body[data-route^="desk"] .awesomplete > ul > li[aria-selected="true"],
+[data-theme="dark"] body[data-route^="desk"] .ui-menu-item-wrapper:hover {
+	background: #202635;
+}
+
+/* Step 9: page-level refinement for consistency */
+body[data-route^="desk"] .page-head {
+	border-bottom: 1px solid var(--fac-border);
+	background: var(--fac-surface);
+}
+
+body[data-route^="desk"] .page-head .page-title,
+body[data-route^="desk"] .page-head h1 {
+	font-family: var(--fac-font-display);
+	font-weight: 700;
+	letter-spacing: -0.03em;
+	font-size: 32px;
+	line-height: 1.2;
+	color: var(--fac-text-primary);
+}
+
+body[data-route^="desk"] .page-head .sub-heading {
+	font-family: var(--fac-font-body);
+	font-size: 13px;
+	color: var(--fac-text-secondary);
+}
+
+/* Form pages */
+body[data-route^="Form"] .form-layout,
+body[data-route^="desk"] .form-page {
+	background: var(--fac-bg);
+}
+
+body[data-route^="Form"] .form-section,
+body[data-route^="desk"] .form-section {
+	background: var(--fac-surface);
+	border: 1px solid var(--fac-border);
+	border-radius: 12px;
+	padding: 16px;
+	margin-bottom: 16px;
+}
+
+body[data-route^="Form"] .section-head,
+body[data-route^="desk"] .section-head {
+	font-family: var(--fac-font-display);
+	font-size: 24px;
+	font-weight: 700;
+	letter-spacing: -0.03em;
+	color: var(--fac-text-primary);
+	margin-bottom: 12px;
+}
+
+/* Report and table styling */
+body[data-route^="query-report"] .dt-scrollable,
+body[data-route^="desk"] .datatable,
+body[data-route^="desk"] .report-wrapper {
+	border: 1px solid var(--fac-border);
+	border-radius: 12px;
+	background: var(--fac-surface);
+	overflow: hidden;
+}
+
+body[data-route^="desk"] .datatable .dt-header,
+body[data-route^="desk"] .datatable .dt-row-header {
+	background: #f8f9fb;
+	border-bottom: 1px solid var(--fac-border);
+}
+
+body[data-route^="desk"] .datatable .dt-cell {
+	font-family: var(--fac-font-body);
+	font-size: 13px;
+	color: var(--fac-text-primary);
+	border-color: var(--fac-border) !important;
+}
+
+body[data-route^="desk"] .datatable .dt-row:hover .dt-cell {
+	background: #f8f9fb;
+}
+
+/* Dialog action rhythm */
+body[data-route^="desk"] .modal-footer {
+	display: flex;
+	gap: 8px;
+	justify-content: flex-end;
+}
+
+/* Dark parity for step 9 */
+[data-theme="dark"] body[data-route^="desk"] .page-head {
+	background: var(--fac-surface);
+	border-bottom-color: var(--fac-border);
+}
+
+[data-theme="dark"] body[data-route^="Form"] .form-section,
+[data-theme="dark"] body[data-route^="desk"] .form-section,
+[data-theme="dark"] body[data-route^="query-report"] .dt-scrollable,
+[data-theme="dark"] body[data-route^="desk"] .datatable,
+[data-theme="dark"] body[data-route^="desk"] .report-wrapper {
+	background: var(--fac-surface);
+	border-color: var(--fac-border);
+}
+
+[data-theme="dark"] body[data-route^="desk"] .datatable .dt-header,
+[data-theme="dark"] body[data-route^="desk"] .datatable .dt-row-header {
+	background: #202635;
+	border-bottom-color: var(--fac-border);
+}
+
+[data-theme="dark"] body[data-route^="desk"] .datatable .dt-row:hover .dt-cell {
+	background: #202635;
+}
+
+/* Step 10: layout rhythm + container system */
+body[data-route^="desk"] .layout-main-section-wrapper,
+body[data-route^="desk"] .layout-main-section,
+body[data-route^="desk"] .page-body {
+	padding-left: 24px;
+	padding-right: 24px;
+}
+
+body[data-route^="desk"] .desk-page,
+body[data-route^="desk"] .form-page,
+body[data-route^="desk"] .report-wrapper,
+body[data-route^="desk"] .editor-js-container {
+	max-width: 1280px;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+/* Section spacing: 32 mobile, 48 tablet, 64 desktop */
+body[data-route^="desk"] .desk-page .widget-group,
+body[data-route^="desk"] .desk-page .widget,
+body[data-route^="desk"] .form-section,
+body[data-route^="desk"] .report-wrapper,
+body[data-route^="desk"] .section-body,
+body[data-route^="desk"] .page-content {
+	margin-bottom: 32px;
+}
+
+@media (min-width: 768px) {
+	body[data-route^="desk"] .desk-page .widget-group,
+	body[data-route^="desk"] .desk-page .widget,
+	body[data-route^="desk"] .form-section,
+	body[data-route^="desk"] .report-wrapper,
+	body[data-route^="desk"] .section-body,
+	body[data-route^="desk"] .page-content {
+		margin-bottom: 48px;
+	}
+}
+
+@media (min-width: 1200px) {
+	body[data-route^="desk"] .desk-page .widget-group,
+	body[data-route^="desk"] .desk-page .widget,
+	body[data-route^="desk"] .form-section,
+	body[data-route^="desk"] .report-wrapper,
+	body[data-route^="desk"] .section-body,
+	body[data-route^="desk"] .page-content {
+		margin-bottom: 64px;
+	}
+}
+
+/* 4px rhythm for dense tool areas */
+body[data-route^="desk"] .page-actions,
+body[data-route^="desk"] .list-view-actions,
+body[data-route^="desk"] .form-dashboard-section,
+body[data-route^="desk"] .widget-head {
+	gap: 8px;
+}
+
+body[data-route^="desk"] .form-column,
+body[data-route^="desk"] .section-body .frappe-control {
+	padding-top: 4px;
+	padding-bottom: 4px;
+}
+
+[data-theme="dark"] body[data-route^="desk"] .layout-main-section-wrapper,
+[data-theme="dark"] body[data-route^="desk"] .layout-main-section,
+[data-theme="dark"] body[data-route^="desk"] .page-body {
+	background: var(--fac-bg);
+}
+
+.desktop-icon:focus-visible,
+.btn:focus-visible,
+a:focus-visible,
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible {
+	outline: none;
+	box-shadow: var(--fac-focus-ring);
+}

@@ -1,0 +1,14 @@
+{
+    "private": true,
+    "type": "module",
+    "aworkspaces": [
+        "frontend",
+        "frappe-ui"
+    ],
+    "scripts": {
+        "postinstall": "cd frontend && yarn install --check-files",
+        "dev": "cd frontend && yarn dev",
+        "build": "if [ -f insights/public/frontend/index.html ] && [ -f insights/www/insights.html ]; then echo 'insights: skip vite (prebuilt assets present)'; else cd frontend && yarn build; fi",
+        "test": "cd frontend && yarn test"
+    }
+}
