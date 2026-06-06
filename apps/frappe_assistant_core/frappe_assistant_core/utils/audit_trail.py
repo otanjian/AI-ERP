@@ -36,104 +36,27 @@ _VALID_STATUSES = {
 # from bloating when a tool returns a large payload.
 _OUTPUT_DATA_MAX_BYTES = 50_000
 
-# Keys that should never appear in audit logs in cleartext. Matched
-# case-insensitively on substring, same heuristic as BaseTool._sanitize_arguments.
-_SENSITIVE_KEY_SUBSTRINGS = ("password", "api_key", "secret", "token", "auth")
-
 
 def _sanitize_arguments(arguments: Optional[Dict[str, Any]]) -> Optional[Dict[str, Any]]:
     """Defensive sanitization at the audit sink — callers are expected to
     sanitize too, but this ensures secrets never land in the table even
-    when a non-BaseTool call site forgets."""
+    when a non-BaseTool call site forgets.
+
+    Uses the same _is_sensitive_key heuristic as BaseTool so token-count
+    metrics (input_tokens / output_tokens / total_tokens) are preserved while
+    credential-shaped keys still get redacted.
+    """
     if not isinstance(arguments, dict):
         return arguments
+    from frappe_assistant_core.core.base_tool import _is_sensitive_key
+
     sanitized: Dict[str, Any] = {}
     for key, value in arguments.items():
-        if any(sub in key.lower() for sub in _SENSITIVE_KEY_SUBSTRINGS):
+        if _is_sensitive_key(key):
             sanitized[key] = "***REDACTED***"
         else:
             sanitized[key] = value
     return sanitized
-
-
-def log_document_change(doc, method):
-    """Log document changes for audit trail"""
-    if should_log_document(doc.doctype):
-        try:
-            frappe.get_doc(
-                {
-                    "doctype": "Assistant Audit Log",
-                    "action": "update_document",
-                    "user": frappe.session.user,
-                    "status": "Success",
-                    "timestamp": now(),
-                    "target_doctype": doc.doctype,
-                    "target_name": doc.name,
-                    "ip_address": frappe.local.request_ip if hasattr(frappe.local, "request_ip") else None,
-                }
-            ).insert(ignore_permissions=True)
-        except Exception:
-            pass  # Ignore audit logging errors
-
-
-def log_document_submit(doc, method):
-    """Log document submissions"""
-    if should_log_document(doc.doctype):
-        try:
-            frappe.get_doc(
-                {
-                    "doctype": "Assistant Audit Log",
-                    "action": "update_document",
-                    "user": frappe.session.user,
-                    "status": "Success",
-                    "timestamp": now(),
-                    "target_doctype": doc.doctype,
-                    "target_name": doc.name,
-                    "ip_address": frappe.local.request_ip if hasattr(frappe.local, "request_ip") else None,
-                }
-            ).insert(ignore_permissions=True)
-        except Exception:
-            pass
-
-
-def log_document_cancel(doc, method):
-    """Log document cancellations"""
-    if should_log_document(doc.doctype):
-        try:
-            frappe.get_doc(
-                {
-                    "doctype": "Assistant Audit Log",
-                    "action": "update_document",
-                    "user": frappe.session.user,
-                    "status": "Success",
-                    "timestamp": now(),
-                    "target_doctype": doc.doctype,
-                    "target_name": doc.name,
-                    "ip_address": frappe.local.request_ip if hasattr(frappe.local, "request_ip") else None,
-                }
-            ).insert(ignore_permissions=True)
-        except Exception:
-            pass
-
-
-def should_log_document(doctype):
-    """Check if document type should be logged"""
-    # Don't log assistant internal documents to avoid recursion
-    if doctype.startswith("assistant "):
-        return False
-
-    # try:
-    #     # Get audit settings using the correct method
-    #     audit_doctypes = frappe.db.get_single_value("assistant Server Settings", "audit_doctypes") or ""
-
-    #     if audit_doctypes:
-    #         return doctype in audit_doctypes.split(",")
-    # except Exception:
-    #     # If assistant Server Settings doesn't exist or has issues, don't log
-    #     pass
-
-    # By default, don't audit everything to avoid performance impact
-    return False
 
 
 def log_tool_execution(

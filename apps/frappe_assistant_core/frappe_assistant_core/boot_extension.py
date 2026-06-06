@@ -4,8 +4,8 @@
 import frappe
 
 DEFAULT_AI_ASSISTANT_EMBED_URL = (
-	"https://ai.bosofts.com/agents/3a6420a3-8bbe-40a1-8da2-4c6aad83b487/"
-	"6d752020a22b48ad4a5b5b651cd48fa5181fee135776e9f2b20d4e0645f93d72"
+	"http://localhost:4091/agents/5130f0df-023a-4014-afad-f4533e2b10d1/"
+	"57f9d4480c5d5d47f89c47b126f092bcd18f8c9d8e6c143e8479a9c7a29c9479"
 )
 
 

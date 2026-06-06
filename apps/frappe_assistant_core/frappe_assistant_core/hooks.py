@@ -31,8 +31,8 @@ app_version = app_version
 
 # include js, css files in header of desk.html
 app_include_css = [
-    "/assets/frappe_assistant_core/css/ai_assistant_bubble.css",
-    "/assets/frappe_assistant_core/css/erpnext_desk_theme.css",
+	"/assets/frappe_assistant_core/css/ai_assistant_bubble.css",
+	"/assets/frappe_assistant_core/css/erpnext_desk_theme.css",
 ]
 app_include_js = "/assets/frappe_assistant_core/js/ai_assistant_bubble.js"
 
@@ -139,11 +139,6 @@ permission_query_conditions = {
 # Hook on document methods and events
 
 doc_events = {
-    "*": {
-        "on_update": "frappe_assistant_core.utils.audit_trail.log_document_change",
-        "on_submit": "frappe_assistant_core.utils.audit_trail.log_document_submit",
-        "on_cancel": "frappe_assistant_core.utils.audit_trail.log_document_cancel",
-    },
     "Assistant Core Settings": {"on_update": "frappe_assistant_core.utils.cache.invalidate_settings_cache"},
     "Assistant Audit Log": {"after_insert": "frappe_assistant_core.utils.cache.invalidate_dashboard_cache"},
 }

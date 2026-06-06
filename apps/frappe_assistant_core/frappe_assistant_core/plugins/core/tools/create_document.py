@@ -158,22 +158,6 @@ class DocumentCreate(BaseTool):
             meta = frappe.get_meta(doctype)
             table_fields = {f.fieldname: f.options for f in meta.fields if f.fieldtype == "Table"}
 
-            # Validate required fields
-            required_fields = [
-                f.fieldname for f in meta.fields if f.reqd and not f.default and f.fieldtype != "Table"
-            ]
-            missing_fields = [f for f in required_fields if f not in data or not data[f]]
-
-            if missing_fields:
-                return {
-                    "success": False,
-                    "error": f"Missing required fields: {', '.join(missing_fields)}",
-                    "required_fields": required_fields,
-                    "provided_fields": list(data.keys()),
-                    "suggestion": f"Use get_doctype_info tool with doctype='{doctype}' to see all required fields and their types",
-                    "doctype": doctype,
-                }
-
             # Set field values with proper child table handling
             for field, value in data.items():
                 if field in table_fields:
@@ -192,6 +176,14 @@ class DocumentCreate(BaseTool):
                     # Handle regular fields
                     setattr(doc, field, value)
 
+            # Required-field checks are deferred to Frappe's own validation pipeline
+            # via doc.insert()/doc.run_method("validate"). A pre-flight check here is
+            # unreliable: many "reqd" fields (e.g. Quotation.conversion_rate,
+            # price_list_currency, plc_conversion_rate) are populated by the
+            # doctype controller's set_missing_values() during validate(), which has
+            # not yet run when we'd inspect doc.get(f). MandatoryError is caught
+            # below and translated into the same structured error shape.
+
             # Handle validation-only mode
             if validate_only:
                 # Run validation without saving
@@ -207,9 +199,41 @@ class DocumentCreate(BaseTool):
                     "next_step": "Use create_document with validate_only=false to actually create the document",
                 }
 
+            # Capture input child-table values for post-save comparison (issue #181)
+            input_child_values = {}
+            for field, value in data.items():
+                if field in table_fields and isinstance(value, list):
+                    input_child_values[field] = value
+
             # Save document
             doc.insert()
-
+            # Check for silently overridden field values
+            warnings = []
+            for field, input_rows in input_child_values.items():
+                saved_rows = doc.get(field) or []
+                for idx, input_row in enumerate(input_rows):
+                    if idx >= len(saved_rows):
+                        break
+                    saved_row = saved_rows[idx]
+                    for key, input_val in input_row.items():
+                        saved_val = getattr(saved_row, key, None)
+                        if saved_val is not None and str(saved_val) != str(input_val):
+                            # Skip numeric false positives (1 vs 1.0, 100 vs 100.0)
+                            try:
+                                if float(str(saved_val)) == float(str(input_val)):
+                                    continue
+                            except (ValueError, TypeError):
+                                pass
+                            warnings.append(
+                                {
+                                    "child_table": field,
+                                    "row_idx": idx,
+                                    "field": key,
+                                    "requested": input_val,
+                                    "saved": str(saved_val),
+                                    "reason": "Value was overridden by ERPNext validation logic",
+                                }
+                            )
             # Initialize result with basic information
             result = {
                 "success": True,
@@ -260,8 +284,47 @@ class DocumentCreate(BaseTool):
                 ]
 
             # Log successful creation
+            # Add warnings if any fields were silently overridden
+            if warnings:
+                result["warnings"] = warnings
+
             return result
 
+        except frappe.MandatoryError as e:
+            # Frappe raises MandatoryError after set_missing_values() has run, so the
+            # missing fieldnames here are genuine — not the false positives we'd see
+            # from a pre-flight `reqd`-flag check on the raw input. Format:
+            #   "[<doctype>, <name>]: <fieldname1>, <fieldname2>, ..."
+            # Don't bind `_` here — `_` is the translation function imported at
+            # module scope. Any local `_ = ...` would shadow it for the entire
+            # function body, raising UnboundLocalError at the later `_("...")`
+            # call inside the generic-Exception branch on paths that route
+            # through the function before reaching that local assignment.
+            error_msg = str(e)
+            try:
+                fields_part = error_msg.partition(": ")[2]
+                missing = [f.strip() for f in fields_part.split(",") if f.strip()]
+            except Exception:
+                missing = []
+
+            return {
+                "success": False,
+                "error": (
+                    f"Missing required fields: {', '.join(missing)}"
+                    if missing
+                    else f"Missing required fields. Raw error: {error_msg}"
+                ),
+                "error_type": "missing_required_field",
+                "doctype": doctype,
+                "missing_fields": missing,
+                "provided_fields": list(data.keys()),
+                "suggestion": (
+                    f"Use get_doctype_info tool with doctype='{doctype}' to see all required "
+                    f"fields and supply values for: {', '.join(missing)}."
+                    if missing
+                    else f"Use get_doctype_info tool with doctype='{doctype}' to see all required fields."
+                ),
+            }
         except Exception as e:
             frappe.log_error(
                 title=_("Document Creation Error"), message=f"Error creating {doctype}: {str(e)}"
@@ -288,14 +351,6 @@ class DocumentCreate(BaseTool):
                         "error_type": "validation_error",
                         "guidance": "Referenced record does not exist in the system.",
                         "suggestion": "1. Verify that referenced records (like customers, items, suppliers) exist\n2. Use search_documents tool to find correct record names\n3. Check spelling and exact names",
-                    }
-                )
-            elif "mandatory" in error_msg.lower() or "required" in error_msg.lower():
-                result.update(
-                    {
-                        "error_type": "missing_required_field",
-                        "guidance": "Required field is missing or empty.",
-                        "suggestion": f"1. Use get_doctype_info tool with doctype='{doctype}' to see all required fields\n2. Ensure all required fields are provided with valid values",
                     }
                 )
             elif "permission" in error_msg.lower():

@@ -267,21 +267,23 @@ def handle_mcp():
     from frappe.oauth import get_server_url
     from werkzeug.wrappers import Response
 
-    # Handle HEAD request for connectivity check (Claude Web uses this)
-    if frappe.request.method == "HEAD":
-        # Return 401 with WWW-Authenticate header to indicate auth is required
-        frappe_url = get_server_url()
-        metadata_url = f"{frappe_url}/.well-known/oauth-protected-resource"
-
-        response = Response()
-        response.status_code = 401
-        response.headers["WWW-Authenticate"] = (
-            f'Bearer realm="Frappe Assistant Core", ' f'resource_metadata="{metadata_url}"'
-        )
-        return response
-
     # Authenticate the request (supports both OAuth and API key)
     auth_result = _authenticate_mcp_request()
+
+    # Handle HEAD request for connectivity check (Cursor, Claude Web, etc.)
+    if frappe.request.method == "HEAD":
+        if isinstance(auth_result, Response):
+            return auth_result
+
+        if not _check_assistant_enabled(auth_result):
+            response = Response(status=403)
+            response.data = frappe.as_json(
+                {"error": "forbidden", "message": f"Assistant access is disabled for user {auth_result}"}
+            )
+            response.headers["Content-Type"] = "application/json"
+            return response
+
+        return Response(status=200)
 
     # If authentication failed, auth_result is a Response object with 401
     if isinstance(auth_result, Response):
