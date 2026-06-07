@@ -8,10 +8,6 @@ window.login = {};
 
 window.verify = {};
 
-login.api_url = function (cmd) {
-	return "/api/method/" + cmd;
-};
-
 login.bind_events = function () {
 	$(window).on("hashchange", function () {
 		login.route();
@@ -28,7 +24,7 @@ login.bind_events = function () {
 			frappe.msgprint("{{ _('Both login and password required') | striptags | e }}");
 			return false;
 		}
-		login.call(args, null, login.api_url("login"));
+		login.call(args, null, "/login");
 		return false;
 	});
 
@@ -43,7 +39,7 @@ login.bind_events = function () {
 			login.set_status({{ _("Valid email and name required") | tojson }}, 'red');
 			return false;
 		}
-		login.call(args, null, login.api_url(args.cmd));
+		login.call(args);
 		return false;
 	});
 
@@ -56,7 +52,7 @@ login.bind_events = function () {
 			login.set_status({{ _("Valid Login id required.") | tojson }}, 'red');
 			return false;
 		}
-		login.call(args, null, login.api_url(args.cmd));
+		login.call(args);
 		return false;
 	});
 
@@ -69,14 +65,12 @@ login.bind_events = function () {
 			login.set_status({{ _("Valid Login id required.") | tojson }}, 'red');
 			return false;
 		}
-		login.call(args, null, login.api_url(args.cmd))
-			.then(() => {
-				login.set_status({{ _("Login link sent to your email") | tojson }}, 'blue');
-				$("#login_with_email_link_email").val("");
-			})
-			.catch(() => {
-				login.set_status({{ _("Send login link") | tojson }}, 'blue');
-			});
+		login.call(args).then(() => {
+			login.set_status({{ _("Login link sent to your email") | tojson }}, 'blue');
+			$("#login_with_email_link_email").val("");
+		}).catch(() => {
+			login.set_status({{ _("Send login link") | tojson }}, 'blue');
+		});
 
 		return false;
 	});
@@ -102,7 +96,7 @@ login.bind_events = function () {
 			login.set_status({{ _("Both login and password required") | tojson }}, 'red');
 			return false;
 		}
-		login.call(args, null, login.api_url(args.cmd));
+		login.call(args);
 		return false;
 	});
 	{% endif %}
@@ -315,7 +309,7 @@ var verify_token = function (event) {
 			frappe.msgprint("{{ _('Login token required') | striptags | e }}");
 			return false;
 		}
-		login.call(args, null, login.api_url("login"));
+		login.call(args);
 		return false;
 	});
 }

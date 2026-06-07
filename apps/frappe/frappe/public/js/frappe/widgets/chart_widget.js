@@ -280,10 +280,7 @@ export default class ChartWidget extends Widget {
 				y_fields: y_fields,
 				x_field: this.chart_doc.x_field,
 				chart_type: this.chart_doc.type,
-				color:
-					this.chart_doc.color && String(this.chart_doc.color).trim()
-						? this.chart_doc.color
-						: undefined,
+				color: this.chart_doc.color,
 			};
 			let columns = result.columns.map((col) => {
 				return frappe.report_utils.prepare_field_from_column(col);
@@ -727,14 +724,10 @@ export default class ChartWidget extends Widget {
 		let colors = [];
 		if (this.chart_doc.y_axis.length) {
 			this.chart_doc.y_axis.map((field) => {
-				const c = field.color && String(field.color).trim();
-				if (c) {
-					colors.push(c);
-				}
+				colors.push(field.color);
 			});
 		} else if (["Line", "Bar"].includes(this.chart_doc.type)) {
-			const c = this.chart_doc.color && String(this.chart_doc.color).trim();
-			colors = c ? [c] : [];
+			colors = [this.chart_doc.color || []];
 		} else if (this.chart_doc.type == "Heatmap") {
 			colors = [];
 		}

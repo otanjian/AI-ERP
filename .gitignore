@@ -34,5 +34,9 @@ sites/*/site_config.json
 .cache/
 *.pyc
 
+# Local archives and search indexes
+archived/
+*.db
+
 # SSL private keys and certs
 config/ssl/

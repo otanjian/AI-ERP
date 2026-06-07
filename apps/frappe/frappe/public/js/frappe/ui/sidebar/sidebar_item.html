@@ -23,7 +23,7 @@
             <a
                 {% if (path) { %}
                     href="{{ path }}"
-                    target="{%= item.link_type === "URL" && (item.open_in_new_tab === undefined || item.open_in_new_tab) ? "_blank" : "" %}"
+                    target="{%= item.link_type === "URL" ? "_blank" : "" %}"
                 {% } %}
                 class="item-anchor"
             >

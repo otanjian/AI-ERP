@@ -817,6 +817,82 @@ class TestQuery(IntegrationTestCase):
 		frappe.db.sql("delete from `tabDocType` where `name` = 'Test Tree DocType'")
 		frappe.db.sql_ddl("drop table if exists `tabTest Tree DocType`")
 
+	def test_nestedset_on_child_table_field(self):
+		"""Nested-set operator on a child-table link field should resolve the field
+		against the child doctype, not the parent (issue #38776)."""
+		tree_dt = child_dt = parent_dt = None
+		try:
+			tree_dt = new_doctype(is_tree=True, autoname="field:some_fieldname").insert()
+			parent_field = "parent_" + tree_dt.name.lower().replace(" ", "_")
+
+			for record in [
+				{"some_fieldname": "Root Node", parent_field: None, "is_group": 1},
+				{"some_fieldname": "Parent 1", parent_field: "Root Node", "is_group": 1},
+				{"some_fieldname": "Parent 2", parent_field: "Root Node", "is_group": 1},
+				{"some_fieldname": "Child 1", parent_field: "Parent 1", "is_group": 0},
+				{"some_fieldname": "Child 2", parent_field: "Parent 1", "is_group": 0},
+				{"some_fieldname": "Child 3", parent_field: "Parent 2", "is_group": 0},
+			]:
+				d = frappe.new_doc(tree_dt.name)
+				d.update(record)
+				d.insert()
+
+			child_dt = new_doctype(
+				istable=1,
+				fields=[
+					{
+						"fieldname": "tree_link",
+						"fieldtype": "Link",
+						"options": tree_dt.name,
+						"label": "Tree Link",
+					}
+				],
+			).insert()
+			parent_dt = new_doctype(
+				fields=[
+					{
+						"fieldname": "rows",
+						"fieldtype": "Table",
+						"options": child_dt.name,
+						"label": "Rows",
+					}
+				],
+			).insert()
+
+			p1 = frappe.get_doc(
+				doctype=parent_dt.name,
+				rows=[{"tree_link": "Child 1"}, {"tree_link": "Child 2"}],
+			).insert()
+			p2 = frappe.get_doc(
+				doctype=parent_dt.name,
+				rows=[{"tree_link": "Child 3"}],
+			).insert()
+
+			# Before the fix, the field was looked up on the parent doctype meta
+			# and ref_doctype fell back to the parent — producing
+			# "Unknown column 'lft'" against the parent table.
+			result = frappe.get_all(
+				parent_dt.name,
+				filters=[[child_dt.name, "tree_link", "descendants of", "Parent 1"]],
+				pluck="name",
+			)
+			self.assertIn(p1.name, result)
+			self.assertNotIn(p2.name, result)
+
+			# Also exercise the qb path directly.
+			rows = frappe.qb.get_query(
+				parent_dt.name,
+				fields=["name"],
+				filters=[[child_dt.name, "tree_link", "descendants of", "Parent 1"]],
+			).run(as_dict=1)
+			names = {r.name for r in rows}
+			self.assertIn(p1.name, names)
+			self.assertNotIn(p2.name, names)
+		finally:
+			for dt in filter(None, [parent_dt, child_dt, tree_dt]):
+				frappe.db.sql("delete from `tabDocType` where `name` = %s", dt.name)
+				frappe.db.sql_ddl(f"drop table if exists `tab{dt.name}`")
+
 	def test_child_field_syntax(self):
 		note1 = frappe.get_doc(doctype="Note", title="Note 1", seen_by=[{"user": "Administrator"}]).insert()
 		note2 = frappe.get_doc(
@@ -2378,6 +2454,161 @@ class TestQuery(IntegrationTestCase):
 		engine = Engine()
 		self.assertEqual(engine._get_ifnull_fallback("Patch Log", "skipped"), "0")
 		self.assertEqual(engine._get_ifnull_fallback("Patch Log", "patch"), "''")
+
+	@run_only_if(db_type_is.MARIADB)
+	def test_drop_unique_constraint_for_deleted_fields_mariadb(self):
+		trial_dt = new_doctype(
+			"Trial Doctype",
+			fields=[
+				{
+					"fieldname": "field_one",
+					"fieldtype": "Data",
+					"label": "Field One",
+				},
+				{
+					"fieldname": "field_two",
+					"fieldtype": "Data",
+					"label": "Field Two",
+					"unique": 1,
+				},
+			],
+		)
+
+		trial_dt.insert(ignore_if_duplicate=True)
+
+		indexes = frappe.db.get_column_index("tabTrial Doctype", "field_two", unique=True)
+		self.assertTrue(indexes)
+
+		field_to_remove = None
+
+		for field in trial_dt.fields:
+			if field.fieldname == "field_two":
+				field_to_remove = field
+				break
+
+		trial_dt.fields.remove(field_to_remove)
+		trial_dt.save()
+
+		indexes = frappe.db.get_column_index("tabTrial Doctype", "field_two", unique=True)
+		self.assertFalse(indexes)
+
+	@run_only_if(db_type_is.POSTGRES)
+	def test_drop_unique_constraint_and_indexes_for_deleted_fields_postgres(self):
+		# test for unique index backed by constraint at field creation time
+		trial_dt = new_doctype(
+			"Trial Doctype",
+			fields=[
+				{
+					"fieldname": "field_one",
+					"fieldtype": "Data",
+					"label": "Field One",
+				},
+				{
+					"fieldname": "field_two",
+					"fieldtype": "Data",
+					"label": "Field Two",
+					"unique": 1,
+				},
+			],
+		)
+
+		trial_dt.insert(ignore_if_duplicate=True)
+
+		index_exists = frappe.db.sql(
+			"""
+			SELECT 1
+			FROM pg_indexes
+			WHERE tablename = %s
+			AND indexname = %s
+			""",
+			(
+				f"tab{trial_dt.name}",
+				f"tab{trial_dt.name}_field_two_key",
+			),
+		)
+		self.assertTrue(index_exists)
+
+		field_to_remove = None
+
+		for field in trial_dt.fields:
+			if field.fieldname == "field_two":
+				field_to_remove = field
+				break
+
+		trial_dt.fields.remove(field_to_remove)
+		trial_dt.save()
+
+		index_exists = frappe.db.sql(
+			"""
+			SELECT 1
+			FROM pg_indexes
+			WHERE tablename = %s
+			AND indexname = %s
+			""",
+			(
+				f"tab{trial_dt.name}",
+				f"tab{trial_dt.name}_field_two_key",
+			),
+		)
+		self.assertFalse(index_exists)
+
+		# test for unique index backed by no constraint created at field alteration post creation
+		for field in trial_dt.fields:
+			if field.fieldname == "field_one":
+				field.unique = 1
+
+		trial_dt.save()
+
+		index_exists = frappe.db.sql(
+			"""
+			SELECT 1
+			FROM pg_indexes
+			WHERE tablename = %s
+			AND indexname = %s
+			""",
+			(
+				f"tab{trial_dt.name}",
+				"unique_field_one",
+			),
+		)
+		self.assertTrue(index_exists)
+
+		field_to_remove = None
+
+		for field in trial_dt.fields:
+			if field.fieldname == "field_one":
+				field_to_remove = field
+				break
+
+		trial_dt.fields.remove(field_to_remove)
+		trial_dt.save()
+
+		index_exists = frappe.db.sql(
+			"""
+			SELECT 1
+			FROM pg_indexes
+			WHERE tablename = %s
+			AND indexname = %s
+			""",
+			(
+				f"tab{trial_dt.name}",
+				"unique_field_one",
+			),
+		)
+		self.assertFalse(index_exists)
+
+	def test_limit_offset_query(self):
+		"""Test if query builder correctly uses limit with offset in MariaDB and SQLite when limit is omitted."""
+		from frappe.database.query import MAX_LIMIT
+
+		query = frappe.qb.get_query("Doctype", offset=10).get_sql()
+		if frappe.db.db_type != "postgres":
+			self.assertIn(f"LIMIT {MAX_LIMIT} OFFSET 10", query)
+			query = frappe.qb.get_query("Doctype", limit=10, offset=10).get_sql()
+			self.assertIn("LIMIT 10 OFFSET 10", query)
+		else:
+			self.assertNotIn("LIMIT", query)
+			self.assertIn("OFFSET 10", query)
 
 
 # This function is used as a permission query condition hook

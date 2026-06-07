@@ -57,6 +57,12 @@ frappe.ui.SidebarHeader = class SidebarHeader {
 			let is_dark = frappe.ui.get_current_theme() === "dark";
 			this.dropdown_items.push(
 				{
+					name: "display",
+					label: "Display",
+					icon: "monitor",
+					items: this.get_display_siblings(is_dark),
+				},
+				{
 					label: "Session Defaults",
 					action: "frappe.ui.toolbar.setup_session_defaults()",
 					is_standard: 1,
@@ -70,18 +76,6 @@ frappe.ui.SidebarHeader = class SidebarHeader {
 					action: "frappe.ui.toolbar.clear_cache()",
 					is_standard: 1,
 					icon: "rotate-ccw",
-				},
-				{
-					label: "Toggle Full Width",
-					action: "frappe.ui.toolbar.toggle_full_width()",
-					is_standard: 1,
-					icon: "maximize",
-				},
-				{
-					label: "Toggle Theme",
-					action: "new frappe.ui.ThemeSwitcher().show()",
-					is_standard: 1,
-					icon: is_dark ? "sun" : "moon",
 				},
 				{
 					name: "help",
@@ -213,6 +207,8 @@ frappe.ui.SidebarHeader = class SidebarHeader {
 		help_dropdown_items = custom_help_links.concat(help_dropdown_items);
 
 		navbar_settings.help_dropdown.forEach((element) => {
+			if (element.hidden) return;
+			if (element.condition && !frappe.utils.eval(element.condition)) return;
 			let dropdown_children = {
 				name: element.name,
 				label: element.item_label,
@@ -229,6 +225,36 @@ frappe.ui.SidebarHeader = class SidebarHeader {
 		});
 
 		return help_dropdown_items;
+	}
+
+	get_display_siblings(is_dark) {
+		const sidebar = this.sidebar;
+		return [
+			{
+				name: "toggle-theme",
+				label: __("Toggle Theme"),
+				icon: is_dark ? "sun" : "moon",
+				onClick: function () {
+					new frappe.ui.ThemeSwitcher().show();
+				},
+			},
+			{
+				name: "toggle-full-width",
+				label: __("Toggle Full Width"),
+				icon: "maximize",
+				onClick: function () {
+					frappe.ui.toolbar.toggle_full_width();
+				},
+			},
+			{
+				name: "toggle-sidebar",
+				label: __("Toggle Sidebar"),
+				icon: "panel-right-open",
+				onClick: function () {
+					sidebar.toggle_width();
+				},
+			},
+		];
 	}
 
 	get_custom_help_links() {
@@ -268,43 +294,22 @@ frappe.ui.SidebarHeader = class SidebarHeader {
 		let desktop_icon = this.get_desktop_icon_by_label(this.sidebar.sidebar_title);
 		let desktop_icon_url =
 			desktop_icon && frappe.utils.get_desktop_icon(desktop_icon.label, "solid");
-		const header_img = (url) => {
-			if (!url) {
-				return "";
-			}
-			const safe = String(url).replace(/"/g, "&quot;");
-			return `<img src="${safe}" alt="" />`;
-		};
 		if (desktop_icon_url) {
-			this.header_icon = header_img(desktop_icon_url);
+			this.header_icon = desktop_icon_url;
+			this.header_icon = `<img src=${this.header_icon}></img>`;
 		} else if (desktop_icon && desktop_icon.logo_url) {
-			this.header_icon = header_img(desktop_icon.logo_url);
+			this.header_icon = desktop_icon.logo_url;
+			this.header_icon = `<img src=${this.header_icon}></img>`;
 		} else if (this.sidebar.sidebar_data) {
 			this.header_icon = this.sidebar.sidebar_data.header_icon;
 			this.header_icon = frappe.utils.desktop_icon(this.sidebar.sidebar_title, "gray", "sm");
 		} else {
-			this.header_icon = header_img(this.get_default_icon());
+			this.header_icon = this.get_default_icon();
+			this.header_icon = `<img src=${this.header_icon}></img>`;
 		}
 	}
 	get_default_icon() {
-		const apps = frappe.boot.app_data || [];
-		const primary = apps[0];
-		const from_primary = primary?.app_logo_url;
-		const from_boot = frappe.boot.app_logo_url;
-		const pick = (v) => {
-			if (typeof v === "string" && v) {
-				return v;
-			}
-			if (Array.isArray(v) && v.length && typeof v[0] === "string") {
-				return v[0];
-			}
-			return "";
-		};
-		return (
-			pick(from_primary) ||
-			pick(from_boot) ||
-			"/assets/frappe/images/frappe-framework-logo.svg"
-		);
+		return frappe.boot.app_data[0].app_logo_url;
 	}
 	get_desktop_icon_by_label(title, filters) {
 		if (!filters) {
@@ -338,22 +343,18 @@ frappe.ui.SidebarHeader = class SidebarHeader {
 	}
 
 	add_app_item(item) {
-		let icon_markup = "";
-		if (item.icon) {
-			icon_markup = frappe.utils.icon(item.icon);
-		} else if (item.icon_url) {
-			const safe = String(item.icon_url).replace(/"/g, "&quot;");
-			icon_markup = `<img class="logo" src="${safe}" alt="" />`;
-		} else if (item.icon_html) {
-			icon_markup = item.icon_html;
-		} else {
-			icon_markup = frappe.utils.icon("circle-dot");
-		}
 		$(`<div class="dropdown-menu-item" data-name="${item.name}"
 			data-app-route="${item.route}">
 			<a ${item.href ? `href="${item.href}"` : ""}>
 				<div class="sidebar-item-icon">
-					${icon_markup}
+					${
+						item.icon
+							? frappe.utils.icon(item.icon)
+							: `<img
+							class="logo"
+							src="${item.icon_url}"
+						>`
+					}
 				</div>
 				<span class="menu-item-title">${item.label}</span>
 			</a>

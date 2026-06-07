@@ -25,7 +25,7 @@ from frappe.permissions import has_permission
 from frappe.query_builder import DocType
 from frappe.query_builder.functions import Count
 from frappe.query_builder.terms import ParameterizedValueWrapper, SubQuery
-from frappe.utils import add_user_info, cint, cstr, get_system_timezone
+from frappe.utils import add_user_info, cstr, get_system_timezone
 from frappe.utils.caching import redis_cache
 from frappe.utils.change_log import get_versions
 from frappe.utils.frappecloud import on_frappecloud
@@ -213,12 +213,9 @@ def load_desktop_data(bootinfo):
 				)
 				or (workspaces and "/desk/" + frappe.utils.slug(workspaces[0]))
 				or "",
-				app_logo_url=(
-					app_info.get("logo")
-					or (frappe.get_hooks("app_logo_url", app_name=app_name) or [None])[0]
-					or (frappe.get_hooks("app_logo_url", app_name="frappe") or [None])[0]
-					or "/assets/frappe/images/frappe-framework-logo.svg"
-				),
+				app_logo_url=app_info.get("logo")
+				or frappe.get_hooks("app_logo_url", app_name=app_name)
+				or frappe.get_hooks("app_logo_url", app_name="frappe"),
 				modules=frappe.get_all("Module Def", dict(app_name=app_name), pluck="name"),
 				workspaces=workspaces,
 			)
@@ -587,19 +584,18 @@ def get_sidebar_items(allowed_workspaces):
 					"collapsible": item.collapsible,
 					"indent": item.indent,
 					"keep_closed": item.keep_closed,
-					"display_depends_on": item.display_depends_on,
 					"url": item.url,
 					"show_arrow": item.show_arrow,
 					"filters": item.filters,
 					"route_options": item.route_options,
-					"tab": item.get("navigate_to_tab"),
-					"open_in_new_tab": cint(
-						item.get("open_in_new_tab")
-						if item.get("open_in_new_tab") is not None
-						else (1 if item.link_type == "URL" else 0)
-					),
+					"tab": item.navigate_to_tab,
 				}
-				if item.link_type == "Report" and item.link_to and frappe.db.exists("Report", item.link_to):
+				if (
+					item.link_type == "Report"
+					and item.link_to
+					and frappe.db.exists("Report", item.link_to)
+					and not frappe.db.get_value("Report", item.link_to, "disabled")
+				):
 					report_type, ref_doctype = frappe.db.get_value(
 						"Report", item.link_to, ["report_type", "ref_doctype"]
 					)
