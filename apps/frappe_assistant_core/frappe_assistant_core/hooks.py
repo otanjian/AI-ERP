@@ -30,15 +30,17 @@ app_version = app_version
 # ------------------
 
 # include js, css files in header of desk.html
+_assistant_asset_v = f"?v={app_version}"
+
 app_include_css = [
-	"/assets/frappe_assistant_core/css/ai_assistant_bubble.css",
+	f"/assets/frappe_assistant_core/css/ai_assistant_bubble.css{_assistant_asset_v}",
 	"/assets/frappe_assistant_core/css/erpnext_desk_theme.css",
 ]
-app_include_js = "/assets/frappe_assistant_core/js/ai_assistant_bubble.js"
+app_include_js = f"/assets/frappe_assistant_core/js/ai_assistant_bubble.js{_assistant_asset_v}"
 
 # include js, css files in header of web template (portal, login, website)
-web_include_css = "/assets/frappe_assistant_core/css/ai_assistant_bubble.css"
-web_include_js = "/assets/frappe_assistant_core/js/ai_assistant_bubble.js"
+web_include_css = f"/assets/frappe_assistant_core/css/ai_assistant_bubble.css{_assistant_asset_v}"
+web_include_js = f"/assets/frappe_assistant_core/js/ai_assistant_bubble.js{_assistant_asset_v}"
 
 # include custom scss in every website theme (without file extension ".scss")
 # website_theme_scss = "frappe_assistant_core/public/scss/website"

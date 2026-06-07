@@ -9,7 +9,7 @@ import frappe
 from frappe import _, bold
 from frappe.model.mapper import get_mapped_doc
 from frappe.query_builder import DocType
-from frappe.query_builder.functions import Sum
+from frappe.query_builder.functions import Max, Sum
 from frappe.utils import (
 	cint,
 	comma_or,
@@ -243,7 +243,6 @@ class StockEntry(StockController, SubcontractingInwardController):
 		self.set_transfer_qty()
 		self.validate_uom_is_integer("uom", "qty")
 		self.validate_uom_is_integer("stock_uom", "transfer_qty")
-		self.validate_warehouse()
 		self.validate_warehouse_of_sabb()
 		self.validate_work_order()
 		self.validate_source_stock_entry()
@@ -259,6 +258,7 @@ class StockEntry(StockController, SubcontractingInwardController):
 			else:
 				self.validate_job_card_fg_item()
 
+		self.validate_warehouse()
 		self.validate_with_material_request()
 		self.validate_batch()
 		self.validate_inspection()
@@ -383,6 +383,9 @@ class StockEntry(StockController, SubcontractingInwardController):
 	def _set_serial_batch_for_disassembly_from_available_materials(self):
 		available_materials = get_available_materials(self.work_order, self)
 		for row in self.items:
+			if row.serial_no or row.batch_no or row.serial_and_batch_bundle:
+				continue
+
 			warehouse = row.s_warehouse or row.t_warehouse
 			materials = available_materials.get((row.item_code, warehouse))
 			if not materials:
@@ -849,16 +852,15 @@ class StockEntry(StockController, SubcontractingInwardController):
 				else:
 					frappe.throw(_("Target warehouse is mandatory for row {0}").format(d.idx))
 
-			if self.purpose == "Manufacture":
-				if has_bom:
-					if d.is_finished_item or d.type or d.is_legacy_scrap_item:
-						d.s_warehouse = None
-						if not d.t_warehouse:
-							frappe.throw(_("Target warehouse is mandatory for row {0}").format(d.idx))
-					else:
-						d.t_warehouse = None
-						if not d.s_warehouse:
-							frappe.throw(_("Source warehouse is mandatory for row {0}").format(d.idx))
+			if self.purpose in ["Manufacture", "Repack"]:
+				if d.is_finished_item or d.type or d.is_legacy_scrap_item:
+					d.s_warehouse = None
+					if not d.t_warehouse:
+						frappe.throw(_("Target warehouse is mandatory for row {0}").format(d.idx))
+				else:
+					d.t_warehouse = None
+					if not d.s_warehouse:
+						frappe.throw(_("Source warehouse is mandatory for row {0}").format(d.idx))
 
 			if self.purpose == "Disassemble":
 				if has_bom:
@@ -1286,13 +1288,21 @@ class StockEntry(StockController, SubcontractingInwardController):
 		)
 
 	def get_basic_rate_for_repacked_items(self, finished_item_qty, outgoing_items_cost):
-		finished_items = [d.item_code for d in self.get("items") if d.is_finished_item]
+		finished_items = [
+			d.item_code for d in self.get("items") if d.is_finished_item and not d.set_basic_rate_manually
+		]
 		if len(finished_items) == 1:
 			return flt(outgoing_items_cost / finished_item_qty)
 		else:
 			unique_finished_items = set(finished_items)
-			if len(unique_finished_items) == 1:
-				total_fg_qty = sum([flt(d.transfer_qty) for d in self.items if d.is_finished_item])
+			if unique_finished_items:
+				total_fg_qty = sum(
+					[
+						flt(d.transfer_qty)
+						for d in self.items
+						if d.is_finished_item and not d.set_basic_rate_manually
+					]
+				)
 				return flt(outgoing_items_cost / total_fg_qty)
 
 	def get_basic_rate_for_manufactured_item(self, finished_item_qty, outgoing_items_cost=0) -> float:
@@ -3628,12 +3638,12 @@ class StockEntry(StockController, SubcontractingInwardController):
 			args = {
 				"source_dt": "Stock Entry Detail",
 				"target_field": "transferred_qty",
-				"target_ref_field": "qty",
+				"target_ref_field": "transfer_qty",
 				"target_dt": "Stock Entry Detail",
 				"join_field": "ste_detail",
 				"target_parent_dt": "Stock Entry",
 				"target_parent_field": "per_transferred",
-				"source_field": "qty",
+				"source_field": "transfer_qty",
 				"percent_join_field": "against_stock_entry",
 			}
 
@@ -3893,28 +3903,33 @@ def get_work_order_details(work_order, company):
 	}
 
 
-def get_consumed_operating_cost(wo_name, bom_no):
+def get_consumed_operating_cost(wo_name, bom_no, operation_id):
 	table = frappe.qb.DocType("Stock Entry")
 	child_table = frappe.qb.DocType("Landed Cost Taxes and Charges")
 	query = (
 		frappe.qb.from_(child_table)
 		.join(table)
 		.on(child_table.parent == table.name)
-		.select(Sum(child_table.amount).as_("consumed_cost"))
+		.select(
+			Sum(child_table.amount).as_("consumed_cost"),
+			Sum(child_table.qty).as_("consumed_qty"),
+			child_table.operating_component,
+		)
 		.where(
 			(table.docstatus == 1)
 			& (table.work_order == wo_name)
 			& (table.purpose == "Manufacture")
 			& (table.bom_no == bom_no)
 			& (child_table.has_operating_cost == 1)
+			& (child_table.operation_id == operation_id)
 		)
+		.groupby(child_table.operation_id, child_table.operating_component)
 	)
-	cost = query.run(pluck="consumed_cost")
-	return cost[0] if cost and cost[0] else 0
+	return query.run(as_dict=True)
 
 
-def get_operating_cost_per_unit(work_order=None, bom_no=None):
-	operating_cost_per_unit = 0
+def get_remaining_operating_cost(work_order=None, bom_no=None):
+	remaining_operating_cost = 0
 	if work_order:
 		if (
 			bom_no
@@ -3929,23 +3944,23 @@ def get_operating_cost_per_unit(work_order=None, bom_no=None):
 			bom_no = work_order.bom_no
 
 		for d in work_order.get("operations"):
+			consumed_op_cost = get_consumed_operating_cost(work_order.name, bom_no, d.name) or []
+			cost = 0
+			for row in consumed_op_cost:
+				cost += flt(row.consumed_cost)
+
 			if flt(d.completed_qty):
-				if not (remaining_qty := flt(d.completed_qty - work_order.produced_qty)):
-					continue
-				operating_cost_per_unit += (
-					flt(d.actual_operating_cost - get_consumed_operating_cost(work_order.name, bom_no))
-					/ remaining_qty
-				)
+				remaining_operating_cost += flt(d.actual_operating_cost - cost)
 			elif work_order.qty:
-				operating_cost_per_unit += flt(d.planned_operating_cost) / flt(work_order.qty)
+				remaining_operating_cost += flt(d.planned_operating_cost) / flt(work_order.qty)
 
 	# Get operating cost from BOM if not found in work_order.
-	if not operating_cost_per_unit and bom_no:
+	if not remaining_operating_cost and bom_no:
 		bom = frappe.db.get_value("BOM", bom_no, ["operating_cost", "quantity"], as_dict=1)
 		if bom.quantity:
-			operating_cost_per_unit = flt(bom.operating_cost) / flt(bom.quantity)
+			remaining_operating_cost = flt(bom.operating_cost) / flt(bom.quantity)
 
-	return operating_cost_per_unit
+	return remaining_operating_cost
 
 
 def get_used_alternative_items(

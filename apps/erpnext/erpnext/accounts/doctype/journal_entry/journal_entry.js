@@ -70,6 +70,10 @@ frappe.ui.form.on("Journal Entry", {
 	},
 
 	refresh: function (frm) {
+		if (frm.doc.reversal_of && (frm.is_new() || frm.doc.docstatus == 0)) {
+			frm.set_read_only();
+		}
+
 		erpnext.toggle_naming_series();
 
 		if (frm.doc.docstatus > 0) {
@@ -429,15 +433,17 @@ erpnext.accounts.JournalEntry = class JournalEntry extends frappe.ui.form.Contro
 
 	accounts_add(doc, cdt, cdn) {
 		var row = frappe.get_doc(cdt, cdn);
-		row.exchange_rate = 1;
-		$.each(doc.accounts, function (i, d) {
-			if (d.account && d.party && d.party_type) {
-				row.account = d.account;
-				row.party = d.party;
-				row.party_type = d.party_type;
-				row.exchange_rate = d.exchange_rate;
-			}
-		});
+		if (!row.exchange_rate) row.exchange_rate = 1;
+		if (!row.account) {
+			$.each(doc.accounts, function (i, d) {
+				if (d.account && d.party && d.party_type) {
+					row.account = d.account;
+					row.party = d.party;
+					row.party_type = d.party_type;
+					row.exchange_rate = d.exchange_rate;
+				}
+			});
+		}
 
 		// set difference
 		if (doc.difference) {

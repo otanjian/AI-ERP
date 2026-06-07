@@ -225,6 +225,7 @@ class SalesInvoice(SellingController):
 		terms: DF.TextEditor | None
 		territory: DF.Link | None
 		timesheets: DF.Table[SalesInvoiceTimesheet]
+		title: DF.Data | None
 		to_date: DF.Date | None
 		total: DF.Currency
 		total_advance: DF.Currency
@@ -967,9 +968,6 @@ class SalesInvoice(SellingController):
 			if selling_price_list:
 				self.set("selling_price_list", selling_price_list)
 
-			if not for_validate:
-				self.update_stock = cint(pos.get("update_stock"))
-
 			# set pos values in items
 			for item in self.get("items"):
 				if item.get("item_code"):
@@ -979,6 +977,10 @@ class SalesInvoice(SellingController):
 					for fname, val in profile_details.items():
 						if (not for_validate) or (for_validate and not item.get(fname)):
 							item.set(fname, val)
+
+			if not for_validate:
+				dn_flag = any(d.get("dn_detail") for d in self.get("items"))
+				self.update_stock = 0 if dn_flag else cint(pos.get("update_stock"))
 
 			# fetch terms
 			if self.tc_name and not self.terms:
@@ -3034,14 +3036,21 @@ def update_multi_mode_option(doc, pos_profile):
 
 
 def get_all_mode_of_payments(doc):
-	return frappe.db.sql(
-		"""
-		select mpa.default_account, mpa.parent, mp.type as type
-		from `tabMode of Payment Account` mpa,`tabMode of Payment` mp
-		where mpa.parent = mp.name and mpa.company = %(company)s and mp.enabled = 1""",
-		{"company": doc.company},
-		as_dict=1,
+	ModeOfPaymentAccount = frappe.qb.DocType("Mode of Payment Account")
+	ModeOfPayment = frappe.qb.DocType("Mode of Payment")
+
+	query = (
+		frappe.qb.from_(ModeOfPaymentAccount)
+		.join(ModeOfPayment)
+		.on(ModeOfPaymentAccount.parent == ModeOfPayment.name)
+		.select(
+			ModeOfPaymentAccount.default_account, ModeOfPaymentAccount.parent, ModeOfPayment.type.as_("type")
+		)
+		.where(ModeOfPaymentAccount.company == doc.company)
+		.where(ModeOfPayment.enabled == 1)
 	)
+
+	return query.run(as_dict=1)
 
 
 def get_mode_of_payments_info(mode_of_payments, company):

@@ -9,15 +9,17 @@
 	var USER_SET_WIDTH_STORAGE_KEY = "fac_ai_assistant_panel_width_user_set";
 	var SIZE_PRESET_STORAGE_KEY = "fac_ai_assistant_panel_size_preset";
 	var WIDTH_STORAGE_VERSION_KEY = "fac_ai_assistant_panel_width_version";
-	var WIDTH_STORAGE_VERSION = "2";
+	var WIDTH_STORAGE_VERSION = "3";
 	var DEFAULT_PANEL_WIDTH = 1080;
 	var MIN_PANEL_WIDTH = 520;
 	var PANEL_WIDTH_STEP = 64;
 	var DEFAULT_PRESET = "l";
+	var PRESET_ORDER = ["m", "l", "xl", "full"];
 	var SIZE_PRESETS = {
 		m: 0.5,
 		l: 0.66,
-		xl: 0.8
+		xl: 0.8,
+		full: 1
 	};
 
 	var EMBED_FORM_CONTEXT_MESSAGE = "buildingai-set-form-context";
@@ -215,6 +217,9 @@
 	}
 
 	function getPresetWidth(preset) {
+		if (preset === "full") {
+			return getMaxPanelWidth();
+		}
 		var ratio = SIZE_PRESETS[preset] || SIZE_PRESETS[DEFAULT_PRESET];
 		return normalizeWidth(Math.round(window.innerWidth * ratio));
 	}
@@ -222,13 +227,30 @@
 	function getStoredPreset() {
 		try {
 			var preset = localStorage.getItem(SIZE_PRESET_STORAGE_KEY);
-			if (preset && SIZE_PRESETS[preset]) {
+			if (preset && (SIZE_PRESETS[preset] || preset === "full")) {
 				return preset;
 			}
 		} catch (e) {
 			// Ignore storage read issues.
 		}
 		return null;
+	}
+
+	function getNextPreset(current) {
+		if (!current) {
+			return PRESET_ORDER[0];
+		}
+		var idx = PRESET_ORDER.indexOf(current);
+		if (idx === -1 || idx >= PRESET_ORDER.length - 1) {
+			return null;
+		}
+		return PRESET_ORDER[idx + 1];
+	}
+
+	function applyPreset(panel, preset) {
+		var width = getPresetWidth(preset);
+		applyPanelWidth(panel, width);
+		persistWidth(width, false, preset);
 	}
 
 	function getStoredWidth() {
@@ -280,6 +302,8 @@
 			}
 			if (preset && SIZE_PRESETS[preset]) {
 				localStorage.setItem(SIZE_PRESET_STORAGE_KEY, preset);
+			} else if (preset === "full") {
+				localStorage.setItem(SIZE_PRESET_STORAGE_KEY, preset);
 			} else {
 				localStorage.removeItem(SIZE_PRESET_STORAGE_KEY);
 			}
@@ -314,8 +338,94 @@
 		return false;
 	}
 
+	function createToolbarButton(className, ariaLabel, title, svgInner) {
+		var button = document.createElement("button");
+		button.type = "button";
+		button.className = className;
+		button.setAttribute("aria-label", ariaLabel);
+		button.setAttribute("title", title);
+		button.innerHTML = svgInner;
+		return button;
+	}
+
+	function buildPanelToolbar() {
+		var toolbar = document.createElement("div");
+		toolbar.id = "fac-ai-assistant-panel-toolbar";
+		toolbar.className = "fac-ai-assistant-panel-toolbar";
+		toolbar.setAttribute("role", "toolbar");
+		toolbar.setAttribute("aria-label", "Panel size and close");
+
+		var btnWider = createToolbarButton(
+			"fac-ai-assistant-toolbar-btn",
+			"Widen panel",
+			"放大面板",
+			'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">' +
+				'<path d="M12 5v14M5 12h14"/>' +
+				"</svg>"
+		);
+
+		var btnNarrower = createToolbarButton(
+			"fac-ai-assistant-toolbar-btn",
+			"Narrow panel",
+			"缩小面板",
+			'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">' +
+				'<path d="M5 12h14"/>' +
+				"</svg>"
+		);
+
+		var btnMaximize = createToolbarButton(
+			"fac-ai-assistant-toolbar-btn",
+			"Cycle panel size preset",
+			"切换面板大小",
+			'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">' +
+				'<path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/>' +
+				"</svg>"
+		);
+
+		var btnClose = createToolbarButton(
+			"fac-ai-assistant-toolbar-btn fac-ai-assistant-toolbar-btn-close",
+			"Close AI assistant",
+			"关闭",
+			'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">' +
+				'<path d="M18 6L6 18M6 6l12 12"/>' +
+				"</svg>"
+		);
+
+		toolbar.appendChild(btnWider);
+		toolbar.appendChild(btnNarrower);
+		toolbar.appendChild(btnMaximize);
+		toolbar.appendChild(btnClose);
+
+		return {
+			toolbar: toolbar,
+			btnWider: btnWider,
+			btnNarrower: btnNarrower,
+			btnMaximize: btnMaximize,
+			btnClose: btnClose
+		};
+	}
+
 	function ensureDom() {
-		if (document.getElementById(ROOT_ID)) {
+		var existingRoot = document.getElementById(ROOT_ID);
+		var existingPanel = document.getElementById(PANEL_ID);
+		if (
+			existingRoot &&
+			existingPanel &&
+			document.getElementById("fac-ai-assistant-panel-toolbar")
+		) {
+			return;
+		}
+
+		if (existingPanel && !document.getElementById("fac-ai-assistant-panel-toolbar")) {
+			existingPanel.remove();
+			var staleOverlay = document.getElementById("fac-ai-assistant-overlay");
+			if (staleOverlay) {
+				staleOverlay.remove();
+			}
+			if (existingRoot) {
+				existingRoot.remove();
+			}
+		} else if (existingRoot) {
 			return;
 		}
 
@@ -352,45 +462,12 @@
 		iframe.setAttribute("allow", "clipboard-write; microphone; camera");
 		iframe.setAttribute("scrolling", "no");
 
-		var toolbar = document.createElement("div");
-		toolbar.id = "fac-ai-assistant-panel-toolbar";
-		toolbar.className = "fac-ai-assistant-panel-toolbar";
-		toolbar.setAttribute("role", "toolbar");
-		toolbar.setAttribute("aria-label", "Panel size and close");
-
-		var btnWider = document.createElement("button");
-		btnWider.type = "button";
-		btnWider.className = "fac-ai-assistant-toolbar-btn";
-		btnWider.setAttribute("aria-label", "Widen panel");
-		btnWider.setAttribute("title", "Widen panel");
-		btnWider.innerHTML =
-			'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">' +
-			'<path d="M12 5v14M5 12h14"/>' +
-			"</svg>";
-
-		var btnNarrower = document.createElement("button");
-		btnNarrower.type = "button";
-		btnNarrower.className = "fac-ai-assistant-toolbar-btn";
-		btnNarrower.setAttribute("aria-label", "Narrow panel");
-		btnNarrower.setAttribute("title", "Narrow panel");
-		btnNarrower.innerHTML =
-			'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">' +
-			'<path d="M5 12h14"/>' +
-			"</svg>";
-
-		var btnClose = document.createElement("button");
-		btnClose.type = "button";
-		btnClose.className = "fac-ai-assistant-toolbar-btn fac-ai-assistant-toolbar-btn-close";
-		btnClose.setAttribute("aria-label", "Close AI assistant");
-		btnClose.setAttribute("title", "Close");
-		btnClose.innerHTML =
-			'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">' +
-			'<path d="M18 6L6 18M6 6l12 12"/>' +
-			"</svg>";
-
-		toolbar.appendChild(btnWider);
-		toolbar.appendChild(btnNarrower);
-		toolbar.appendChild(btnClose);
+		var toolbarParts = buildPanelToolbar();
+		var toolbar = toolbarParts.toolbar;
+		var btnWider = toolbarParts.btnWider;
+		var btnNarrower = toolbarParts.btnNarrower;
+		var btnMaximize = toolbarParts.btnMaximize;
+		var btnClose = toolbarParts.btnClose;
 
 		panel.appendChild(resizeHandle);
 		panel.appendChild(iframe);
@@ -596,6 +673,19 @@
 			e.preventDefault();
 			e.stopPropagation();
 			adjustPanelWidth(-PANEL_WIDTH_STEP);
+		});
+
+		btnMaximize.addEventListener("click", function (e) {
+			e.preventDefault();
+			e.stopPropagation();
+			var currentPreset = getStoredPreset();
+			var nextPreset = getNextPreset(currentPreset);
+			if (!nextPreset) {
+				applyPanelWidth(panel, DEFAULT_PANEL_WIDTH);
+				persistWidth(DEFAULT_PANEL_WIDTH, false, DEFAULT_PRESET);
+				return;
+			}
+			applyPreset(panel, nextPreset);
 		});
 
 		btnClose.addEventListener("click", function (e) {

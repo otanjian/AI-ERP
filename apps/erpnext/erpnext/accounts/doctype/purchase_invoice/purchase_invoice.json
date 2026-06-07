@@ -180,11 +180,12 @@
   "unrealized_profit_loss_account",
   "subscription_section",
   "subscription",
-  "auto_repeat",
-  "update_auto_repeat_reference",
   "column_break_114",
   "from_date",
   "to_date",
+  "automation_section",
+  "auto_repeat",
+  "update_auto_repeat_reference",
   "printing_settings",
   "letter_head",
   "group_same_items",
@@ -198,6 +199,7 @@
   "hold_comment",
   "additional_info_section",
   "is_internal_supplier",
+  "title",
   "represents_company",
   "supplier_group",
   "sender",
@@ -1675,6 +1677,20 @@
    "fieldname": "totals_section",
    "fieldtype": "Section Break",
    "label": "Totals"
+  },
+  {
+   "collapsible": 1,
+   "fieldname": "automation_section",
+   "fieldtype": "Section Break",
+   "label": "Automation"
+  },
+  {
+   "allow_on_submit": 1,
+   "fieldname": "title",
+   "fieldtype": "Data",
+   "label": "Title",
+   "no_copy": 1,
+   "print_hide": 1
   }
  ],
  "grid_page_length": 50,
@@ -1682,7 +1698,7 @@
  "idx": 204,
  "is_submittable": 1,
  "links": [],
- "modified": "2026-03-25 11:45:38.696888",
+ "modified": "2026-05-28 12:36:55.215363",
  "modified_by": "Administrator",
  "module": "Accounts",
  "name": "Purchase Invoice",

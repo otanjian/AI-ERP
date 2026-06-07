@@ -62,7 +62,7 @@
 #fac-ai-assistant-panel {
 	/* Match embedded chat header band so overlay controls align with in-frame icons */
 	--fac-ai-assistant-header-height: 56px;
-	--fac-ai-assistant-toolbar-btn-size: 18px;
+	--fac-ai-assistant-toolbar-btn-size: 28px;
 	display: none;
 	position: fixed;
 	top: 0;
@@ -75,6 +75,7 @@
 	z-index: 2147483001;
 	flex-direction: column;
 	overflow: hidden;
+	isolation: isolate;
 }
 
 #fac-ai-assistant-panel.fac-ai-visible {
@@ -84,12 +85,16 @@
 #fac-ai-assistant-panel-toolbar {
 	position: absolute;
 	top: calc((var(--fac-ai-assistant-header-height) - var(--fac-ai-assistant-toolbar-btn-size)) / 2);
-	right: 5px;
-	z-index: 5;
+	right: 8px;
+	z-index: 10;
 	display: flex;
 	flex-direction: row;
 	align-items: center;
-	gap: 3px;
+	gap: 4px;
+	padding: 2px 4px;
+	border-radius: 8px;
+	background: rgba(255, 255, 255, 0.96);
+	box-shadow: 0 1px 6px rgba(15, 23, 42, 0.12);
 	pointer-events: auto;
 }
 
@@ -121,8 +126,8 @@
 }
 
 .fac-ai-assistant-toolbar-btn svg {
-	width: 9px;
-	height: 9px;
+	width: 14px;
+	height: 14px;
 	flex-shrink: 0;
 }
 
@@ -171,6 +176,8 @@ body.fac-ai-assistant-resizing {
 	display: block;
 	background: #fff;
 	overflow: hidden;
+	position: relative;
+	z-index: 1;
 }
 
 @media (max-width: 480px) {
