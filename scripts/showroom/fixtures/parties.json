@@ -1,0 +1,31 @@
+{
+  "customers": [
+    {
+      "name": "CUST-001",
+      "customer_name": "杭州 XX 科技有限公司",
+      "customer_type": "Company",
+      "credit_limit": 500000
+    }
+  ],
+  "suppliers": [
+    {
+      "name": "SUPP-001",
+      "supplier_name": "深圳 XX 电子有限公司",
+      "supplier_type": "Company",
+      "supplier_group": "All Supplier Groups"
+    },
+    {
+      "name": "SUPP-002",
+      "supplier_name": "广州 XX 存储科技",
+      "supplier_type": "Company",
+      "supplier_group": "All Supplier Groups"
+    },
+    {
+      "name": "SUB-001",
+      "supplier_name": "宁波 XX 散热加工厂",
+      "supplier_type": "Company",
+      "supplier_group": "All Supplier Groups",
+      "is_subcontracted": 1
+    }
+  ]
+}

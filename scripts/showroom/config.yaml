@@ -1,0 +1,40 @@
+site: west.bosofts.com
+company: 智联电脑组装有限公司
+company_abbr: 智
+currency: CNY
+country: China
+chart_template: 中国企业会计准则
+vat_rate: 13
+
+# Posting dates for the demo scenario (doc §4)
+posting_dates:
+  sales_order: "2026-03-12"
+  mrp: "2026-03-12"
+  po_supp1: "2026-03-13"
+  po_sub: "2026-03-13"
+  po_receipt: "2026-03-15"
+  work_order_start: "2026-03-16"
+  work_order_end: "2026-03-18"
+  delivery: "2026-03-19"
+  sales_invoice: "2026-03-20"
+  payment_customer: "2026-03-25"
+  payment_supplier: "2026-03-18"
+  subcontract_receipt: "2026-03-17"
+
+# Target document names (used when naming series allows override via state file)
+doc_names:
+  sales_order: SO-20260312-001
+  delivery_note: DN-20260319-001
+  sales_invoice: SI-20260320-001
+  payment_receipt: PE-20260325-001
+  material_request: MR-20260312-001
+  po_supp1: PO-20260313-001
+  po_sub: PO-SUB-20260313-001
+  purchase_receipt: PR-20260315-001
+  purchase_invoice: PI-20260316-001
+  payment_supp1: PE-20260318-001
+  subcontract_order: SUB-WO-20260313-001
+  work_order: WO-20260316-001
+
+state_file: showroom_state.json
+verification_report: ../../../doc/showroom-verification-report.md

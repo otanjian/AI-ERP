@@ -1,0 +1,97 @@
+[
+  {
+    "item_code": "SRV-SUB-001",
+    "item_name": "散热模组委外加工费",
+    "item_group": "GRP-004",
+    "stock_uom": "Nos",
+    "is_stock_item": 0,
+    "is_purchase_item": 1,
+    "is_sales_item": 0,
+    "include_item_in_manufacturing": 0,
+    "standard_rate": 20
+  },
+  {
+    "item_code": "ITEM-001",
+    "item_name": "ZLC-PC001",
+    "item_group": "GRP-001",
+    "stock_uom": "Nos",
+    "default_warehouse": "WH-FG01",
+    "is_sales_item": 1,
+    "is_purchase_item": 0,
+    "include_item_in_manufacturing": 1,
+    "standard_rate": 3500
+  },
+  {
+    "item_code": "ITEM-002",
+    "item_name": "CPU 处理器 i5-12400",
+    "item_group": "GRP-002",
+    "stock_uom": "Nos",
+    "default_warehouse": "WH-RAW01",
+    "standard_rate": 1200
+  },
+  {
+    "item_code": "ITEM-003",
+    "item_name": "主板 B660M-D",
+    "item_group": "GRP-002",
+    "stock_uom": "Nos",
+    "default_warehouse": "WH-RAW01",
+    "standard_rate": 800
+  },
+  {
+    "item_code": "ITEM-004",
+    "item_name": "内存 16G DDR4",
+    "item_group": "GRP-002",
+    "stock_uom": "Nos",
+    "default_warehouse": "WH-RAW01",
+    "standard_rate": 200
+  },
+  {
+    "item_code": "ITEM-005",
+    "item_name": "固态硬盘 512G SSD",
+    "item_group": "GRP-002",
+    "stock_uom": "Nos",
+    "default_warehouse": "WH-RAW01",
+    "standard_rate": 350
+  },
+  {
+    "item_code": "ITEM-006",
+    "item_name": "电源 500W 铜牌",
+    "item_group": "GRP-003",
+    "stock_uom": "Nos",
+    "default_warehouse": "WH-RAW01",
+    "standard_rate": 150
+  },
+  {
+    "item_code": "ITEM-007",
+    "item_name": "机箱 ATX 中塔",
+    "item_group": "GRP-003",
+    "stock_uom": "Nos",
+    "default_warehouse": "WH-RAW01",
+    "standard_rate": 100
+  },
+  {
+    "item_code": "ITEM-008",
+    "item_name": "散热模组 定制款",
+    "item_group": "GRP-004",
+    "stock_uom": "Nos",
+    "default_warehouse": "WH-WIP01",
+    "is_sub_contracted_item": 1,
+    "standard_rate": 35
+  },
+  {
+    "item_code": "ITEM-009",
+    "item_name": "散热片 铝制",
+    "item_group": "GRP-002",
+    "stock_uom": "Nos",
+    "default_warehouse": "WH-RAW01",
+    "standard_rate": 10
+  },
+  {
+    "item_code": "ITEM-010",
+    "item_name": "散热风扇 12cm",
+    "item_group": "GRP-002",
+    "stock_uom": "Nos",
+    "default_warehouse": "WH-RAW01",
+    "standard_rate": 5
+  }
+]

@@ -1,0 +1,6 @@
+[
+  {"warehouse_name": "WH-RAW01", "description": "原料仓"},
+  {"warehouse_name": "WH-FG01", "description": "成品仓"},
+  {"warehouse_name": "WH-SUB01", "description": "委外仓"},
+  {"warehouse_name": "WH-WIP01", "description": "半成品仓"}
+]

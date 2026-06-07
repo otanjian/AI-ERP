@@ -1,0 +1,26 @@
+[
+  {
+    "name": "BOM-ITEM-001-V1",
+    "item": "ITEM-001",
+    "quantity": 1,
+    "items": [
+      {"item_code": "ITEM-002", "qty": 1},
+      {"item_code": "ITEM-003", "qty": 1},
+      {"item_code": "ITEM-004", "qty": 2},
+      {"item_code": "ITEM-005", "qty": 1},
+      {"item_code": "ITEM-006", "qty": 1},
+      {"item_code": "ITEM-007", "qty": 1},
+      {"item_code": "ITEM-008", "qty": 1}
+    ]
+  },
+  {
+    "name": "BOM-ITEM-008-V1",
+    "item": "ITEM-008",
+    "quantity": 1,
+    "is_subcontracted": 1,
+    "items": [
+      {"item_code": "ITEM-009", "qty": 1},
+      {"item_code": "ITEM-010", "qty": 1}
+    ]
+  }
+]

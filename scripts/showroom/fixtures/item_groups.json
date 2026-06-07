@@ -1,0 +1,24 @@
+[
+  {
+    "item_group_name": "GRP-001",
+    "parent_item_group": "All Item Groups",
+    "inventory_account_number": "1405",
+    "income_account_number": "6001",
+    "expense_account_number": "6401"
+  },
+  {
+    "item_group_name": "GRP-002",
+    "parent_item_group": "All Item Groups",
+    "inventory_account_number": "1403"
+  },
+  {
+    "item_group_name": "GRP-003",
+    "parent_item_group": "All Item Groups",
+    "inventory_account_number": "1403"
+  },
+  {
+    "item_group_name": "GRP-004",
+    "parent_item_group": "All Item Groups",
+    "inventory_account_number": "1408"
+  }
+]

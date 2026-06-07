@@ -1,0 +1,207 @@
+{
+  "coa_setup": {
+    "company": "智联电脑组装有限公司",
+    "chart_of_accounts": "中国企业会计准则",
+    "account_count": 256,
+    "vat_accounts": {
+      "input_vat": "22210101 - 进项税额 - 智",
+      "output_vat": "22210105 - 销项税额 - 智"
+    },
+    "tax_templates": {
+      "sales_tax_template": "增值税 13% 销项",
+      "purchase_tax_template": "增值税 13% 进项",
+      "item_tax_template": "VAT 13%"
+    }
+  },
+  "settings_setup": {
+    "perpetual_inventory": 1,
+    "valuation_method": "FIFO"
+  },
+  "masters_setup": {
+    "item_groups": [
+      "GRP-001",
+      "GRP-002",
+      "GRP-003",
+      "GRP-004"
+    ],
+    "warehouses": [
+      "WH-RAW01 - 智",
+      "WH-FG01 - 智",
+      "WH-SUB01 - 智",
+      "WH-WIP01 - 智"
+    ],
+    "items": [
+      "SRV-SUB-001",
+      "ITEM-001",
+      "ITEM-002",
+      "ITEM-003",
+      "ITEM-004",
+      "ITEM-005",
+      "ITEM-006",
+      "ITEM-007",
+      "ITEM-008",
+      "ITEM-009",
+      "ITEM-010"
+    ],
+    "account_defaults": {
+      "company": {
+        "default_bank_account": "1002 - 银行存款 - 智",
+        "default_cash_account": "1001 - 库存现金 - 智",
+        "default_receivable_account": "1122 - 应收账款 - 智",
+        "default_payable_account": "220201 - 应付账款-供应商款 - 智",
+        "default_inventory_account": "1405 - 库存商品 - 智",
+        "stock_received_but_not_billed": "220202 - 应付账款-暂估 - 智",
+        "default_income_account": "6001 - 主营业务收入 - 智",
+        "default_expense_account": "6401 - 主营业务成本 - 智",
+        "stock_adjustment_account": "50010101 - 生产成本-基本生产成本-直接材料 - 智",
+        "default_provisional_account": "220202 - 应付账款-暂估 - 智",
+        "modified": "2026-06-06 16:58:24.529986",
+        "modified_by": "Administrator"
+      },
+      "warehouses": {
+        "WH-RAW01": "1403 - 原材料 - 智",
+        "WH-FG01": "1405 - 库存商品 - 智",
+        "WH-SUB01": "1408 - 委托加工物资 - 智",
+        "WH-WIP01": "1403 - 原材料 - 智"
+      },
+      "items": [
+        "ITEM-010",
+        "ITEM-005",
+        "ITEM-004",
+        "ITEM-007",
+        "ITEM-009",
+        "ITEM-003",
+        "ITEM-006",
+        "ITEM-002",
+        "ITEM-008",
+        "ITEM-001",
+        "SRV-SUB-001"
+      ]
+    },
+    "boms": [
+      "BOM-ITEM-001-001",
+      "BOM-ITEM-008-001"
+    ],
+    "subcontracting_bom": "SB-0033",
+    "parties": {
+      "customers": [
+        "CUST-001"
+      ],
+      "suppliers": [
+        "SUPP-001",
+        "SUPP-002",
+        "SUB-001"
+      ]
+    },
+    "opening_stock": "MAT-RECO-2026-00003"
+  },
+  "account_defaults_fix": {
+    "company": {
+      "default_bank_account": "1002 - 银行存款 - 智",
+      "default_cash_account": "1001 - 库存现金 - 智",
+      "default_receivable_account": "1122 - 应收账款 - 智",
+      "default_payable_account": "220201 - 应付账款-供应商款 - 智",
+      "default_inventory_account": "1405 - 库存商品 - 智",
+      "stock_received_but_not_billed": "220202 - 应付账款-暂估 - 智",
+      "default_income_account": "6001 - 主营业务收入 - 智",
+      "default_expense_account": "6401 - 主营业务成本 - 智",
+      "stock_adjustment_account": "50010101 - 生产成本-基本生产成本-直接材料 - 智",
+      "default_provisional_account": "220202 - 应付账款-暂估 - 智",
+      "modified": "2026-06-06 16:58:17.686286",
+      "modified_by": "Administrator"
+    },
+    "warehouses": {
+      "WH-RAW01": "1403 - 原材料 - 智",
+      "WH-FG01": "1405 - 库存商品 - 智",
+      "WH-SUB01": "1408 - 委托加工物资 - 智",
+      "WH-WIP01": "1403 - 原材料 - 智"
+    },
+    "items": [
+      "ITEM-005",
+      "ITEM-007",
+      "ITEM-003",
+      "ITEM-004",
+      "ITEM-002",
+      "ITEM-006",
+      "ITEM-010",
+      "ITEM-009",
+      "ITEM-008",
+      "ITEM-001",
+      "SRV-SUB-001"
+    ]
+  },
+  "account_defaults": {
+    "company": {
+      "default_bank_account": "1002 - 银行存款 - 智",
+      "default_cash_account": "1001 - 库存现金 - 智",
+      "default_receivable_account": "1122 - 应收账款 - 智",
+      "default_payable_account": "220201 - 应付账款-供应商款 - 智",
+      "default_inventory_account": "1405 - 库存商品 - 智",
+      "stock_received_but_not_billed": "220202 - 应付账款-暂估 - 智",
+      "default_income_account": "6001 - 主营业务收入 - 智",
+      "default_expense_account": "6401 - 主营业务成本 - 智",
+      "stock_adjustment_account": "50010101 - 生产成本-基本生产成本-直接材料 - 智",
+      "default_provisional_account": "220202 - 应付账款-暂估 - 智",
+      "modified": "2026-06-06 17:01:43.683994",
+      "modified_by": "Administrator"
+    },
+    "warehouses": {
+      "WH-RAW01": "1403 - 原材料 - 智",
+      "WH-FG01": "1405 - 库存商品 - 智",
+      "WH-SUB01": "1408 - 委托加工物资 - 智",
+      "WH-WIP01": "50010101 - 生产成本-基本生产成本-直接材料 - 智"
+    },
+    "items": [
+      "ITEM-007",
+      "ITEM-003",
+      "ITEM-002",
+      "ITEM-005",
+      "ITEM-010",
+      "ITEM-004",
+      "ITEM-009",
+      "ITEM-006",
+      "ITEM-001",
+      "ITEM-008",
+      "SRV-SUB-001"
+    ]
+  },
+  "sales_order": "SAL-ORD-2026-00009",
+  "material_request": "MAT-MR-2026-00004",
+  "po_supp1": "PUR-ORD-2026-00020",
+  "purchase_receipt_supp1": "MAT-PRE-2026-00007",
+  "purchase_invoice_supp1": "ACC-PINV-2026-00013",
+  "payment_supp1": "ACC-PAY-2026-00015",
+  "po_supp2": "PUR-ORD-2026-00021",
+  "purchase_receipt_supp2": "MAT-PRE-2026-00008",
+  "purchase_invoice_supp2": "ACC-PINV-2026-00014",
+  "payment_supp2": "ACC-PAY-2026-00016",
+  "po_sub": "PUR-ORD-2026-00022",
+  "subcontract_order": "SC-ORD-2026-00004",
+  "subcontract_transfer": "MAT-STE-2026-00010",
+  "subcontract_receipt": "MAT-SCR-2026-00004",
+  "work_order": "MFG-WO-2026-00004",
+  "wo_transfer": "MAT-STE-2026-00011",
+  "wo_manufacture": "MAT-STE-2026-00012",
+  "overhead_je": "ACC-JV-2026-00004",
+  "delivery_note": "MAT-DN-2026-00004",
+  "sales_invoice": "ACC-SINV-2026-00009",
+  "payment_receipt": "ACC-PAY-2026-00017",
+  "flow_result": {
+    "sales_order": "SAL-ORD-2026-00009",
+    "material_request": "MAT-MR-2026-00004",
+    "po_supp1": "PUR-ORD-2026-00020",
+    "purchase_receipt_supp1": "MAT-PRE-2026-00007",
+    "purchase_invoice_supp1": "ACC-PINV-2026-00013",
+    "payment_supp1": "ACC-PAY-2026-00015",
+    "po_supp2": "PUR-ORD-2026-00021",
+    "subcontract_order": "SC-ORD-2026-00004",
+    "work_order": "MFG-WO-2026-00004",
+    "work_order_stock_entries": {
+      "wo_transfer": "MAT-STE-2026-00011",
+      "wo_manufacture": "MAT-STE-2026-00012"
+    },
+    "delivery_note": "MAT-DN-2026-00004",
+    "sales_invoice": "ACC-SINV-2026-00009",
+    "payment_receipt": "ACC-PAY-2026-00017"
+  }
+}

@@ -77,6 +77,10 @@ def after_migrate():
     # Sync tool configurations from discovered plugins
     _sync_tool_configurations()
 
+    from frappe_assistant_core.utils.er_diagram_help import ensure_er_diagram_help_link
+
+    ensure_er_diagram_help_link()
+
 
 def before_migrate():
     """
@@ -146,6 +150,10 @@ def after_install():
 
     # Set default values for Assistant Core Settings
     _set_settings_defaults()
+
+    from frappe_assistant_core.utils.er_diagram_help import ensure_er_diagram_help_link
+
+    ensure_er_diagram_help_link()
 
 
 def after_uninstall():
