@@ -1,0 +1,44 @@
+{
+ "actions": [],
+ "autoname": "format:MRP-JOB-{#####}",
+ "doctype": "DocType",
+ "document_type": "Document",
+ "engine": "InnoDB",
+ "field_order": [
+  "reference_doctype",
+  "reference_name",
+  "job_type",
+  "status",
+  "progress",
+  "started_at",
+  "ended_at",
+  "result_counts",
+  "warning_message",
+  "error_message"
+ ],
+ "fields": [
+  {"fieldname": "reference_doctype", "fieldtype": "Link", "label": "Reference DocType", "options": "DocType"},
+  {"fieldname": "reference_name", "fieldtype": "Dynamic Link", "label": "Reference Name", "options": "reference_doctype"},
+  {"fieldname": "job_type", "fieldtype": "Select", "label": "Job Type", "options": "Run\nConfirmation\nExport\nCleanup\nRetry\nCancellation"},
+  {"default": "Queued", "fieldname": "status", "fieldtype": "Select", "in_list_view": 1, "label": "Status", "options": "Queued\nRunning\nCompleted\nFailed\nCancelled\nWarning"},
+  {"default": "0", "fieldname": "progress", "fieldtype": "Percent", "label": "Progress"},
+  {"fieldname": "started_at", "fieldtype": "Datetime", "label": "Started At"},
+  {"fieldname": "ended_at", "fieldtype": "Datetime", "label": "Ended At"},
+  {"fieldname": "result_counts", "fieldtype": "Long Text", "label": "Result Counts"},
+  {"fieldname": "warning_message", "fieldtype": "Long Text", "label": "Warning Message"},
+  {"fieldname": "error_message", "fieldtype": "Long Text", "label": "Error Message"}
+ ],
+ "links": [],
+ "module": "MRP",
+ "name": "MRP Job Log",
+ "naming_rule": "Expression",
+ "owner": "Administrator",
+ "permissions": [
+  {"email": 1, "export": 1, "print": 1, "read": 1, "report": 1, "role": "MRP Planner", "share": 1},
+  {"email": 1, "export": 1, "print": 1, "read": 1, "report": 1, "role": "MRP Supervisor", "share": 1},
+  {"create": 1, "delete": 1, "email": 1, "export": 1, "print": 1, "read": 1, "report": 1, "role": "Planning System Administrator", "share": 1, "write": 1}
+ ],
+ "sort_field": "creation",
+ "sort_order": "DESC",
+ "states": []
+}

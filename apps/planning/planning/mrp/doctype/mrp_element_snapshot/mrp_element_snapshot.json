@@ -1,0 +1,50 @@
+{
+ "actions": [],
+ "autoname": "format:MRP-SNAP-{#####}",
+ "doctype": "DocType",
+ "document_type": "Document",
+ "engine": "InnoDB",
+ "field_order": [
+  "mrp_run",
+  "source_doctype",
+  "source_document",
+  "source_row",
+  "item_code",
+  "company",
+  "warehouse",
+  "planning_date",
+  "normalized_quantity",
+  "original_quantity",
+  "source_status",
+  "priority",
+  "metadata_json"
+ ],
+ "fields": [
+  {"fieldname": "mrp_run", "fieldtype": "Link", "in_list_view": 1, "label": "MRP Run", "options": "MRP Run", "reqd": 1},
+  {"fieldname": "source_doctype", "fieldtype": "Link", "label": "Source DocType", "options": "DocType", "reqd": 1},
+  {"fieldname": "source_document", "fieldtype": "Dynamic Link", "label": "Source Document", "options": "source_doctype"},
+  {"fieldname": "source_row", "fieldtype": "Data", "label": "Source Row"},
+  {"fieldname": "item_code", "fieldtype": "Link", "in_list_view": 1, "label": "Item", "options": "Item", "reqd": 1},
+  {"fieldname": "company", "fieldtype": "Link", "label": "Company", "options": "Company"},
+  {"fieldname": "warehouse", "fieldtype": "Link", "label": "Warehouse", "options": "Warehouse"},
+  {"fieldname": "planning_date", "fieldtype": "Date", "in_list_view": 1, "label": "Planning Date", "reqd": 1},
+  {"fieldname": "normalized_quantity", "fieldtype": "Float", "in_list_view": 1, "label": "Normalized Quantity", "reqd": 1},
+  {"fieldname": "original_quantity", "fieldtype": "Float", "label": "Original Quantity"},
+  {"fieldname": "source_status", "fieldtype": "Data", "label": "Source Status"},
+  {"default": "100", "fieldname": "priority", "fieldtype": "Int", "label": "Priority"},
+  {"fieldname": "metadata_json", "fieldtype": "Long Text", "label": "Metadata JSON"}
+ ],
+ "links": [],
+ "module": "MRP",
+ "name": "MRP Element Snapshot",
+ "naming_rule": "Expression",
+ "owner": "Administrator",
+ "permissions": [
+  {"email": 1, "export": 1, "print": 1, "read": 1, "report": 1, "role": "MRP Planner", "share": 1},
+  {"email": 1, "export": 1, "print": 1, "read": 1, "report": 1, "role": "MRP Supervisor", "share": 1},
+  {"create": 1, "delete": 1, "email": 1, "export": 1, "print": 1, "read": 1, "report": 1, "role": "Planning System Administrator", "share": 1, "write": 1}
+ ],
+ "sort_field": "planning_date",
+ "sort_order": "ASC",
+ "states": []
+}

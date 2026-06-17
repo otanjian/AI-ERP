@@ -27,6 +27,7 @@ def setup_item_groups() -> list[str]:
 	for row in load_fixture("item_groups.json"):
 		name = row["item_group_name"]
 		if frappe.db.exists("Item Group", name):
+			frappe.db.set_value("Item Group", name, "item_group_name", name)
 			created.append(name)
 			continue
 		doc = frappe.get_doc(
@@ -53,8 +54,22 @@ def setup_items() -> list[str]:
 	for row in load_fixture("items.json"):
 		code = row["item_code"]
 		if frappe.db.exists("Item", code):
+			updates = {
+				"item_name": row["item_name"],
+				"item_group": row["item_group"],
+				"stock_uom": row["stock_uom"],
+				"include_item_in_manufacturing": row.get("include_item_in_manufacturing", 1),
+				"is_purchase_item": row.get("is_purchase_item", 1),
+				"is_sales_item": row.get("is_sales_item", 0),
+				"is_sub_contracted_item": row.get("is_sub_contracted_item", 0),
+				"valuation_method": row.get("valuation_method", "Moving Average"),
+				"standard_rate": row.get("standard_rate", 0),
+			}
 			if row.get("is_stock_item") == 0:
-				frappe.db.set_value("Item", code, "is_stock_item", 0)
+				updates["is_stock_item"] = 0
+			if row.get("default_warehouse"):
+				updates["default_warehouse"] = warehouse(row["default_warehouse"])
+			frappe.db.set_value("Item", code, updates)
 			created.append(code)
 			continue
 		doc = frappe.get_doc(
@@ -178,6 +193,20 @@ def setup_parties() -> dict[str, list[str]]:
 			doc.insert(ignore_permissions=True)
 			if doc.name != name:
 				frappe.rename_doc("Customer", doc.name, name, force=True)
+		else:
+			frappe.db.set_value("Customer", name, "customer_name", row["customer_name"])
+		if row.get("credit_limit"):
+			company_credit_limit = frappe.db.get_value(
+				"Customer Credit Limit",
+				{"parent": name, "company": company()},
+				"name",
+			)
+			if company_credit_limit:
+				frappe.db.set_value("Customer Credit Limit", company_credit_limit, "credit_limit", row["credit_limit"])
+			else:
+				doc = frappe.get_doc("Customer", name)
+				doc.append("credit_limits", {"company": company(), "credit_limit": row["credit_limit"]})
+				doc.save(ignore_permissions=True)
 		result["customers"].append(name)
 
 	for row in data.get("suppliers", []):
@@ -194,6 +223,8 @@ def setup_parties() -> dict[str, list[str]]:
 			doc.insert(ignore_permissions=True)
 			if doc.name != name:
 				frappe.rename_doc("Supplier", doc.name, name, force=True)
+		else:
+			frappe.db.set_value("Supplier", name, "supplier_name", row["supplier_name"])
 		result["suppliers"].append(name)
 
 	return result

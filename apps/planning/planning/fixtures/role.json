@@ -1,0 +1,26 @@
+[
+  {
+    "doctype": "Role",
+    "name": "MRP Planner",
+    "role_name": "MRP Planner",
+    "desk_access": 1
+  },
+  {
+    "doctype": "Role",
+    "name": "MRP Supervisor",
+    "role_name": "MRP Supervisor",
+    "desk_access": 1
+  },
+  {
+    "doctype": "Role",
+    "name": "MRP Data Administrator",
+    "role_name": "MRP Data Administrator",
+    "desk_access": 1
+  },
+  {
+    "doctype": "Role",
+    "name": "Planning System Administrator",
+    "role_name": "Planning System Administrator",
+    "desk_access": 1
+  }
+]

@@ -79,7 +79,7 @@ def update_state(**kwargs: Any) -> dict[str, Any]:
 
 def init_site(site: str | None = None) -> None:
 	site = site or cfg("site")
-	if not frappe.local.site:
+	if not getattr(frappe.local, "site", None):
 		frappe.init(site=site, sites_path=str(BENCH_DIR / "sites"))
 		frappe.connect()
 	frappe.set_user("Administrator")
@@ -128,9 +128,33 @@ def ensure_account(
 	parent_number: str,
 	root_type: str,
 	account_type: str = "",
+	is_group: int = 0,
 ) -> str:
 	existing = account(account_number=account_number)
 	if existing:
+		from erpnext.accounts.doctype.account.account import get_account_autoname
+
+		current_name = frappe.db.get_value("Account", existing, "account_name")
+		desired_name = get_account_autoname(account_number, account_name, company())
+		if current_name != account_name or existing != desired_name:
+			from erpnext.accounts.doctype.account.account import update_account_number
+
+			try:
+				renamed = update_account_number(existing, account_name, account_number)
+				if renamed:
+					existing = renamed
+			except frappe.ValidationError as exc:
+				if "Last GL Entry update" not in str(exc):
+					raise
+				frappe.db.set_value("Account", existing, "account_name", account_name)
+		updates: dict[str, Any] = {
+			"account_name": account_name,
+			"root_type": root_type,
+			"is_group": is_group,
+		}
+		if account_type is not None:
+			updates["account_type"] = account_type or ""
+		frappe.db.set_value("Account", existing, updates)
 		return existing
 
 	parent = frappe.db.get_value(
@@ -146,7 +170,7 @@ def ensure_account(
 			"account_number": account_number,
 			"parent_account": parent,
 			"company": company(),
-			"is_group": 0,
+			"is_group": is_group,
 			"root_type": root_type,
 			"account_type": account_type or None,
 		}
@@ -160,15 +184,28 @@ def ensure_warehouse(data: dict[str, Any]) -> str:
 	wh_name = data["warehouse_name"]
 	existing = frappe.db.get_value("Warehouse", {"warehouse_name": wh_name, "company": comp})
 	if existing:
+		updates = {}
+		if data.get("description"):
+			updates["description"] = data["description"]
+		if data.get("parent_warehouse"):
+			updates["parent_warehouse"] = data["parent_warehouse"]
+		if updates:
+			frappe.db.set_value("Warehouse", existing, updates)
 		return existing
 
+	parent = data.get("parent_warehouse")
+	if not parent:
+		parent = frappe.db.get_value(
+			"Warehouse", {"warehouse_name": "所有仓库", "company": comp, "is_group": 1}, "name"
+		)
 	doc = frappe.get_doc(
 		{
 			"doctype": "Warehouse",
 			"warehouse_name": wh_name,
 			"company": comp,
 			"is_group": 0,
-			"parent_warehouse": data.get("parent_warehouse"),
+			"parent_warehouse": parent,
+			"description": data.get("description"),
 		}
 	)
 	doc.insert(ignore_permissions=True)

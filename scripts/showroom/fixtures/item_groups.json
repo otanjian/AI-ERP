@@ -1,6 +1,7 @@
 [
   {
     "item_group_name": "GRP-001",
+    "display_name": "电脑整机",
     "parent_item_group": "All Item Groups",
     "inventory_account_number": "1405",
     "income_account_number": "6001",
@@ -8,16 +9,19 @@
   },
   {
     "item_group_name": "GRP-002",
+    "display_name": "核心部件",
     "parent_item_group": "All Item Groups",
     "inventory_account_number": "1403"
   },
   {
     "item_group_name": "GRP-003",
+    "display_name": "外设配件",
     "parent_item_group": "All Item Groups",
     "inventory_account_number": "1403"
   },
   {
     "item_group_name": "GRP-004",
+    "display_name": "委外加工品",
     "parent_item_group": "All Item Groups",
     "inventory_account_number": "1408"
   }

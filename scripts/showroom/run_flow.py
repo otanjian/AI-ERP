@@ -25,6 +25,10 @@ def _tax_template(doctype: str, title: str) -> str | None:
 	return frappe.db.get_value(doctype, {"title": title, "company": company()})
 
 
+def _supplier_name(supplier: str) -> str:
+	return frappe.db.get_value("Supplier", supplier, "supplier_name") or supplier
+
+
 def _get_or_create_sales_order(state: dict) -> str:
 	if state.get("sales_order") and frappe.db.exists("Sales Order", state["sales_order"]):
 		return state["sales_order"]
@@ -103,6 +107,7 @@ def _create_po_supp1(state: dict) -> str:
 			"doctype": "Purchase Order",
 			"company": company(),
 			"supplier": "SUPP-001",
+			"supplier_name": _supplier_name("SUPP-001"),
 			"transaction_date": posting_date("po_supp1"),
 			"schedule_date": posting_date("po_receipt"),
 			"items": [
@@ -142,6 +147,7 @@ def _create_po_supp2(state: dict) -> str:
 			"doctype": "Purchase Order",
 			"company": company(),
 			"supplier": "SUPP-002",
+			"supplier_name": _supplier_name("SUPP-002"),
 			"transaction_date": posting_date("po_supp1"),
 			"schedule_date": posting_date("po_receipt"),
 			"items": [
@@ -221,6 +227,7 @@ def _create_subcontract_po(state: dict) -> str:
 			"doctype": "Purchase Order",
 			"company": company(),
 			"supplier": "SUB-001",
+			"supplier_name": _supplier_name("SUB-001"),
 			"is_subcontracted": 1,
 			"transaction_date": posting_date("po_sub"),
 			"schedule_date": posting_date("subcontract_receipt"),
@@ -341,15 +348,36 @@ def _create_work_order(state: dict) -> str:
 
 def _work_order_stock_entries(wo_name: str, state: dict) -> dict[str, str]:
 	from erpnext.manufacturing.doctype.work_order.work_order import make_stock_entry
+	from showroom._common import account
 
 	result = {}
-	for purpose, key in (("Material Transfer for Manufacture", "wo_transfer"), ("Manufacture", "wo_manufacture")):
+	for purpose, key, posting_key in (
+		("Material Transfer for Manufacture", "wo_transfer", "subcontract_receipt"),
+		("Manufacture", "wo_manufacture", "work_order_end"),
+	):
 		if state.get(key) and frappe.db.exists("Stock Entry", state[key]):
 			result[key] = state[key]
 			continue
 		ste_dict = make_stock_entry(wo_name, purpose, qty=50)
 		ste = frappe.get_doc(ste_dict)
+		ste.posting_date = posting_date(posting_key)
 		ste.set_posting_time = 1
+		if purpose == "Manufacture":
+			ste.set(
+				"additional_costs",
+				[
+					{
+						"expense_account": account(account_number="500102"),
+						"description": "直接人工",
+						"amount": 5000,
+					},
+					{
+						"expense_account": account(account_number="500103"),
+						"description": "制造费用",
+						"amount": 3250,
+					},
+				],
+			)
 		ste.insert(ignore_permissions=True)
 		ste.submit()
 		result[key] = ste.name
@@ -364,9 +392,9 @@ def _post_production_overheads(state: dict) -> str | None:
 
 	from showroom._common import account
 
-	labour = account(account_number="50010102")
-	mfg = account(account_number="50010103")
-	mfg_source = account(account_number="5101") or account(account_number="6602")
+	labour = account(account_number="500102")
+	mfg = account(account_number="500103")
+	mfg_source = account(account_number="1602") or account(account_number="6602")
 	if not all([labour, mfg, mfg_source]):
 		return None
 
@@ -464,7 +492,9 @@ def run_flow() -> dict:
 	wo = _create_work_order(state)
 	state = load_state()
 	ste = _work_order_stock_entries(wo, state)
-	_post_production_overheads(state)
+	# Direct labour and manufacturing overhead are capitalized through the
+	# Manufacture Stock Entry additional_costs table, matching the sample-room
+	# production cost roll-up without a separate manual JE.
 
 	state = load_state()
 	fulfillment = _delivery_and_invoice(so, state)
@@ -477,8 +507,15 @@ def run_flow() -> dict:
 		"purchase_invoice_supp1": pi1,
 		"payment_supp1": pe1,
 		"po_supp2": po2,
+		"purchase_receipt_supp2": pr2,
+		"purchase_invoice_supp2": pi2,
+		"po_sub": po_sub,
 		"subcontract_order": sco,
+		"subcontract_transfer": state.get("subcontract_transfer"),
+		"subcontract_receipt": state.get("subcontract_receipt"),
 		"work_order": wo,
+		"wo_transfer": ste.get("wo_transfer"),
+		"wo_manufacture": ste.get("wo_manufacture"),
 		"work_order_stock_entries": ste,
 		**fulfillment,
 	}

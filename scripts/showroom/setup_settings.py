@@ -41,6 +41,8 @@ def setup_settings() -> dict:
 
 	accounts = frappe.get_doc("Accounts Settings")
 	accounts.auto_reconcile_payments = 1
+	accounts.add_taxes_from_item_tax_template = 0
+	accounts.add_taxes_from_taxes_and_charges_template = 1
 	accounts.save(ignore_permissions=True)
 
 	result = {

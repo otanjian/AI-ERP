@@ -17,16 +17,14 @@ from showroom._common import (
 	warehouse,
 )
 
-# WH-WIP01 must use a production cost account (50010101), not 1403.
-# When WIP shares the same account as raw materials, Stock Entry GL nets to zero.
 WAREHOUSE_ACCOUNTS = {
 	"WH-RAW01": "1403",
 	"WH-FG01": "1405",
 	"WH-SUB01": "1408",
-	"WH-WIP01": "50010101",
+	"WH-WIP01": "500101",
 }
 
-PRODUCTION_EXPENSE = "50010101"
+PRODUCTION_EXPENSE = "500101"
 
 RAW_ITEMS = {
 	"ITEM-002",
@@ -54,7 +52,7 @@ def apply_company_account_defaults() -> dict[str, str]:
 		"stock_received_but_not_billed": account(account_number="220202"),
 		"default_income_account": account(account_number="6001"),
 		"default_expense_account": account(account_number="6401"),
-		"stock_adjustment_account": account(account_number=PRODUCTION_EXPENSE),
+		"stock_adjustment_account": account(account_number="500103") or account(account_number="6602"),
 		"default_provisional_account": account(account_number="220202"),
 	}
 	defaults = {k: v for k, v in defaults.items() if v}

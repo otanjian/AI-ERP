@@ -86,5 +86,15 @@
         "required": [],
         "idx": 9,
         "version": "0.0.1"
+    },
+    "planning": {
+        "is_repo": true,
+        "resolution": {
+            "commit_hash": null,
+            "branch": null
+        },
+        "required": [],
+        "idx": 10,
+        "version": "0.0.1"
     }
 }

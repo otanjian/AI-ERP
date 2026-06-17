@@ -1,0 +1,13 @@
+{
+ "app": "planning",
+ "doctype": "Desktop Icon",
+ "name": "Planning",
+ "hidden": 0,
+ "icon_type": "App",
+ "idx": 20,
+ "label": "Planning",
+ "link": "/app/计划管理",
+ "link_type": "External",
+ "logo_url": "/assets/planning/images/planning-logo.svg",
+ "standard": 1
+}

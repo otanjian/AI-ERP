@@ -1,0 +1,41 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "field:preset_name",
+ "doctype": "DocType",
+ "document_type": "Document",
+ "engine": "InnoDB",
+ "field_order": [
+  "preset_name",
+  "company",
+  "warehouse",
+  "item_code",
+  "item_group",
+  "from_date",
+  "to_date",
+  "planning_policy"
+ ],
+ "fields": [
+  {"fieldname": "preset_name", "fieldtype": "Data", "label": "Preset Name", "reqd": 1, "unique": 1},
+  {"fieldname": "company", "fieldtype": "Link", "label": "Company", "options": "Company"},
+  {"fieldname": "warehouse", "fieldtype": "Link", "label": "Warehouse", "options": "Warehouse"},
+  {"fieldname": "item_code", "fieldtype": "Link", "label": "Item", "options": "Item"},
+  {"fieldname": "item_group", "fieldtype": "Link", "label": "Item Group", "options": "Item Group"},
+  {"fieldname": "from_date", "fieldtype": "Date", "label": "From Date"},
+  {"fieldname": "to_date", "fieldtype": "Date", "label": "To Date"},
+  {"fieldname": "planning_policy", "fieldtype": "Select", "label": "Planning Policy", "options": "\nMRP\nROP"}
+ ],
+ "links": [],
+ "module": "MRP",
+ "name": "MRP Filter Preset",
+ "naming_rule": "By fieldname",
+ "owner": "Administrator",
+ "permissions": [
+  {"create": 1, "delete": 1, "email": 1, "export": 1, "print": 1, "read": 1, "report": 1, "role": "MRP Planner", "share": 1, "write": 1},
+  {"email": 1, "export": 1, "print": 1, "read": 1, "report": 1, "role": "MRP Supervisor", "share": 1},
+  {"create": 1, "delete": 1, "email": 1, "export": 1, "print": 1, "read": 1, "report": 1, "role": "Planning System Administrator", "share": 1, "write": 1}
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

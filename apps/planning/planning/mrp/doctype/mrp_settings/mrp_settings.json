@@ -1,0 +1,36 @@
+{
+ "actions": [],
+ "doctype": "DocType",
+ "document_type": "Setup",
+ "engine": "InnoDB",
+ "field_order": [
+  "default_planning_horizon_days",
+  "queue",
+  "cleanup_unconfirmed_orders",
+  "enable_production_plan_aggregation",
+  "max_bom_depth",
+  "max_bom_rows",
+  "templates_initialized"
+ ],
+ "fields": [
+  {"default": "90", "fieldname": "default_planning_horizon_days", "fieldtype": "Int", "label": "Default Planning Horizon Days"},
+  {"default": "long", "fieldname": "queue", "fieldtype": "Data", "label": "Queue"},
+  {"default": "1", "fieldname": "cleanup_unconfirmed_orders", "fieldtype": "Check", "label": "Cleanup Unconfirmed Orders"},
+  {"default": "0", "fieldname": "enable_production_plan_aggregation", "fieldtype": "Check", "label": "Enable Production Plan Aggregation"},
+  {"default": "20", "fieldname": "max_bom_depth", "fieldtype": "Int", "label": "Max BOM Depth"},
+  {"default": "10000", "fieldname": "max_bom_rows", "fieldtype": "Int", "label": "Max BOM Rows"},
+  {"default": "0", "fieldname": "templates_initialized", "fieldtype": "Check", "label": "Templates Initialized"}
+ ],
+ "issingle": 1,
+ "links": [],
+ "module": "MRP",
+ "name": "MRP Settings",
+ "owner": "Administrator",
+ "permissions": [
+  {"create": 1, "delete": 1, "email": 1, "export": 1, "print": 1, "read": 1, "report": 1, "role": "Planning System Administrator", "share": 1, "write": 1},
+  {"email": 1, "export": 1, "print": 1, "read": 1, "report": 1, "role": "MRP Data Administrator", "share": 1}
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

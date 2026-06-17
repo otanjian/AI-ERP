@@ -1,0 +1,23 @@
+[
+  {
+    "doctype": "Module Def",
+    "module_name": "MPS",
+    "name": "MPS",
+    "app_name": "planning",
+    "custom": 0
+  },
+  {
+    "doctype": "Module Def",
+    "module_name": "MRP",
+    "name": "MRP",
+    "app_name": "planning",
+    "custom": 0
+  },
+  {
+    "doctype": "Module Def",
+    "module_name": "APS",
+    "name": "APS",
+    "app_name": "planning",
+    "custom": 0
+  }
+]

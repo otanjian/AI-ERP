@@ -1,0 +1,16 @@
+[
+  {
+    "doctype": "Workspace",
+    "name": "计划管理",
+    "label": "计划管理",
+    "title": "计划管理",
+    "module": "MRP",
+    "app": "planning",
+    "type": "Workspace",
+    "public": 1,
+    "is_hidden": 0,
+    "content": "[{\"id\":\"overview\",\"type\":\"header\",\"data\":{\"text\":\"计划总览\"}},{\"id\":\"planning-console\",\"type\":\"shortcut\",\"data\":{\"label\":\"计划控制台\",\"type\":\"Page\",\"link_to\":\"planning-console\"}},{\"id\":\"mps\",\"type\":\"header\",\"data\":{\"text\":\"MPS 主生产计划\"}},{\"id\":\"mps-placeholder\",\"type\":\"shortcut\",\"data\":{\"label\":\"MPS 工作台（站位）\",\"type\":\"Page\",\"link_to\":\"mps-workbench\"}},{\"id\":\"mrp\",\"type\":\"header\",\"data\":{\"text\":\"MRP 物料需求计划\"}},{\"id\":\"mrp-console\",\"type\":\"shortcut\",\"data\":{\"label\":\"MRP 控制台\",\"type\":\"Page\",\"link_to\":\"mrp-console\"}},{\"id\":\"mrp-run\",\"type\":\"shortcut\",\"data\":{\"label\":\"MRP 运行\",\"type\":\"DocType\",\"link_to\":\"MRP Run\"}},{\"id\":\"mrp-planned-order\",\"type\":\"shortcut\",\"data\":{\"label\":\"计划订单工作台\",\"type\":\"DocType\",\"link_to\":\"MRP Planned Order\"}},{\"id\":\"mrp-balance\",\"type\":\"shortcut\",\"data\":{\"label\":\"供需平衡分析\",\"type\":\"Report\",\"link_to\":\"MRP Supply Demand Balance\"}},{\"id\":\"mrp-parameter\",\"type\":\"shortcut\",\"data\":{\"label\":\"物料计划参数\",\"type\":\"DocType\",\"link_to\":\"MRP Material Planning Parameter\"}},{\"id\":\"mrp-element-config\",\"type\":\"shortcut\",\"data\":{\"label\":\"MRP 元素配置\",\"type\":\"DocType\",\"link_to\":\"MRP Element Config\"}},{\"id\":\"mrp-filter-preset\",\"type\":\"shortcut\",\"data\":{\"label\":\"筛选方案\",\"type\":\"DocType\",\"link_to\":\"MRP Filter Preset\"}},{\"id\":\"mrp-net-requirement\",\"type\":\"shortcut\",\"data\":{\"label\":\"净需求报告\",\"type\":\"Report\",\"link_to\":\"MRP Net Requirement\"}},{\"id\":\"mrp-run-history\",\"type\":\"shortcut\",\"data\":{\"label\":\"MRP 运行历史\",\"type\":\"Report\",\"link_to\":\"MRP Run History\"}},{\"id\":\"mrp-trace\",\"type\":\"shortcut\",\"data\":{\"label\":\"计划订单来源追溯\",\"type\":\"Report\",\"link_to\":\"MRP Planned Order Trace\"}},{\"id\":\"mrp-exclusion\",\"type\":\"shortcut\",\"data\":{\"label\":\"排除原因分析\",\"type\":\"Report\",\"link_to\":\"MRP Exclusion Analysis\"}},{\"id\":\"aps\",\"type\":\"header\",\"data\":{\"text\":\"APS 高级计划排程\"}},{\"id\":\"aps-placeholder\",\"type\":\"shortcut\",\"data\":{\"label\":\"APS 工作台（站位）\",\"type\":\"Page\",\"link_to\":\"aps-workbench\"}},{\"id\":\"settings\",\"type\":\"header\",\"data\":{\"text\":\"计划设置\"}},{\"id\":\"mrp-settings\",\"type\":\"shortcut\",\"data\":{\"label\":\"MRP 设置\",\"type\":\"DocType\",\"link_to\":\"MRP Settings\"}},{\"id\":\"template-init\",\"type\":\"shortcut\",\"data\":{\"label\":\"元素模板初始化\",\"type\":\"Page\",\"link_to\":\"mrp-element-template-initialization\"}},{\"id\":\"job-monitor\",\"type\":\"shortcut\",\"data\":{\"label\":\"后台任务监控\",\"type\":\"DocType\",\"link_to\":\"MRP Job Log\"}}]",
+    "links": [],
+    "shortcuts": []
+  }
+]

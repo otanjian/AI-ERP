@@ -25,8 +25,7 @@ CHECKS = {
 	"Delivery Note": {
 		"delivery_note": {
 			"desc": "销售出库 借6401贷1405",
-			"expected_total_debit": None,
-			"accounts": [("6401", "debit"), ("1405", "credit")],
+			"lines": [("6401", 160000, 0), ("1405", 0, 160000)],
 		}
 	},
 	"Sales Invoice": {
@@ -67,9 +66,18 @@ CHECKS = {
 		}
 	},
 	"Stock Entry": {
+		"wo_transfer": {
+			"desc": "生产领料 借500101贷1403",
+			"lines": [("500101", 151750, 0), ("1403", 0, 151750)],
+		},
 		"wo_manufacture": {
-			"desc": "生产入库 借1405贷5001",
-			"accounts": [("1405", "debit"), ("5001", "credit")],
+			"desc": "生产入库 借1405贷500101/500102/500103",
+			"lines": [
+				("1405", 160000, 0),
+				("500101", 0, 151750),
+				("500102", 0, 5000),
+				("500103", 0, 3250),
+			],
 		},
 		"subcontract_transfer": {
 			"desc": "委外材料调拨 借1408贷1403",
@@ -81,12 +89,6 @@ CHECKS = {
 		"subcontract_receipt": {
 			"desc": "委外成品入库",
 			"accounts": [("1403", "debit"), ("1408", "credit")],
-		}
-	},
-	"Journal Entry": {
-		"overhead_je": {
-			"desc": "人工制造费用 JE",
-			"accounts": [("50010102", "debit"), ("50010103", "debit"), ("5101", "credit")],
 		}
 	},
 }

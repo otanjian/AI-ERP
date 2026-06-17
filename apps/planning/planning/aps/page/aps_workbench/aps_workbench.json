@@ -1,0 +1,20 @@
+{
+ "content": null,
+ "doctype": "Page",
+ "module": "APS",
+ "name": "aps-workbench",
+ "page_name": "aps-workbench",
+ "roles": [
+  {
+   "role": "MRP Planner"
+  },
+  {
+   "role": "MRP Supervisor"
+  },
+  {
+   "role": "Planning System Administrator"
+  }
+ ],
+ "standard": "Yes",
+ "title": "APS Workbench"
+}

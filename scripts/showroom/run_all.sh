@@ -35,6 +35,13 @@ case "${1:-all}" in
   accounts)
     run_module account_defaults
     ;;
+  base)
+    run_module setup_coa
+    run_module setup_settings
+    run_module setup_masters
+    run_module verify
+    bench --site "$SITE" clear-cache
+    ;;
   cancel)
     run_module cancel_flow
     ;;
@@ -58,7 +65,7 @@ case "${1:-all}" in
     bench --site "$SITE" clear-cache
     ;;
   *)
-    echo "Usage: $0 [backup|coa|settings|masters|accounts|cancel|flow|verify|check_gl|reopen|all]"
+    echo "Usage: $0 [backup|coa|settings|masters|accounts|base|cancel|flow|verify|check_gl|reopen|all]"
     exit 1
     ;;
 esac

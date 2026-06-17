@@ -1,0 +1,47 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "format:MRP-RUN-{YYYY}-{#####}",
+ "doctype": "DocType",
+ "document_type": "Document",
+ "engine": "InnoDB",
+ "field_order": [
+  "company",
+  "from_date",
+  "to_date",
+  "status",
+  "progress",
+  "filters_json",
+  "column_break_1",
+  "total_snapshots",
+  "total_net_requirements",
+  "total_planned_orders",
+  "error_message"
+ ],
+ "fields": [
+  {"fieldname": "company", "fieldtype": "Link", "in_list_view": 1, "label": "Company", "options": "Company", "reqd": 1},
+  {"fieldname": "from_date", "fieldtype": "Date", "label": "From Date", "reqd": 1},
+  {"fieldname": "to_date", "fieldtype": "Date", "label": "To Date", "reqd": 1},
+  {"default": "Draft", "fieldname": "status", "fieldtype": "Select", "in_list_view": 1, "label": "Status", "options": "Draft\nQueued\nRunning\nCompleted\nFailed\nCancelled", "reqd": 1},
+  {"default": "0", "fieldname": "progress", "fieldtype": "Percent", "label": "Progress"},
+  {"fieldname": "filters_json", "fieldtype": "Long Text", "label": "Filters JSON"},
+  {"fieldname": "column_break_1", "fieldtype": "Column Break"},
+  {"default": "0", "fieldname": "total_snapshots", "fieldtype": "Int", "label": "Total Snapshots"},
+  {"default": "0", "fieldname": "total_net_requirements", "fieldtype": "Int", "label": "Total Net Requirements"},
+  {"default": "0", "fieldname": "total_planned_orders", "fieldtype": "Int", "label": "Total Planned Orders"},
+  {"fieldname": "error_message", "fieldtype": "Long Text", "label": "Error Message", "read_only": 1}
+ ],
+ "links": [],
+ "module": "MRP",
+ "name": "MRP Run",
+ "naming_rule": "Expression",
+ "owner": "Administrator",
+ "permissions": [
+  {"create": 1, "email": 1, "export": 1, "print": 1, "read": 1, "report": 1, "role": "MRP Planner", "share": 1, "write": 1},
+  {"email": 1, "export": 1, "print": 1, "read": 1, "report": 1, "role": "MRP Supervisor", "share": 1},
+  {"create": 1, "delete": 1, "email": 1, "export": 1, "print": 1, "read": 1, "report": 1, "role": "Planning System Administrator", "share": 1, "write": 1}
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

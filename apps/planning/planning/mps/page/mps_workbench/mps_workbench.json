@@ -1,0 +1,20 @@
+{
+ "content": null,
+ "doctype": "Page",
+ "module": "MPS",
+ "name": "mps-workbench",
+ "page_name": "mps-workbench",
+ "roles": [
+  {
+   "role": "MRP Planner"
+  },
+  {
+   "role": "MRP Supervisor"
+  },
+  {
+   "role": "Planning System Administrator"
+  }
+ ],
+ "standard": "Yes",
+ "title": "MPS Workbench"
+}

@@ -1,0 +1,50 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "field:element_name",
+ "doctype": "DocType",
+ "document_type": "Document",
+ "engine": "InnoDB",
+ "field_order": [
+  "enabled",
+  "element_name",
+  "source_doctype",
+  "direction",
+  "priority",
+  "column_break_1",
+  "item_field",
+  "company_field",
+  "warehouse_field",
+  "quantity_field",
+  "date_field",
+  "status_filters",
+  "exclusion_behavior"
+ ],
+ "fields": [
+  {"default": "1", "fieldname": "enabled", "fieldtype": "Check", "label": "Enabled"},
+  {"fieldname": "element_name", "fieldtype": "Data", "label": "Element Name", "reqd": 1, "unique": 1},
+  {"fieldname": "source_doctype", "fieldtype": "Link", "label": "Source DocType", "options": "DocType", "reqd": 1},
+  {"fieldname": "direction", "fieldtype": "Select", "label": "Direction", "options": "Demand\nSupply", "reqd": 1},
+  {"default": "100", "fieldname": "priority", "fieldtype": "Int", "label": "Priority"},
+  {"fieldname": "column_break_1", "fieldtype": "Column Break"},
+  {"fieldname": "item_field", "fieldtype": "Data", "label": "Item Field", "reqd": 1},
+  {"fieldname": "company_field", "fieldtype": "Data", "label": "Company Field"},
+  {"fieldname": "warehouse_field", "fieldtype": "Data", "label": "Warehouse Field"},
+  {"fieldname": "quantity_field", "fieldtype": "Data", "label": "Quantity Field", "reqd": 1},
+  {"fieldname": "date_field", "fieldtype": "Data", "label": "Date Field", "reqd": 1},
+  {"fieldname": "status_filters", "fieldtype": "Small Text", "label": "Status Filters"},
+  {"default": "Record Exclusion", "fieldname": "exclusion_behavior", "fieldtype": "Select", "label": "Exclusion Behavior", "options": "Record Exclusion\nSkip Silently\nFail Run"}
+ ],
+ "links": [],
+ "module": "MRP",
+ "name": "MRP Element Config",
+ "naming_rule": "By fieldname",
+ "owner": "Administrator",
+ "permissions": [
+  {"create": 1, "delete": 1, "email": 1, "export": 1, "print": 1, "read": 1, "report": 1, "role": "MRP Data Administrator", "share": 1, "write": 1},
+  {"email": 1, "export": 1, "print": 1, "read": 1, "report": 1, "role": "Planning System Administrator", "share": 1}
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}
