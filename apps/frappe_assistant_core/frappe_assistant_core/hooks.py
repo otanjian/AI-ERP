@@ -40,7 +40,10 @@ app_include_js = f"/assets/frappe_assistant_core/js/ai_assistant_bubble.js{_assi
 
 # include js, css files in header of web template (portal, login, website)
 web_include_css = f"/assets/frappe_assistant_core/css/ai_assistant_bubble.css{_assistant_asset_v}"
-web_include_js = f"/assets/frappe_assistant_core/js/ai_assistant_bubble.js{_assistant_asset_v}"
+web_include_js = [
+	f"/assets/frappe_assistant_core/js/ai_assistant_bubble.js{_assistant_asset_v}",
+	f"/assets/frappe_assistant_core/js/website_guest_ai_agent.js{_assistant_asset_v}",
+]
 
 # include custom scss in every website theme (without file extension ".scss")
 # website_theme_scss = "frappe_assistant_core/public/scss/website"
